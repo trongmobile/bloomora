@@ -1,0 +1,88 @@
+---
+import type { GetStaticPaths } from 'astro';
+import GlassButton from '../../../components/design-system/GlassButton.astro';
+import GlassSurface from '../../../components/design-system/GlassSurface.astro';
+import Breadcrumbs from '../../../components/site/Breadcrumbs.astro';
+import FlowerFilters from '../../../components/site/FlowerFilters.astro';
+import FlowerGrid from '../../../components/site/FlowerGrid.astro';
+import FlowerSearch from '../../../components/site/FlowerSearch.astro';
+import { FLOWERS } from '../../../data';
+import { LANGS, type Lang } from '../../../data/types';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getDict } from '../../../i18n';
+import { alternatesFor } from '../../../lib/pages';
+import { getRegistry } from '../../../lib/content';
+import { breadcrumbLd } from '../../../lib/jsonld';
+import { routes } from '../../../lib/routes';
+
+export const getStaticPaths = (() => LANGS.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
+
+const lang = Astro.params.lang as Lang;
+const dict = getDict(lang);
+const registry = await getRegistry();
+const ctx = { site: Astro.site ?? 'https://bloomora.example', base: import.meta.env.BASE_URL };
+const crumbs = [
+  { name: dict.nav.home, path: routes.home(lang) },
+  { name: dict.flowers.title, path: routes.flowers(lang) },
+];
+---
+
+<BaseLayout
+  lang={lang}
+  title={dict.flowers.metaTitle}
+  description={dict.flowers.metaDescription}
+  path={routes.flowers(lang)}
+  alternates={alternatesFor(registry, 'flowers')}
+  jsonLd={[breadcrumbLd(ctx, crumbs)]}
+>
+  <section class="section section--tight">
+    <div class="container">
+      <Breadcrumbs lang={lang} items={crumbs} />
+      <h1>{dict.flowers.title}</h1>
+      <p class="lead">{dict.flowers.lead}</p>
+      <noscript><p class="muted">{dict.flowers.noscript}</p></noscript>
+
+      <div data-flower-list data-page-size="6" style="margin-top: var(--space-6)">
+        <GlassSurface class="filters" role="search" aria-label={dict.flowers.filtersLabel}>
+          <div class="filters__grid">
+            <FlowerSearch lang={lang} />
+            <FlowerFilters lang={lang} />
+          </div>
+          <div class="filters__foot">
+            <p
+              class="results-count"
+              role="status"
+              aria-live="polite"
+              data-results-count
+              data-tpl={dict.flowers.resultsCount}
+              data-none={dict.flowers.resultsNone}
+            >
+            </p>
+            <GlassButton size="sm" variant="ghost" data-reset data-reset-main hidden>{dict.flowers.resetFilters}</GlassButton>
+          </div>
+        </GlassSurface>
+
+        <FlowerGrid flowers={FLOWERS} lang={lang} filterable id="flower-grid" />
+
+        <GlassSurface class="state-box" data-empty hidden>
+          <h2>{dict.flowers.emptyTitle}</h2>
+          <p class="muted">{dict.flowers.emptyBody}</p>
+          <GlassButton data-reset>{dict.flowers.resetFilters}</GlassButton>
+        </GlassSurface>
+
+        <GlassSurface class="state-box state-box--error" role="alert" data-error hidden>
+          <h2>{dict.flowers.errorTitle}</h2>
+          <p class="muted">{dict.flowers.errorBody}</p>
+          <GlassButton data-reload>{dict.flowers.reload}</GlassButton>
+        </GlassSurface>
+
+        <div class="load-more">
+          <GlassButton data-load-more hidden>{dict.flowers.loadMore}</GlassButton>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    import '../../../scripts/flower-filters';
+  </script>
+</BaseLayout>

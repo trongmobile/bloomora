@@ -1,0 +1,92 @@
+---
+/** Cherry blossom: two layers of five notched petals, a fan of stamens, and a few petals drifting round it. */
+import { spread } from '../../../lib/hero-art';
+import StageRing from './StageRing.astro';
+
+const W = 1.25;
+const n = (v: number) => +(v * W).toFixed(2);
+/** Heart-tipped petal pointing up (-y), widened by W so neighbours overlap. */
+const petal = `M0 -10C${-n(24)} -26 ${-n(30)} -58 ${-n(22)} -76C${-n(17)} -88 -6 -86 0 -74C6 -86 ${n(17)} -88 ${n(22)} -76C${n(30)} -58 ${n(24)} -26 0 -10Z`;
+
+const layers = [
+  { id: 'back', angles: spread(5, 36) },
+  { id: 'front', angles: spread(5) },
+];
+
+const stamens = Array.from({ length: 16 }, (_, i) => {
+  const angle = (i * 137.508 * Math.PI) / 180;
+  const length = 15 + (i % 3) * 4;
+  return { x: +(length * Math.cos(angle)).toFixed(2), y: +(length * Math.sin(angle)).toFixed(2) };
+});
+
+const drifting = [
+  { angle: 20, turn: 40 },
+  { angle: 140, turn: -70 },
+  { angle: 255, turn: 110 },
+].map((p) => ({
+  turn: p.turn,
+  x: +(91 * Math.cos(((p.angle - 90) * Math.PI) / 180)).toFixed(2),
+  y: +(91 * Math.sin(((p.angle - 90) * Math.PI) / 180)).toFixed(2),
+}));
+---
+
+<svg class="bloom-emblem bloom-emblem--sakura" viewBox="-120 -120 240 240" aria-hidden="true" focusable="false">
+  <defs>
+    <radialGradient id="hk-glow">
+      <stop offset="0%" stop-color="#ffa6c4" stop-opacity=".42"></stop>
+      <stop offset="100%" stop-color="#ffa6c4" stop-opacity="0"></stop>
+    </radialGradient>
+    <linearGradient id="hk-g-back" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#df5a89"></stop>
+      <stop offset="100%" stop-color="#fbbcd1"></stop>
+    </linearGradient>
+    <linearGradient id="hk-g-front" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#ee729c"></stop>
+      <stop offset="100%" stop-color="#fff2f6"></stop>
+    </linearGradient>
+    <g id="hk-petal-back">
+      <path d={petal}></path>
+    </g>
+    <g id="hk-petal-front">
+      <path d={petal}></path>
+      <path d="M0 -16V-56" fill="none" stroke="#b8396a" stroke-opacity=".35" stroke-width=".9" stroke-linecap="round"></path>
+      <path d="M-9 -22L-5 -52M9 -22L5 -52" fill="none" stroke="#b8396a" stroke-opacity=".2" stroke-width=".7" stroke-linecap="round"></path>
+    </g>
+  </defs>
+
+  <circle r="104" fill="url(#hk-glow)"></circle>
+  <StageRing />
+
+  <g class="ring ring--rev" style="--spin:70s">
+    {
+      drifting.map((p) => (
+        <g transform={`translate(${p.x} ${p.y}) rotate(${p.turn}) scale(.13) translate(0 49)`} fill="url(#hk-g-front)" fill-opacity=".92">
+          <path d={petal}></path>
+        </g>
+      ))
+    }
+  </g>
+
+  <g transform="scale(.92)">
+    <g class="bloom">
+      <g class="ring" style="--spin:140s" stroke="#a82f5e" stroke-opacity=".34" stroke-width=".8" stroke-linejoin="round">
+        {
+          layers.map((l) => (
+            <g fill={`url(#hk-g-${l.id})`}>
+              {l.angles.map((a) => (
+                <use href={`#hk-petal-${l.id}`} transform={`rotate(${a})`}></use>
+              ))}
+            </g>
+          ))
+        }
+      </g>
+      <g stroke="#c94d7a" stroke-width=".9" stroke-linecap="round">
+        {stamens.map((s) => <path d={`M0 0L${s.x} ${s.y}`}></path>)}
+      </g>
+      <g fill="#f7c948" stroke="#b8860b" stroke-opacity=".5" stroke-width=".4">
+        {stamens.map((s) => <circle cx={s.x} cy={s.y} r="1.7"></circle>)}
+      </g>
+      <circle r="5.5" fill="#c43c6c" stroke="#7f1639" stroke-opacity=".4" stroke-width=".6"></circle>
+    </g>
+  </g>
+</svg>

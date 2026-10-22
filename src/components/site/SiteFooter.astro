@@ -1,0 +1,42 @@
+---
+import type { Lang } from '../../data/types';
+import { getDict } from '../../i18n';
+import { href } from '../../lib/href';
+import { routes } from '../../lib/routes';
+import Logo from './Logo.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const dict = getDict(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer glass" data-tier="subtle">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href={href(routes.home(lang))}>
+          <Logo />
+          <span>{dict.site.name}</span>
+        </a>
+        <p class="muted">{dict.footer.about}</p>
+      </div>
+      <div>
+        <h2>{dict.footer.explore}</h2>
+        <ul>
+          <li><a href={href(routes.flowers(lang))}>{dict.nav.flowers}</a></li>
+          <li><a href={href(routes.learn(lang))}>{dict.nav.learn}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>{dict.footer.project}</h2>
+        <ul>
+          <li><a href={href(routes.about(lang))}>{dict.nav.about}</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-note">© {year} {dict.site.name}.</p>
+  </div>
+</footer>

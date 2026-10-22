@@ -1,0 +1,347 @@
+/* ==========================================================================
+   Time-lapse player. The flower art sits on a flat, un-blurred stage; only the
+   control surfaces use glass.
+   ========================================================================== */
+.tl {
+  padding: var(--space-3);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.tl__stage {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  max-height: min(70vh, 40rem);
+  width: 100%;
+  margin-inline: auto;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--stage-bg-top), var(--stage-bg-bottom));
+  outline-offset: 2px;
+}
+.tl__art,
+.tl__poster,
+.tl__video,
+.tl__crossfade {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.tl__crossfade {
+  position: relative;
+}
+.tl__layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 700ms var(--ease);
+}
+.tl__layer[data-active='true'] {
+  opacity: 1;
+}
+.tl__badge {
+  position: absolute;
+  left: var(--space-3);
+  top: var(--space-3);
+  margin: 0;
+  max-width: calc(100% - 5rem);
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--r-pill);
+  background: var(--glass-elevated-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow-1);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text);
+  pointer-events: none;
+}
+.tl__badge span {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.tl__fs {
+  position: absolute;
+  right: var(--space-3);
+  top: var(--space-3);
+}
+.tl__media-note {
+  position: absolute;
+  left: var(--space-3);
+  right: var(--space-3);
+  bottom: var(--space-3);
+  margin: 0;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--r-md);
+  background: var(--glass-elevated-bg);
+  font-size: var(--text-sm);
+}
+
+.tl__controls {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-2) var(--space-2);
+}
+.tl__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.tl__row--meta {
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.tl__buttons {
+  display: flex;
+  gap: var(--space-2);
+  flex: none;
+}
+.tl__pct {
+  flex: none;
+  min-width: 3.25rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.tl__speed {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.tl__speed-label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-right: var(--space-1);
+}
+.tl__speed-btn {
+  padding: 0 var(--space-3);
+  min-width: var(--tap);
+}
+.tl__elapsed {
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+/* Scrubber ---------------------------------------------------------------- */
+.tl__scrub {
+  --track: 0.5rem;
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: var(--tap);
+  display: flex;
+  align-items: center;
+}
+.tl__scrub::before,
+.tl__scrub::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: var(--track);
+  margin-top: calc(var(--track) / -2);
+  border-radius: var(--r-pill);
+  pointer-events: none;
+}
+.tl__scrub::before {
+  right: 0;
+  background: var(--border-solid);
+}
+.tl__scrub::after {
+  width: var(--p, 0%);
+  background: linear-gradient(90deg, var(--leaf), var(--accent));
+}
+.tl__ticks span {
+  position: absolute;
+  top: 50%;
+  width: 2px;
+  height: 0.9rem;
+  margin: -0.45rem 0 0 -1px;
+  background: var(--text-faint);
+  opacity: 0.55;
+  border-radius: 1px;
+  pointer-events: none;
+}
+.tl__range {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: var(--tap);
+  margin: 0;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+.tl__range::-webkit-slider-runnable-track {
+  height: var(--tap);
+  background: transparent;
+}
+.tl__range::-moz-range-track {
+  height: var(--tap);
+  background: transparent;
+}
+.tl__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: calc((var(--tap) - 1.5rem) / 2);
+  border-radius: 50%;
+  background: var(--surface-solid);
+  border: 3px solid var(--accent);
+  box-shadow: var(--glass-shadow-2);
+}
+.tl__range::-moz-range-thumb {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background: var(--surface-solid);
+  border: 3px solid var(--accent);
+  box-shadow: var(--glass-shadow-2);
+}
+.tl__range:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Stage buttons ----------------------------------------------------------- */
+.tl__stages {
+  display: flex;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: var(--space-2);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+.tl__stages li {
+  margin: 0;
+  flex: none;
+  scroll-snap-align: center;
+}
+.tl__stage-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding: 0 var(--space-4) 0 var(--space-2);
+  border: 1px solid var(--border-solid);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.tl__stage-btn:hover {
+  background: var(--leaf-soft);
+}
+.tl__stage-btn .n {
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background: var(--leaf-soft);
+  color: var(--leaf);
+  font-weight: 700;
+  font-size: var(--text-xs);
+}
+.tl__stage-btn[aria-current='step'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+.tl__stage-btn[aria-current='step'] .n {
+  background: rgba(255, 255, 255, 0.28);
+  color: inherit;
+}
+
+/* Description and notes --------------------------------------------------- */
+.tl__desc {
+  padding: var(--space-3) var(--space-3) 0;
+}
+.tl__desc-title {
+  margin: 0 0 var(--space-1);
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: var(--text-xl);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+}
+.tl__desc-count {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--leaf);
+}
+.tl__desc-dur {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.tl__desc-text {
+  margin: 0;
+  min-height: 4.5em;
+}
+.tl__notes {
+  margin: var(--space-4) var(--space-3) var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-solid);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+.tl__notes p {
+  margin: 0 0 var(--space-2);
+}
+.tl__hint {
+  color: var(--text-faint);
+}
+
+/* Fullscreen: native API or the CSS fallback used on iPhone. -------------- */
+.tl.is-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  border-radius: 0;
+  overflow-y: auto;
+  background: var(--surface-solid);
+}
+.tl:fullscreen {
+  overflow-y: auto;
+  background: var(--surface-solid);
+  border-radius: 0;
+}
+.tl.is-fullscreen .tl__stage,
+.tl:fullscreen .tl__stage {
+  max-height: 62vh;
+}
+
+@media (max-width: 40rem) {
+  .tl__row:first-child {
+    flex-wrap: wrap;
+  }
+  .tl__scrub {
+    order: 3;
+    flex-basis: 100%;
+  }
+  .tl__pct {
+    margin-left: auto;
+  }
+  .tl__buttons {
+    flex: 1;
+  }
+}

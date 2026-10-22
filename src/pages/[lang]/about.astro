@@ -1,0 +1,75 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { resolveAnalyticsConfig } from '../../config/analytics';
+import GlassButton from '../../components/design-system/GlassButton.astro';
+import GlassSurface from '../../components/design-system/GlassSurface.astro';
+import Breadcrumbs from '../../components/site/Breadcrumbs.astro';
+import { LANGS, type Lang } from '../../data/types';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getDict } from '../../i18n';
+import { alternatesFor } from '../../lib/pages';
+import { getRegistry } from '../../lib/content';
+import { breadcrumbLd } from '../../lib/jsonld';
+import { routes } from '../../lib/routes';
+
+export const getStaticPaths = (() => LANGS.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
+
+const lang = Astro.params.lang as Lang;
+const dict = getDict(lang);
+const a = dict.about;
+const registry = await getRegistry();
+const analytics = resolveAnalyticsConfig(import.meta.env);
+const ctx = { site: Astro.site ?? 'https://bloomora.example', base: import.meta.env.BASE_URL };
+const crumbs = [
+  { name: dict.nav.home, path: routes.home(lang) },
+  { name: dict.nav.about, path: routes.about(lang) },
+];
+---
+
+<BaseLayout
+  lang={lang}
+  title={a.metaTitle}
+  description={a.metaDescription}
+  path={routes.about(lang)}
+  alternates={alternatesFor(registry, 'about')}
+  jsonLd={[breadcrumbLd(ctx, crumbs)]}
+>
+  <section class="section section--tight">
+    <div class="container container--narrow">
+      <Breadcrumbs lang={lang} items={crumbs} />
+      <h1>{a.title}</h1>
+      <p class="lead">{a.lead}</p>
+
+      <div class="stack" style="--stack-gap: var(--space-5); margin-top: var(--space-6)">
+        <GlassSurface class="panel"><h2 class="t-heading">{a.illustrativeTitle}</h2><p>{a.illustrativeBody}</p></GlassSurface>
+        <GlassSurface class="panel"><h2 class="t-heading">{a.dataTitle}</h2><p>{a.dataBody}</p></GlassSurface>
+        <GlassSurface
+          class="panel"
+          data-analytics-optout
+          data-site-enabled={String(analytics.enabled)}
+          data-label-out={a.analyticsOptOut}
+          data-label-in={a.analyticsOptIn}
+          data-msg-out={a.analyticsOptedOut}
+          data-msg-in={a.analyticsOptedIn}
+        >
+          <h2 class="t-heading">{a.analyticsTitle}</h2>
+          <p>{a.analyticsBody}</p>
+          {
+            analytics.enabled ? (
+              <>
+                <GlassButton data-optout-button aria-pressed="false">{a.analyticsOptOut}</GlassButton>
+                <p class="muted t-small" data-optout-status role="status" aria-live="polite" style="margin-top: var(--space-3)" />
+              </>
+            ) : (
+              <p class="muted t-small">{a.analyticsDisabledSite}</p>
+            )
+          }
+        </GlassSurface>
+        <GlassSurface class="panel"><h2 class="t-heading">{a.accessibilityTitle}</h2><p>{a.accessibilityBody}</p></GlassSurface>
+      </div>
+    </div>
+  </section>
+  <script>
+    import '../../scripts/analytics-optout';
+  </script>
+</BaseLayout>

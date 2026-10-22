@@ -1,0 +1,17 @@
+---
+/**
+ * Hero emblem: four blooms (dahlia, sunflower, lotus, cherry blossom), each ringed by nine dots that grow from seed to
+ * full bloom, cross-fading one after another. Pure inline SVG and CSS, no script. With reduced motion only the first shows.
+ */
+import BloomDahlia from './hero/BloomDahlia.astro';
+import BloomLotus from './hero/BloomLotus.astro';
+import BloomSakura from './hero/BloomSakura.astro';
+import BloomSunflower from './hero/BloomSunflower.astro';
+---
+
+<div class="bloom-stack" aria-hidden="true">
+  <BloomDahlia />
+  <BloomSunflower />
+  <BloomLotus />
+  <BloomSakura />
+</div>

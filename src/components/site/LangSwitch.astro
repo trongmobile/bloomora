@@ -1,0 +1,28 @@
+---
+import type { Lang } from '../../data/types';
+import { getDict } from '../../i18n';
+import { href } from '../../lib/href';
+import { routes } from '../../lib/routes';
+import type { Alternate } from '../../lib/pages';
+
+interface Props {
+  lang: Lang;
+  alternates?: Alternate[];
+}
+const { lang, alternates = [] } = Astro.props;
+const other: Lang = lang === 'vi' ? 'en' : 'vi';
+const target = alternates.find((a) => a.hreflang === other)?.path ?? routes.home(other);
+const dict = getDict(lang);
+---
+
+<a
+  class="btn btn--sm"
+  href={href(target)}
+  hreflang={other}
+  lang={other}
+  data-lang-switch={other}
+  title={dict.lang.switchTo}
+>
+  <!-- Name comes from the content, so it always starts with the visible text (WCAG 2.5.3 Label in Name). -->
+  {dict.lang.switchShort}<span class="visually-hidden"> — {dict.lang.switchTo}</span>
+</a>

@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GlassButton from '../components/design-system/GlassButton.astro';
+import GlassSurface from '../components/design-system/GlassSurface.astro';
+import HeroBloom from '../components/site/HeroBloom.astro';
+import { getDict } from '../i18n';
+import { LANG_STORAGE_KEY } from '../config/site';
+import { alternatesFor } from '../lib/pages';
+import { getRegistry } from '../lib/content';
+import { href } from '../lib/href';
+import { routes } from '../lib/routes';
+
+/**
+ * Language gateway at "/". It is real, crawlable content (two links), with x-default hreflang
+ * pointing here. A tiny script sends returning visitors to their stored language, or to the
+ * browser language, but only when they arrive without a referrer from this site.
+ */
+const dict = getDict('en');
+const vi = getDict('vi');
+const registry = await getRegistry();
+const alternates = alternatesFor(registry, 'gateway');
+---
+
+<BaseLayout
+  lang="en"
+  rawTitle
+  title={dict.gateway.title}
+  description={dict.gateway.description}
+  path={routes.gateway()}
+  alternates={alternates}
+>
+  <section class="hero">
+    <div class="container hero__grid">
+      <div>
+        <h1>Bloomora</h1>
+        <p class="lead" lang="vi">{vi.site.tagline}.</p>
+        <p class="lead" lang="en">{dict.site.tagline}.</p>
+        <div class="hero__actions" role="group" aria-label={dict.gateway.choose}>
+          <GlassButton variant="primary" href={href(routes.home('vi'))} hreflang="vi" lang="vi" data-lang-switch="vi">
+            Tiếng Việt
+          </GlassButton>
+          <GlassButton href={href(routes.home('en'))} hreflang="en" lang="en" data-lang-switch="en">English</GlassButton>
+        </div>
+      </div>
+      <GlassSurface tier="elevated" class="hero__art"><HeroBloom /></GlassSurface>
+    </div>
+  </section>
+  <script is:inline define:vars={{ key: LANG_STORAGE_KEY, vi: href(routes.home('vi')), en: href(routes.home('en')) }}>
+    (function () {
+      try {
+        const ref = document.referrer;
+        if (ref && ref.indexOf(location.origin) === 0) return; // came from our own site: stay and choose
+        let stored = null;
+        try {
+          stored = localStorage.getItem(key);
+        } catch {
+          stored = null; // storage blocked: fall back to the browser language
+        }
+        const pick = stored === 'vi' || stored === 'en' ? stored : (navigator.language || '').toLowerCase().indexOf('vi') === 0 ? 'vi' : 'en';
+        location.replace(pick === 'vi' ? vi : en);
+      } catch {
+        // stay on the gateway page, which links to both languages
+      }
+    })();
+  </script>
+</BaseLayout>

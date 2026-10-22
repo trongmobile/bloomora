@@ -1,0 +1,89 @@
+/* ==========================================================================
+   Glass surfaces.
+   Rules: blur only what is BEHIND a surface (never the flower art), never blur the
+   whole page, keep the number of blurred layers small, and degrade to a solid fill.
+   ========================================================================== */
+.glass {
+  --g-bg: var(--glass-standard-bg);
+  --g-blur: var(--blur-standard);
+  --g-shadow: var(--glass-shadow-1);
+  position: relative;
+  isolation: isolate;
+  background: var(--g-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--g-shadow), inset 0 1px 0 var(--glass-highlight), 0 0 0 1px var(--glass-edge);
+  -webkit-backdrop-filter: blur(var(--g-blur)) saturate(var(--saturate));
+  backdrop-filter: blur(var(--g-blur)) saturate(var(--saturate));
+}
+
+.glass[data-tier='subtle'] {
+  --g-bg: var(--glass-subtle-bg);
+  --g-blur: var(--blur-subtle);
+  --g-shadow: none;
+}
+.glass[data-tier='standard'] {
+  --g-bg: var(--glass-standard-bg);
+  --g-blur: var(--blur-standard);
+  --g-shadow: var(--glass-shadow-1);
+}
+.glass[data-tier='elevated'] {
+  --g-bg: var(--glass-elevated-bg);
+  --g-blur: var(--blur-elevated);
+  --g-shadow: var(--glass-shadow-3);
+}
+.glass[data-tier='interactive'] {
+  --g-bg: var(--glass-interactive-bg);
+  --g-blur: var(--blur-interactive);
+  --g-shadow: var(--glass-shadow-1);
+  transition:
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+.glass[data-tier='interactive']:hover,
+.glass[data-tier='interactive']:focus-within {
+  --g-bg: var(--glass-interactive-hover-bg);
+  --g-shadow: var(--glass-shadow-2);
+  transform: translateY(-2px);
+}
+
+/* Fallback 1: browsers without backdrop-filter get an opaque-enough fill. */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .glass {
+    --g-bg: var(--surface-solid);
+    --glass-interactive-hover-bg: var(--surface-solid);
+  }
+}
+
+/* Fallback 2: user asked for less transparency, or the device is flagged low-performance. */
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--surface-solid);
+    border-color: var(--border-solid);
+  }
+}
+:root[data-perf='low'] .glass {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: var(--surface-solid);
+}
+
+@media (forced-colors: active) {
+  .glass {
+    background: Canvas;
+    border: 1px solid CanvasText;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass[data-tier='interactive']:hover,
+  .glass[data-tier='interactive']:focus-within {
+    transform: none;
+  }
+}

@@ -1,0 +1,16 @@
+---
+import type { FlowerData, Lang } from '../../data/types';
+import FlowerCard from './FlowerCard.astro';
+
+interface Props {
+  flowers: readonly FlowerData[];
+  lang: Lang;
+  filterable?: boolean;
+  id?: string;
+}
+const { flowers, lang, filterable = false, id } = Astro.props;
+---
+
+<ul class="grid" id={id} data-flower-grid={filterable ? '' : undefined}>
+  {flowers.map((flower, i) => <FlowerCard flower={flower} lang={lang} index={i} filterable={filterable} />)}
+</ul>

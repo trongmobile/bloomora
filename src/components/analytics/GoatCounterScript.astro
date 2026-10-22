@@ -1,0 +1,24 @@
+---
+import { resolveAnalyticsConfig } from '../../config/analytics';
+
+/**
+ * GoatCounter Cloud (https://www.goatcounter.com). Cookie-free, no personal data.
+ * Rendered once, by BaseLayout only. Nothing is emitted unless PUBLIC_GOATCOUNTER_CODE is set,
+ * and the page works the same if the script is blocked or goatcounter.com is down
+ * (the script is `async` and nothing else depends on it).
+ */
+const cfg = resolveAnalyticsConfig(import.meta.env);
+---
+
+{
+  cfg.enabled && (
+    <script
+      is:inline
+      id="goatcounter-script"
+      async
+      data-goatcounter={cfg.endpoint}
+      data-goatcounter-settings='{"allow_local":false}'
+      src={cfg.scriptSrc}
+    />
+  )
+}

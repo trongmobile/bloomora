@@ -1,0 +1,28 @@
+---
+import { getDict } from '../../i18n';
+import type { Lang } from '../../data/types';
+import { href } from '../../lib/href';
+
+interface Props {
+  lang: Lang;
+  items: { name: string; path?: string }[];
+}
+const { lang, items } = Astro.props;
+const dict = getDict(lang);
+---
+
+<nav class="breadcrumbs" aria-label={dict.nav.breadcrumb}>
+  <ol>
+    {
+      items.map((item, i) => (
+        <li>
+          {item.path && i < items.length - 1 ? (
+            <a href={href(item.path)}>{item.name}</a>
+          ) : (
+            <span aria-current="page">{item.name}</span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>

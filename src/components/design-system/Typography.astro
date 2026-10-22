@@ -1,0 +1,15 @@
+---
+/**
+ * Typography: one place that maps semantic roles to the fluid type scale.
+ * `as` controls the HTML element (for the heading outline); `variant` controls the look.
+ */
+interface Props {
+  as?: string;
+  variant?: 'display' | 'title' | 'heading' | 'subheading' | 'lead' | 'eyebrow' | 'body' | 'small' | 'muted';
+  class?: string;
+  [attr: string]: unknown;
+}
+const { as: Tag = 'p', variant = 'body', class: className, ...rest } = Astro.props;
+---
+
+<Tag class:list={[`t-${variant}`, className]} {...rest}><slot /></Tag>

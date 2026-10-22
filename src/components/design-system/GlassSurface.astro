@@ -1,0 +1,17 @@
+---
+/**
+ * GlassSurface — the base "liquid glass" layer. Four tiers:
+ *  subtle (quiet chips, tags) · standard (header, panels) · elevated (player, popovers)
+ *  · interactive (cards and controls that react to hover and focus).
+ * Never place the flower art *behind* a blurred surface; art sits on a flat stage.
+ */
+interface Props {
+  tier?: 'subtle' | 'standard' | 'elevated' | 'interactive';
+  as?: string;
+  class?: string;
+  [attr: string]: unknown;
+}
+const { tier = 'standard', as: Tag = 'div', class: className, ...rest } = Astro.props;
+---
+
+<Tag class:list={['glass', className]} data-tier={tier} {...rest}><slot /></Tag>

@@ -1,0 +1,44 @@
+---
+import type { GetStaticPaths } from 'astro';
+import ArticleCard from '../../../components/site/ArticleCard.astro';
+import Breadcrumbs from '../../../components/site/Breadcrumbs.astro';
+import { LANGS, type Lang } from '../../../data/types';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getDict } from '../../../i18n';
+import { alternatesFor } from '../../../lib/pages';
+import { getArticles, getRegistry } from '../../../lib/content';
+import { breadcrumbLd } from '../../../lib/jsonld';
+import { routes } from '../../../lib/routes';
+
+export const getStaticPaths = (() => LANGS.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
+
+const lang = Astro.params.lang as Lang;
+const dict = getDict(lang);
+const registry = await getRegistry();
+const articles = await getArticles(lang);
+const ctx = { site: Astro.site ?? 'https://bloomora.example', base: import.meta.env.BASE_URL };
+const crumbs = [
+  { name: dict.nav.home, path: routes.home(lang) },
+  { name: dict.nav.learn, path: routes.learn(lang) },
+];
+---
+
+<BaseLayout
+  lang={lang}
+  title={dict.learn.metaTitle}
+  description={dict.learn.metaDescription}
+  path={routes.learn(lang)}
+  alternates={alternatesFor(registry, 'learn')}
+  jsonLd={[breadcrumbLd(ctx, crumbs)]}
+>
+  <section class="section section--tight">
+    <div class="container">
+      <Breadcrumbs lang={lang} items={crumbs} />
+      <h1>{dict.learn.title}</h1>
+      <p class="lead">{dict.learn.lead}</p>
+      <ul class="grid" style="margin-top: var(--space-6)">
+        {articles.map((a, i) => <ArticleCard article={a} lang={lang} index={i} />)}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,9 @@
+---
+import { serializeJsonLd, type JsonLd } from '../../lib/jsonld';
+interface Props {
+  data: JsonLd[];
+}
+const { data } = Astro.props;
+---
+
+{data.map((item) => <script type="application/ld+json" set:html={serializeJsonLd(item)} />)}

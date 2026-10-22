@@ -1,0 +1,12 @@
+---
+import GlassSurface from './GlassSurface.astro';
+interface Props {
+  tier?: 'subtle' | 'standard' | 'elevated' | 'interactive';
+  as?: string;
+  class?: string;
+  [attr: string]: unknown;
+}
+const { class: className, ...rest } = Astro.props;
+---
+
+<GlassSurface class:list={['panel', className]} {...rest}><slot /></GlassSurface>

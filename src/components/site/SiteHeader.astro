@@ -1,0 +1,68 @@
+---
+import type { Lang } from '../../data/types';
+import { getDict } from '../../i18n';
+import { href } from '../../lib/href';
+import { routes } from '../../lib/routes';
+import type { Alternate } from '../../lib/pages';
+import GlassMenu from '../design-system/GlassMenu.astro';
+import ThemeToggle from '../design-system/ThemeToggle.astro';
+import LangSwitch from './LangSwitch.astro';
+import Logo from './Logo.astro';
+
+interface Props {
+  lang: Lang;
+  path: string;
+  alternates?: Alternate[];
+}
+const { lang, path, alternates } = Astro.props;
+const dict = getDict(lang);
+const links = [
+  { label: dict.nav.home, path: routes.home(lang), exact: true },
+  { label: dict.nav.flowers, path: routes.flowers(lang), exact: false },
+  { label: dict.nav.learn, path: routes.learn(lang), exact: false },
+  { label: dict.nav.about, path: routes.about(lang), exact: false },
+].map((l) => ({ ...l, current: l.exact ? path === l.path : path.startsWith(l.path) }));
+---
+
+<header class="site-header glass" data-tier="standard">
+  <div class="container site-header__inner">
+    <a class="brand" href={href(routes.home(lang))}>
+      <Logo />
+      <span>{dict.site.name}</span>
+    </a>
+
+    <nav class="site-nav" aria-label={dict.nav.label}>
+      <ul>
+        {
+          links.map((l) => (
+            <li>
+              <a class="nav-link" href={href(l.path)} aria-current={l.current ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="site-header__tools">
+      <LangSwitch lang={lang} alternates={alternates} />
+      <ThemeToggle label={dict.theme.toggle} />
+      <GlassMenu id="mobile-menu" label={dict.nav.openMenu} class="menu--mobile">
+        <nav aria-label={dict.nav.label}>
+          <ul>
+            {
+              links.map((l) => (
+                <li>
+                  <a href={href(l.path)} aria-current={l.current ? 'page' : undefined}>
+                    {l.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </GlassMenu>
+    </div>
+  </div>
+</header>

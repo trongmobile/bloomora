@@ -1,0 +1,49 @@
+---
+import type { FlowerData, Lang } from '../../data/types';
+import { getDict } from '../../i18n';
+import { formatDayRange } from '../../lib/duration';
+import { href } from '../../lib/href';
+import { routes } from '../../lib/routes';
+import { buildHaystack } from '../../lib/search-index';
+import GlassBadge from '../design-system/GlassBadge.astro';
+import GlassSurface from '../design-system/GlassSurface.astro';
+
+interface Props {
+  flower: FlowerData;
+  lang: Lang;
+  /** Staggered entrance index. */
+  index?: number;
+  /** Adds the data-* attributes the list-page filter script reads. */
+  filterable?: boolean;
+}
+const { flower, lang, index = 0, filterable = false } = Astro.props;
+const dict = getDict(lang);
+const text = flower.text[lang];
+const filterAttrs = filterable
+  ? {
+      'data-flower-card': '',
+      'data-haystack': buildHaystack(flower),
+      'data-group': flower.group,
+      'data-colors': flower.colors.join(' '),
+      'data-seasons': flower.bloomSeasons.join(' '),
+      'data-speed': flower.speedBand,
+    }
+  : {};
+---
+
+<li class="rise" style={`--i:${index}`} {...filterAttrs}>
+  <GlassSurface as="article" tier="interactive" class="flower-card">
+    <div class="flower-card__art">
+      <img src={href(routes.art(flower.id))} alt="" width="800" height="600" loading="lazy" decoding="async" />
+    </div>
+    <div class="flower-card__body">
+      <h3><a class="flower-card__link" href={href(routes.flower(lang, flower.slugs[lang]))}>{text.name}</a></h3>
+      <p class="sci">{flower.scientificName}</p>
+      <p class="flower-card__tagline">{text.tagline}</p>
+      <div class="flower-card__meta">
+        <GlassBadge>{dict.taxonomy.group[flower.group]}</GlassBadge>
+        <GlassBadge>{dict.flowers.bloomIn} {formatDayRange(flower.daysToBloom, lang)}</GlassBadge>
+      </div>
+    </div>
+  </GlassSurface>
+</li>

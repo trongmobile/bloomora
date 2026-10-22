@@ -1,0 +1,20 @@
+---
+import type { FlowerData, Lang } from '../../data/types';
+import { getDict } from '../../i18n';
+import { href } from '../../lib/href';
+import { routes } from '../../lib/routes';
+import { buildPlayerProps } from '../../lib/player-props';
+import TimeLapsePlayer from '../timelapse/TimeLapsePlayer';
+
+interface Props {
+  flower: FlowerData;
+  lang: Lang;
+  /** Hydrate immediately (above the fold) instead of when scrolled into view. */
+  eager?: boolean;
+  idPrefix?: string;
+}
+const { flower, lang, eager = false, idPrefix } = Astro.props;
+const props = { ...buildPlayerProps(flower, lang, getDict(lang), href(routes.art(flower.id))), idPrefix };
+---
+
+{eager ? <TimeLapsePlayer client:load {...props} /> : <TimeLapsePlayer client:visible {...props} />}

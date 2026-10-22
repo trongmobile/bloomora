@@ -1,0 +1,43 @@
+---
+import type { Lang } from '../../data/types';
+import { getDict } from '../../i18n';
+import GlassButton from '../design-system/GlassButton.astro';
+
+interface Props {
+  lang: Lang;
+  /** Absolute canonical URL, never the current location, so shared links are clean. */
+  url: string;
+  title: string;
+  text?: string;
+}
+const { lang, url, title, text = '' } = Astro.props;
+const dict = getDict(lang);
+---
+
+<div
+  class="share"
+  role="group"
+  aria-label={dict.share.group}
+  data-share
+  data-url={url}
+  data-title={title}
+  data-text={text}
+  data-msg-copied={dict.share.copied}
+  data-msg-failed={dict.share.failed}
+  data-msg-shared={dict.share.shared}
+>
+  <!-- Revealed by scripts/share.ts only when the Web Share API exists. -->
+  <GlassButton size="sm" data-share-native hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"></path>
+    </svg>
+    {dict.share.share}
+  </GlassButton>
+  <GlassButton size="sm" data-share-copy>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+      <path d="M5 15V6a2 2 0 0 1 2-2h9"></path>
+    </svg>
+    {dict.share.copy}
+  </GlassButton>
+</div>

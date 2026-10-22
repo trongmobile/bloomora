@@ -1,0 +1,25 @@
+---
+import type { Lang } from '../../data/types';
+import { getDict, fmt } from '../../i18n';
+import { href } from '../../lib/href';
+import { routes } from '../../lib/routes';
+import { articleSlug, type Article } from '../../lib/content';
+import GlassSurface from '../design-system/GlassSurface.astro';
+
+interface Props {
+  article: Article;
+  lang: Lang;
+  index?: number;
+}
+const { article, lang, index = 0 } = Astro.props;
+const dict = getDict(lang);
+const { data } = article;
+---
+
+<li class="rise" style={`--i:${index}`}>
+  <GlassSurface as="article" tier="interactive" class="article-card">
+    <h3><a class="flower-card__link" href={href(routes.article(lang, articleSlug(article)))}>{data.title}</a></h3>
+    <p>{data.description}</p>
+    {data.readingMinutes && <p class="meta">{fmt(dict.learn.minutes, { n: data.readingMinutes })}</p>}
+  </GlassSurface>
+</li>

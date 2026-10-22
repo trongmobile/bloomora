@@ -1,0 +1,31 @@
+---
+import type { Lang } from '../../data/types';
+import { getDict } from '../../i18n';
+import { href } from '../../lib/href';
+import { routes } from '../../lib/routes';
+import GlassButton from '../design-system/GlassButton.astro';
+import GlassSurface from '../design-system/GlassSurface.astro';
+import HeroBloom from './HeroBloom.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const dict = getDict(lang);
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="container hero__grid">
+    <div>
+      <h1 id="hero-title">{dict.home.heroTitle}</h1>
+      <p class="lead">{dict.home.heroLead}</p>
+      <div class="hero__actions">
+        <GlassButton variant="primary" href={href(routes.flowers(lang))}>{dict.home.heroCtaPrimary}</GlassButton>
+        <GlassButton href={href(routes.learn(lang))}>{dict.home.heroCtaSecondary}</GlassButton>
+      </div>
+    </div>
+    <GlassSurface tier="elevated" class="hero__art">
+      <HeroBloom />
+    </GlassSurface>
+  </div>
+</section>

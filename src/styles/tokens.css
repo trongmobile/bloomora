@@ -1,0 +1,118 @@
+/* ==========================================================================
+   Botanical Liquid Glass — design tokens
+   Light is the default; dark is applied by [data-theme="dark"] (set before first paint
+   by the inline head script, which also honours prefers-color-scheme).
+   ========================================================================== */
+:root {
+  color-scheme: light;
+
+  /* Typography */
+  --font-sans: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: 'Newsreader', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --text-xs: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
+  --text-sm: clamp(0.875rem, 0.85rem + 0.12vw, 0.94rem);
+  --text-base: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+  --text-lg: clamp(1.125rem, 1.07rem + 0.28vw, 1.3rem);
+  --text-xl: clamp(1.3rem, 1.15rem + 0.7vw, 1.65rem);
+  --text-2xl: clamp(1.6rem, 1.3rem + 1.4vw, 2.3rem);
+  --text-3xl: clamp(2rem, 1.4rem + 2.8vw, 3.6rem);
+  --leading-body: 1.65;
+  --leading-tight: 1.2;
+
+  /* Spacing, radius, layout */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: clamp(3.5rem, 2.5rem + 4vw, 6rem);
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2rem);
+  --container: 72rem;
+  --container-narrow: 46rem;
+  --r-sm: 0.625rem;
+  --r-md: 1rem;
+  --r-lg: 1.5rem;
+  --r-pill: 999px;
+  --tap: 2.75rem; /* 44px minimum target size */
+  --header-h: 4.25rem;
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 150ms;
+  --dur: 280ms;
+  --dur-slow: 600ms;
+
+  /* Colour: light */
+  --bg: #f3f7ef;
+  --bg-grad-1: rgba(246, 177, 199, 0.5);
+  --bg-grad-2: rgba(160, 224, 188, 0.5);
+  --bg-grad-3: rgba(255, 226, 150, 0.4);
+  --surface-solid: #fbfdf9;
+  --text: #17261d;
+  --text-muted: #435649;
+  --text-faint: #5c6f62;
+  --accent: #a3254f; /* 6.9:1 on --surface-solid */
+  --accent-strong: #7f1639;
+  --accent-contrast: #ffffff;
+  --leaf: #23694a;
+  --leaf-soft: rgba(35, 105, 74, 0.12);
+  --focus: #1651c4;
+  --danger: #a31d1d;
+  --stage-bg-top: #eaf6ff;
+  --stage-bg-bottom: #f7f1e1;
+  --border-solid: rgba(23, 38, 29, 0.16);
+
+  /* Glass tiers (background, blur, border, shadow). */
+  --glass-subtle-bg: rgba(255, 255, 255, 0.46);
+  --glass-standard-bg: rgba(255, 255, 255, 0.62);
+  --glass-elevated-bg: rgba(255, 255, 255, 0.8);
+  --glass-interactive-bg: rgba(255, 255, 255, 0.58);
+  --glass-interactive-hover-bg: rgba(255, 255, 255, 0.86);
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --glass-edge: rgba(23, 38, 29, 0.1);
+  --glass-highlight: rgba(255, 255, 255, 0.85);
+  --glass-shadow-1: 0 1px 2px rgba(23, 38, 29, 0.06), 0 4px 14px rgba(23, 38, 29, 0.06);
+  --glass-shadow-2: 0 2px 4px rgba(23, 38, 29, 0.06), 0 12px 32px rgba(23, 38, 29, 0.1);
+  --glass-shadow-3: 0 4px 8px rgba(23, 38, 29, 0.08), 0 24px 56px rgba(23, 38, 29, 0.16);
+  --blur-subtle: 10px;
+  --blur-standard: 18px;
+  --blur-elevated: 28px;
+  --blur-interactive: 14px;
+  --saturate: 1.4;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0d1611;
+  --bg-grad-1: rgba(214, 90, 140, 0.26);
+  --bg-grad-2: rgba(44, 150, 104, 0.3);
+  --bg-grad-3: rgba(196, 150, 44, 0.16);
+  --surface-solid: #16231b;
+  --text: #e9f2ea;
+  --text-muted: #b6c8bb;
+  --text-faint: #98ad9e;
+  --accent: #ff9ab8;
+  --accent-strong: #ffc1d3;
+  --accent-contrast: #1b0710;
+  --leaf: #82d9a8;
+  --leaf-soft: rgba(130, 217, 168, 0.14);
+  --focus: #8db4ff;
+  --danger: #ff9b9b;
+  --stage-bg-top: #14283a;
+  --stage-bg-bottom: #1d2a1f;
+  --border-solid: rgba(233, 242, 234, 0.2);
+
+  --glass-subtle-bg: rgba(26, 42, 33, 0.42);
+  --glass-standard-bg: rgba(24, 40, 31, 0.58);
+  --glass-elevated-bg: rgba(22, 36, 28, 0.78);
+  --glass-interactive-bg: rgba(30, 48, 38, 0.55);
+  --glass-interactive-hover-bg: rgba(40, 62, 49, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.16);
+  --glass-edge: rgba(0, 0, 0, 0.4);
+  --glass-highlight: rgba(255, 255, 255, 0.18);
+  --glass-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 14px rgba(0, 0, 0, 0.25);
+  --glass-shadow-2: 0 2px 4px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.35);
+  --glass-shadow-3: 0 4px 8px rgba(0, 0, 0, 0.35), 0 24px 56px rgba(0, 0, 0, 0.5);
+}

@@ -1,0 +1,30 @@
+---
+import { COLORS, GROUPS, SEASONS, SPEEDS } from '../../data/taxonomy';
+import type { Lang } from '../../data/types';
+import { getDict } from '../../i18n';
+import GlassInput from '../design-system/GlassInput.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const dict = getDict(lang);
+const t = dict.taxonomy;
+---
+
+<GlassInput kind="select" id="filter-group" label={dict.flowers.group} data-filter="group">
+  <option value="">{dict.flowers.any}</option>
+  {GROUPS.map((v) => <option value={v}>{t.group[v]}</option>)}
+</GlassInput>
+<GlassInput kind="select" id="filter-color" label={dict.flowers.color} data-filter="color">
+  <option value="">{dict.flowers.any}</option>
+  {COLORS.map((v) => <option value={v}>{t.color[v]}</option>)}
+</GlassInput>
+<GlassInput kind="select" id="filter-season" label={dict.flowers.season} data-filter="season">
+  <option value="">{dict.flowers.any}</option>
+  {SEASONS.map((v) => <option value={v}>{t.season[v]}</option>)}
+</GlassInput>
+<GlassInput kind="select" id="filter-speed" label={dict.flowers.speed} data-filter="speed">
+  <option value="">{dict.flowers.any}</option>
+  {SPEEDS.map((v) => <option value={v}>{t.speed[v]}</option>)}
+</GlassInput>

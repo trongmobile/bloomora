@@ -1,0 +1,70 @@
+---
+/** Layered pink bloom (12 + 8 + 6 petals) with a sunflower-style seed centre. */
+import { petalPath, spiralSeeds, spread } from '../../../lib/hero-art';
+import StageRing from './StageRing.astro';
+
+const rings = [
+  { id: 'back', angles: spread(12, 15), base: 8, length: 84, width: 17, spin: 160, rev: false },
+  { id: 'mid', angles: spread(8, 22.5), base: 8, length: 66, width: 22, spin: 110, rev: true },
+  { id: 'front', angles: spread(6, 30), base: 8, length: 46, width: 20, spin: 80, rev: false },
+].map((r) => ({
+  ...r,
+  d: petalPath(r.base, r.length, r.width),
+  // Narrow lighter streak down the middle of each petal: the "glass" sheen.
+  sheen: petalPath(r.base + r.length * 0.12, r.length * 0.66, r.width * 0.34),
+}));
+
+const seeds = spiralSeeds(26, 2.4);
+---
+
+<svg class="bloom-emblem bloom-emblem--dahlia" viewBox="-120 -120 240 240" aria-hidden="true" focusable="false">
+  <defs>
+    <radialGradient id="hb-glow">
+      <stop offset="0%" stop-color="#ef8fb0" stop-opacity=".42"></stop>
+      <stop offset="100%" stop-color="#ef8fb0" stop-opacity="0"></stop>
+    </radialGradient>
+    <linearGradient id="hb-g-back" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#a82c59"></stop>
+      <stop offset="100%" stop-color="#f3a3bf"></stop>
+    </linearGradient>
+    <linearGradient id="hb-g-mid" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#cf4a79"></stop>
+      <stop offset="100%" stop-color="#ffc3d6"></stop>
+    </linearGradient>
+    <linearGradient id="hb-g-front" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#ec7aa1"></stop>
+      <stop offset="100%" stop-color="#ffe6ee"></stop>
+    </linearGradient>
+    <radialGradient id="hb-core" cx="42%" cy="38%" r="75%">
+      <stop offset="0%" stop-color="#fff0b8"></stop>
+      <stop offset="100%" stop-color="#e0a02a"></stop>
+    </radialGradient>
+    {
+      rings.map((r) => (
+        <g id={`hb-p-${r.id}`}>
+          <path d={r.d}></path>
+          <path d={r.sheen} fill="#fff" fill-opacity=".3" stroke="none"></path>
+        </g>
+      ))
+    }
+  </defs>
+
+  <circle r="104" fill="url(#hb-glow)"></circle>
+  <StageRing />
+
+  <g class="bloom">
+    {
+      rings.map((r) => (
+        <g class={r.rev ? 'ring ring--rev' : 'ring'} style={`--spin:${r.spin}s`} fill={`url(#hb-g-${r.id})`} stroke="#7f1639" stroke-opacity=".28" stroke-width=".7" stroke-linejoin="round">
+          {r.angles.map((a) => (
+            <use href={`#hb-p-${r.id}`} transform={`rotate(${a})`}></use>
+          ))}
+        </g>
+      ))
+    }
+    <circle r="17" fill="url(#hb-core)" stroke="#9a6a10" stroke-opacity=".45" stroke-width=".8"></circle>
+    <g fill="#8a5a0b" fill-opacity=".6">
+      {seeds.map((s) => <circle cx={s.x} cy={s.y} r="1.05"></circle>)}
+    </g>
+  </g>
+</svg>

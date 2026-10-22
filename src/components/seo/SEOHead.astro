@@ -1,0 +1,20 @@
+---
+import type { HeadData } from '../../lib/seo';
+interface Props {
+  head: HeadData;
+  /** Google Search Console verification token (optional). */
+  gscVerification?: string;
+}
+const { head, gscVerification } = Astro.props;
+---
+
+<title>{head.title}</title>
+<link rel="canonical" href={head.canonical} />
+{head.robots && <meta name="robots" content={head.robots} />}
+{head.alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+{
+  head.meta.map((m) =>
+    m.property ? <meta property={m.property} content={m.content} /> : <meta name={m.name} content={m.content} />,
+  )
+}
+{gscVerification && <meta name="google-site-verification" content={gscVerification} />}

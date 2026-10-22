@@ -1,0 +1,107 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import GlassSurface from '../../../components/design-system/GlassSurface.astro';
+import Breadcrumbs from '../../../components/site/Breadcrumbs.astro';
+import ShareActions from '../../../components/site/ShareActions.astro';
+import { getFlower } from '../../../data';
+import type { Lang } from '../../../data/types';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { fmt, getDict } from '../../../i18n';
+import { alternatesFor } from '../../../lib/pages';
+import { articleSlug, getArticles, getRegistry, isoDate, type Article } from '../../../lib/content';
+import { href } from '../../../lib/href';
+import { articleLd, breadcrumbLd } from '../../../lib/jsonld';
+import { routes } from '../../../lib/routes';
+import { absoluteUrl } from '../../../lib/url';
+
+export const getStaticPaths = (async () => {
+  const articles = await getArticles();
+  return articles.map((article) => ({
+    params: { lang: article.data.lang, slug: articleSlug(article) },
+    props: { article },
+  }));
+}) satisfies GetStaticPaths;
+
+const lang = Astro.params.lang as Lang;
+const { article } = Astro.props as { article: Article };
+const { data } = article;
+const dict = getDict(lang);
+const { Content } = await render(article);
+const path = routes.article(lang, articleSlug(article));
+const site = Astro.site ?? 'https://bloomora.example';
+const base = import.meta.env.BASE_URL;
+const ctx = { site, base };
+const registry = await getRegistry();
+const published = isoDate(data.datePublished);
+const modified = isoDate(data.dateModified ?? data.datePublished);
+const crumbs = [
+  { name: dict.nav.home, path: routes.home(lang) },
+  { name: dict.nav.learn, path: routes.learn(lang) },
+  { name: data.title, path },
+];
+const flowers = data.relatedFlowers.map((id) => getFlower(id)).filter((f) => f !== undefined);
+const fmtDate = (iso: string) =>
+  new Intl.DateTimeFormat(lang === 'vi' ? 'vi-VN' : 'en-GB', { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(iso));
+---
+
+<BaseLayout
+  lang={lang}
+  title={data.title}
+  description={data.description}
+  path={path}
+  alternates={alternatesFor(registry, `article:${data.translationKey}`)}
+  type="article"
+  publishedTime={published}
+  modifiedTime={modified}
+  jsonLd={[
+    breadcrumbLd(ctx, crumbs),
+    articleLd(ctx, {
+      headline: data.title,
+      description: data.description,
+      path,
+      imagePath: routes.ogDefault(),
+      lang,
+      datePublished: published,
+      dateModified: modified,
+      keywords: data.keywords,
+    }),
+  ]}
+>
+  <article class="section section--tight">
+    <div class="container container--narrow">
+      <Breadcrumbs lang={lang} items={crumbs} />
+      <h1>{data.title}</h1>
+      <p class="muted">
+        {dict.learn.published} <time datetime={published}>{fmtDate(published)}</time>
+        {modified !== published && (<> · {dict.learn.updated} <time datetime={modified}>{fmtDate(modified)}</time></>)}
+        {data.readingMinutes && <> · {fmt(dict.learn.minutes, { n: data.readingMinutes })}</>}
+      </p>
+      <ShareActions lang={lang} url={absoluteUrl(site, base, path)} title={`${data.title} — Bloomora`} text={data.description} />
+
+      <div class="prose" style="margin-top: var(--space-6)">
+        <Content />
+      </div>
+
+      {
+        flowers.length > 0 && (
+          <section aria-labelledby="mentioned-title" style="margin-top: var(--space-7)">
+            <h2 id="mentioned-title" class="t-title">{dict.learn.relatedFlowers}</h2>
+            <div class="cluster">
+              {flowers.map((f) => <a class="chip" href={href(routes.flower(lang, f!.slugs[lang]))}>{f!.text[lang].name}</a>)}
+            </div>
+          </section>
+        )
+      }
+
+      <GlassSurface class="panel" style="margin-top: var(--space-7)">
+        <h2 class="t-heading">{dict.learn.sources}</h2>
+        <ol class="source-list">
+          {data.sources.map((s) => <li><a href={s.url} rel="noopener noreferrer" target="_blank">{s.title}</a> — {s.publisher}</li>)}
+        </ol>
+      </GlassSurface>
+
+      <p style="margin-top: var(--space-6)"><a href={href(routes.learn(lang))}>← {dict.learn.backToList}</a></p>
+    </div>
+  </article>
+</BaseLayout>

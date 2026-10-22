@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.astro/
+.env
+.env.local
+playwright-report/
+test-results/
+coverage/
+*.log
+.DS_Store
+# Generated at build time by `npm run og` (kept out of git; rebuilt in CI)
+public/og/
+public/og-image.png
+public/apple-touch-icon.png

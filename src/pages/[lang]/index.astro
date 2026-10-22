@@ -1,0 +1,133 @@
+---
+import type { GetStaticPaths } from 'astro';
+import GlassSurface from '../../components/design-system/GlassSurface.astro';
+import GlassButton from '../../components/design-system/GlassButton.astro';
+import ArticleCard from '../../components/site/ArticleCard.astro';
+import FlowerGrid from '../../components/site/FlowerGrid.astro';
+import FlowerPlayer from '../../components/site/FlowerPlayer.astro';
+import HomeHero from '../../components/site/HomeHero.astro';
+import StageStrip from '../../components/site/StageStrip.astro';
+import { COLOR_SWATCH, COLORS, GROUPS, SEASONS } from '../../data/taxonomy';
+import { FLOWERS, getFlower } from '../../data';
+import { LANGS, type Lang } from '../../data/types';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getDict } from '../../i18n';
+import { alternatesFor } from '../../lib/pages';
+import { getArticles, getRegistry } from '../../lib/content';
+import { href } from '../../lib/href';
+import { websiteLd } from '../../lib/jsonld';
+import { routes } from '../../lib/routes';
+
+export const getStaticPaths = (() => LANGS.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
+
+const lang = Astro.params.lang as Lang;
+const dict = getDict(lang);
+const registry = await getRegistry();
+const alternates = alternatesFor(registry, 'home');
+const featured = getFlower('sunflower')!;
+const popular = FLOWERS.filter((f) => f.featured);
+const articles = (await getArticles(lang)).slice(0, 4);
+const base = import.meta.env.BASE_URL;
+const ctx = { site: Astro.site ?? 'https://bloomora.example', base };
+const listHref = (query: string) => href(`${routes.flowers(lang)}?${query}`);
+---
+
+<BaseLayout
+  lang={lang}
+  title={dict.site.homeTitle}
+  rawTitle
+  description={dict.site.homeDescription}
+  path={routes.home(lang)}
+  alternates={alternates}
+  jsonLd={[websiteLd(ctx, lang, dict.site.homeDescription)]}
+>
+  <HomeHero lang={lang} />
+
+  <section class="section section--tight" aria-labelledby="featured-title">
+    <div class="container">
+      <div class="section__head">
+        <h2 id="featured-title">{dict.home.featuredTitle}</h2>
+        <p class="lead">{dict.home.featuredLead}</p>
+      </div>
+      <FlowerPlayer flower={featured} lang={lang} idPrefix="home-featured" />
+      <p style="margin-top: var(--space-4)">
+        <GlassButton href={href(routes.flower(lang, featured.slugs[lang]))}>{dict.home.featuredCta}</GlassButton>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="popular-title">
+    <div class="container">
+      <div class="section__head">
+        <h2 id="popular-title">{dict.home.popularTitle}</h2>
+        <p class="lead">{dict.home.popularLead}</p>
+      </div>
+      <FlowerGrid flowers={popular} lang={lang} />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="browse-title">
+    <div class="container">
+      <div class="section__head">
+        <h2 id="browse-title">{dict.home.browseTitle}</h2>
+        <p class="lead">{dict.home.browseLead}</p>
+      </div>
+      <GlassSurface class="panel stack" style="--stack-gap: var(--space-5)">
+        <div>
+          <h3 class="t-subheading">{dict.home.byColor}</h3>
+          <div class="cluster">
+            {
+              COLORS.map((c) => (
+                <a class="chip" href={listHref(`color=${c}`)}>
+                  <span class="chip__dot" style={`--dot:${COLOR_SWATCH[c]}`} />
+                  {dict.taxonomy.color[c]}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+        <div>
+          <h3 class="t-subheading">{dict.home.bySeason}</h3>
+          <div class="cluster">
+            {SEASONS.map((s) => <a class="chip" href={listHref(`season=${s}`)}>{dict.taxonomy.season[s]}</a>)}
+          </div>
+        </div>
+        <div>
+          <h3 class="t-subheading">{dict.home.byGroup}</h3>
+          <div class="cluster">
+            {GROUPS.map((g) => <a class="chip" href={listHref(`group=${g}`)}>{dict.taxonomy.group[g]}</a>)}
+          </div>
+        </div>
+      </GlassSurface>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="knowledge-title">
+    <div class="container">
+      <div class="section__head">
+        <h2 id="knowledge-title">{dict.home.knowledgeTitle}</h2>
+        <p class="lead">{dict.home.knowledgeLead}</p>
+      </div>
+      <StageStrip lang={lang} />
+    </div>
+  </section>
+
+  {
+    articles.length > 0 && (
+      <section class="section" aria-labelledby="articles-title">
+        <div class="container">
+          <div class="section__head">
+            <h2 id="articles-title">{dict.home.articlesTitle}</h2>
+            <p class="lead">{dict.home.articlesLead}</p>
+          </div>
+          <ul class="grid">
+            {articles.map((a, i) => <ArticleCard article={a} lang={lang} index={i} />)}
+          </ul>
+          <p style="margin-top: var(--space-5)">
+            <GlassButton href={href(routes.learn(lang))}>{dict.home.allArticles}</GlassButton>
+          </p>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>

@@ -1,0 +1,133 @@
+name: Build and deploy to GitHub Pages
+
+# Pull requests run every check but do not deploy. Pushes to main deploy.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; a newer push cancels an older queued one but never a running deploy.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  # Optional repository variables (Settings → Secrets and variables → Actions → Variables):
+  #   CUSTOM_DOMAIN             e.g. flowers.example.com  (leave empty to use github.io/<repo>/)
+  #   PUBLIC_GOATCOUNTER_CODE   GoatCounter site code     (leave empty to disable analytics)
+  #   PUBLIC_GSC_VERIFICATION   Google Search Console HTML-tag token (optional)
+  CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN }}
+  PUBLIC_GOATCOUNTER_CODE: ${{ vars.PUBLIC_GOATCOUNTER_CODE }}
+  PUBLIC_GSC_VERIFICATION: ${{ vars.PUBLIC_GSC_VERIFICATION }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Work out SITE_URL and BASE_PATH
+        id: site
+        shell: bash
+        run: |
+          set -euo pipefail
+          owner="${GITHUB_REPOSITORY_OWNER}"
+          repo="${GITHUB_REPOSITORY#*/}"
+          domain="$(echo "${CUSTOM_DOMAIN:-}" | tr -d '[:space:]' | sed -E 's#^https?://##; s#/+$##')"
+          if [ -n "$domain" ]; then
+            # Custom domain: served from the root of the domain.
+            site="https://${domain}"
+            base="/"
+          elif [ "${repo,,}" = "${owner,,}.github.io" ]; then
+            # User/organisation site: https://<owner>.github.io/
+            site="https://${owner,,}.github.io"
+            base="/"
+          else
+            # Project site: https://<owner>.github.io/<repo>/
+            site="https://${owner,,}.github.io"
+            base="/${repo}/"
+          fi
+          echo "SITE_URL=${site}" >> "$GITHUB_ENV"
+          echo "BASE_PATH=${base}" >> "$GITHUB_ENV"
+          echo "domain=${domain}" >> "$GITHUB_OUTPUT"
+          echo "Building for ${site}${base}"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+      # `npm run build` = generate OG images → astro build → scripts/verify-build.mjs
+      # (canonical/og URLs, sitemap, robots, hreflang, base path, GoatCounter count).
+      - name: Build
+        run: npm run build
+
+      - name: Check key files
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in index.html 404.html robots.txt sitemap.xml og-image.png favicon.svg apple-touch-icon.png \
+                   vi/index.html en/index.html vi/flowers/index.html en/flowers/index.html \
+                   vi/flowers/hoa-huong-duong/index.html en/flowers/sunflower/index.html \
+                   og/flowers/sunflower.png og/flowers/lotus.png; do
+            test -s "dist/$f" || { echo "::error::dist/$f is missing or empty"; exit 1; }
+          done
+          echo "Key files present."
+
+      # CNAME lives in dist only when a custom domain is configured, so a github.io deploy never
+      # claims a domain and a custom-domain deploy never loses it.
+      - name: Keep the custom domain
+        if: steps.site.outputs.domain != ''
+        run: echo "${{ steps.site.outputs.domain }}" > dist/CNAME
+
+      - name: Install Chromium for end-to-end tests
+        run: npx playwright install --with-deps chromium
+
+      - name: End-to-end tests (Chromium desktop and mobile)
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+      - name: Upload site
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

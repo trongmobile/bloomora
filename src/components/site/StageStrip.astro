@@ -1,0 +1,22 @@
+---
+import { STAGE_IDS, type Lang } from '../../data/types';
+import { getDict } from '../../i18n';
+import GlassSurface from '../design-system/GlassSurface.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const dict = getDict(lang);
+---
+
+<ol class="stage-strip">
+  {
+    STAGE_IDS.map((id) => (
+      <GlassSurface as="li" tier="subtle">
+        <h3>{dict.stageNames[id]}</h3>
+        <p>{dict.stageBlurbs[id]}</p>
+      </GlassSurface>
+    ))
+  }
+</ol>

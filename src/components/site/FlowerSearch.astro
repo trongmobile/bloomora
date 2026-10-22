@@ -1,0 +1,33 @@
+---
+import type { Lang } from '../../data/types';
+import { getDict } from '../../i18n';
+import GlassButton from '../design-system/GlassButton.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const dict = getDict(lang);
+---
+
+<div class="field field--search">
+  <label for="flower-search">{dict.flowers.searchLabel}</label>
+  <div class="search-wrap">
+    <input
+      class="input"
+      id="flower-search"
+      name="q"
+      type="search"
+      inputmode="search"
+      autocomplete="off"
+      spellcheck="false"
+      placeholder={dict.flowers.searchPlaceholder}
+      data-filter="q"
+    />
+    <GlassButton variant="ghost" icon aria-label={dict.flowers.clearSearch} title={dict.flowers.clearSearch} data-clear-search hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18"></path>
+      </svg>
+    </GlassButton>
+  </div>
+</div>

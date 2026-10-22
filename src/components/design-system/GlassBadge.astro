@@ -1,0 +1,10 @@
+---
+interface Props {
+  tone?: 'default' | 'warn';
+  class?: string;
+  [attr: string]: unknown;
+}
+const { tone = 'default', class: className, ...rest } = Astro.props;
+---
+
+<span class:list={['badge', tone === 'warn' && 'badge--warn', className]} {...rest}><slot /></span>

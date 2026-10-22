@@ -1,0 +1,28 @@
+---
+/** Labelled text input or select. For `kind="select"` pass the <option>s in the slot. */
+interface Props {
+  id: string;
+  label: string;
+  kind?: 'input' | 'select';
+  type?: 'text' | 'search' | 'email' | 'url' | 'tel' | 'number' | 'password';
+  name?: string;
+  placeholder?: string;
+  value?: string;
+  class?: string;
+  [attr: string]: unknown;
+}
+const { id, label, kind = 'input', type = 'text', name, placeholder, value, class: className, ...rest } = Astro.props;
+---
+
+<div class:list={['field', className]}>
+  <label for={id}>{label}</label>
+  {
+    kind === 'select' ? (
+      <select class="input" id={id} name={name ?? id} {...rest}>
+        <slot />
+      </select>
+    ) : (
+      <input class="input" id={id} name={name ?? id} type={type} placeholder={placeholder} value={value} {...rest} />
+    )
+  }
+</div>

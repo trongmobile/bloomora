@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GlassButton from '../components/design-system/GlassButton.astro';
+import { getDict } from '../i18n';
+import { href } from '../lib/href';
+import { routes } from '../lib/routes';
+
+// GitHub Pages serves one 404.html for the whole site, so it is bilingual.
+const vi = getDict('vi');
+const en = getDict('en');
+---
+
+<BaseLayout lang="vi" noindex rawTitle title={`${vi.notFound.title} · ${en.notFound.title} | Bloomora`} description={vi.notFound.body} path="/404.html">
+  <section class="section">
+    <div class="container container--narrow">
+      <h1>{vi.notFound.title}</h1>
+      <p class="lead">{vi.notFound.body}</p>
+      <p class="cluster">
+        <GlassButton variant="primary" href={href(routes.home('vi'))}>{vi.notFound.home}</GlassButton>
+        <GlassButton href={href(routes.flowers('vi'))}>{vi.notFound.flowers}</GlassButton>
+      </p>
+      <hr />
+      <div lang="en">
+        <h2>{en.notFound.title}</h2>
+        <p class="lead">{en.notFound.body}</p>
+        <p class="cluster">
+          <GlassButton href={href(routes.home('en'))}>{en.notFound.home}</GlassButton>
+          <GlassButton href={href(routes.flowers('en'))}>{en.notFound.flowers}</GlassButton>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,74 @@
+---
+import '../styles/global.css';
+import type { Lang } from '../data/types';
+import { getDict } from '../i18n';
+import { HEAD_INIT_SCRIPT } from '../lib/head-script';
+import { href } from '../lib/href';
+import type { Alternate } from '../lib/pages';
+import { buildHead } from '../lib/seo';
+import type { JsonLd } from '../lib/jsonld';
+import GoatCounterScript from '../components/analytics/GoatCounterScript.astro';
+import SEOHead from '../components/seo/SEOHead.astro';
+import StructuredData from '../components/seo/StructuredData.astro';
+import SiteFooter from '../components/site/SiteFooter.astro';
+import SiteHeader from '../components/site/SiteHeader.astro';
+import beVietnamLatin from '../assets/fonts/be-vietnam-pro-latin-400-normal.woff2?url';
+import beVietnamVi from '../assets/fonts/be-vietnam-pro-vietnamese-400-normal.woff2?url';
+import newsreaderLatin from '../assets/fonts/newsreader-latin-500-normal.woff2?url';
+import newsreaderVi from '../assets/fonts/newsreader-vietnamese-500-normal.woff2?url';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  /** Site-relative path of this page (used for canonical and nav state). */
+  path: string;
+  alternates?: Alternate[];
+  image?: { path: string; alt: string };
+  type?: 'website' | 'article';
+  jsonLd?: JsonLd[];
+  noindex?: boolean;
+  rawTitle?: boolean;
+  publishedTime?: string;
+  modifiedTime?: string;
+}
+
+const { lang, jsonLd = [], ...seo } = Astro.props;
+const dict = getDict(lang);
+const head = buildHead({ ...seo, lang, site: Astro.site ?? 'https://bloomora.example', base: import.meta.env.BASE_URL });
+const gsc = import.meta.env.PUBLIC_GSC_VERIFICATION;
+---
+
+<!doctype html>
+<html lang={head.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f3f7ef" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1611" media="(prefers-color-scheme: dark)" />
+    <script is:inline set:html={HEAD_INIT_SCRIPT} />
+    <link rel="icon" href={href('/favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={href('/apple-touch-icon.png')} />
+    <link rel="preload" as="font" type="font/woff2" href={beVietnamLatin} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={newsreaderLatin} crossorigin />
+    {lang === 'vi' && <link rel="preload" as="font" type="font/woff2" href={beVietnamVi} crossorigin />}
+    {lang === 'vi' && <link rel="preload" as="font" type="font/woff2" href={newsreaderVi} crossorigin />}
+    <SEOHead head={head} gscVerification={gsc} />
+    <StructuredData data={jsonLd} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{dict.site.skipToContent}</a>
+    <SiteHeader lang={lang} path={seo.path} alternates={seo.alternates} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter lang={lang} />
+    <div id="toast" class="toast glass" data-tier="elevated" role="status" aria-live="polite"></div>
+    <script>
+      import '../scripts/site';
+    </script>
+    <GoatCounterScript />
+  </body>
+</html>
