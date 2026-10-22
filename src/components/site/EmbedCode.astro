@@ -1,0 +1,55 @@
+---
+import type { FlowerData, Lang } from '../../data/types';
+import { fmt, getDict } from '../../i18n';
+import { embedSnippet } from '../../lib/embed';
+import { routes } from '../../lib/routes';
+import { absoluteUrl } from '../../lib/url';
+import GlassButton from '../design-system/GlassButton.astro';
+
+interface Props {
+  flower: FlowerData;
+  lang: Lang;
+}
+const { flower, lang } = Astro.props;
+const dict = getDict(lang);
+const e = dict.embed;
+const name = flower.text[lang].name;
+const site = Astro.site ?? 'https://bloomora.example';
+const base = import.meta.env.BASE_URL;
+const input = {
+  embedUrl: absoluteUrl(site, base, routes.embed(lang, flower.slugs[lang])),
+  flowerUrl: absoluteUrl(site, base, routes.flower(lang, flower.slugs[lang])),
+  title: fmt(e.iframeTitle, { name }),
+  credit: fmt(e.credit, { name }),
+};
+---
+
+<details
+  class="embed-code glass"
+  data-tier="subtle"
+  data-embed-code
+  data-embed-input={JSON.stringify(input)}
+  data-msg-copied={e.copied}
+  data-msg-failed={dict.share.failed}
+>
+  <summary>{e.title}</summary>
+  <div class="embed-code__body">
+    <p>{e.lead}</p>
+    <div class="field">
+      <label for={`embed-theme-${flower.id}`}>{e.theme}</label>
+      <select class="input" id={`embed-theme-${flower.id}`} data-embed-theme>
+        <option value="auto">{e.themeAuto}</option>
+        <option value="light">{e.themeLight}</option>
+        <option value="dark">{e.themeDark}</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for={`embed-code-${flower.id}`}>{e.codeLabel}</label>
+      <textarea class="input embed-code__text" id={`embed-code-${flower.id}`} rows="6" readonly spellcheck="false" data-embed-text>{embedSnippet(input)}</textarea>
+    </div>
+    <div class="cluster">
+      <GlassButton size="sm" data-embed-copy>{e.copy}</GlassButton>
+      <span class="muted t-small">{e.heightHint}</span>
+    </div>
+  </div>
+</details>

@@ -4,6 +4,7 @@ import GlassBadge from '../../../components/design-system/GlassBadge.astro';
 import GlassSurface from '../../../components/design-system/GlassSurface.astro';
 import Breadcrumbs from '../../../components/site/Breadcrumbs.astro';
 import FlowerGrid from '../../../components/site/FlowerGrid.astro';
+import EmbedCode from '../../../components/site/EmbedCode.astro';
 import FlowerPlayer from '../../../components/site/FlowerPlayer.astro';
 import ShareActions from '../../../components/site/ShareActions.astro';
 import { FLOWERS, relatedFlowers } from '../../../data';
@@ -94,6 +95,7 @@ const otherNames = (text.aliases ?? []).join(', ');
     <section class="section section--tight container" id="timelapse" aria-labelledby="player-title">
       <h2 id="player-title" class="visually-hidden">{dict.detail.playerTitle}</h2>
       <FlowerPlayer flower={flower} lang={lang} eager />
+      <EmbedCode flower={flower} lang={lang} />
     </section>
 
     <div class="container detail-layout section--tight">

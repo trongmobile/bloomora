@@ -1,0 +1,138 @@
+---
+import type { GetStaticPaths } from 'astro';
+import GlassButton from '../../../../components/design-system/GlassButton.astro';
+import GlassSurface from '../../../../components/design-system/GlassSurface.astro';
+import Breadcrumbs from '../../../../components/site/Breadcrumbs.astro';
+import { FLOWERS, getFlower } from '../../../../data';
+import { QUIZ_RESULTS } from '../../../../data/quiz';
+import { LANGS, STAGE_IDS, type Lang, type StageId } from '../../../../data/types';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { fmt, getDict } from '../../../../i18n';
+import { brandAddress } from '../../../../lib/clip/story';
+import { alternatesFor } from '../../../../lib/pages';
+import { getRegistry } from '../../../../lib/content';
+import { href } from '../../../../lib/href';
+import { breadcrumbLd } from '../../../../lib/jsonld';
+import { routes } from '../../../../lib/routes';
+import { absoluteUrl } from '../../../../lib/url';
+
+export const getStaticPaths = (() =>
+  LANGS.flatMap((lang) => STAGE_IDS.map((stage) => ({ params: { lang, stage } })))) satisfies GetStaticPaths;
+
+const lang = Astro.params.lang as Lang;
+const stage = Astro.params.stage as StageId;
+const dict = getDict(lang);
+const q = dict.quiz;
+const result = QUIZ_RESULTS[stage].text[lang];
+const showcase = getFlower(QUIZ_RESULTS[stage].showcase)!;
+const index = STAGE_IDS.indexOf(stage);
+const stageName = dict.stageNames[stage];
+const registry = await getRegistry();
+const site = Astro.site ?? 'https://bloomora.example';
+const base = import.meta.env.BASE_URL;
+const ctx = { site, base };
+const path = routes.quizResult(lang, stage);
+const canonical = absoluteUrl(site, base, path);
+const crumbs = [
+  { name: dict.nav.home, path: routes.home(lang) },
+  { name: dict.nav.quiz, path: routes.quiz(lang) },
+  { name: result.title, path },
+];
+const prev = index > 0 ? STAGE_IDS[index - 1] : undefined;
+const next = index < STAGE_IDS.length - 1 ? STAGE_IDS[index + 1] : undefined;
+const config = {
+  stage,
+  stageIndex: index,
+  total: STAGE_IDS.length,
+  url: canonical,
+  brand: brandAddress(absoluteUrl(site, base, routes.quiz(lang))),
+  artBase: href('/art/moments/'),
+  momentBase: href('/'),
+  lang,
+  title: result.title,
+  kicker: q.kicker,
+  headline: stageName,
+  detail: fmt(q.stageOf, { n: index + 1, total: STAGE_IDS.length }),
+  cardWith: q.cardWith,
+  watch: q.watch,
+  disclaimer: q.disclaimer,
+  msgSaved: q.cardSaved,
+  msgFailed: q.cardFailed,
+  msgCopied: q.linkCopied,
+  defaultFlower: showcase.id,
+  flowers: FLOWERS.map((f) => ({
+    id: f.id,
+    name: f.text[lang].name,
+    slug: f.slugs[lang],
+    alt: f.text[lang].altText,
+    visual: f.visual,
+  })),
+};
+---
+
+<BaseLayout
+  lang={lang}
+  title={`${result.title} — ${q.resultTitleSuffix}`}
+  description={result.body}
+  path={path}
+  alternates={alternatesFor(registry, `quiz-result:${stage}`)}
+  image={{ path: routes.ogQuiz(lang, stage), alt: `${result.title} — ${q.kicker}` }}
+  noindex
+  jsonLd={[breadcrumbLd(ctx, crumbs)]}
+>
+  <section class="section section--tight">
+    <div class="container container--narrow">
+      <Breadcrumbs lang={lang} items={crumbs} />
+      <article class="quiz-result" data-quiz-result data-config={JSON.stringify(config)}>
+        <p class="t-eyebrow">{q.kicker}</p>
+        <h1>{result.title}</h1>
+        <p class="lead">{fmt(q.stageOf, { n: index + 1, total: STAGE_IDS.length })} · {stageName}</p>
+
+        <figure class="quiz-result__art">
+          <img
+            data-result-art
+            src={href(routes.artMoment(showcase.id, stage))}
+            alt={showcase.text[lang].altText}
+            width="800"
+            height="600"
+            decoding="async"
+          />
+          <figcaption data-result-caption>{fmt(q.cardWith, { name: showcase.text[lang].name })}</figcaption>
+        </figure>
+
+        <p class="quiz-result__body">{result.body}</p>
+        <GlassSurface tier="subtle" class="panel quiz-result__tip">
+          <p><strong>{q.tipLabel}:</strong> {result.tip}</p>
+        </GlassSurface>
+
+        <div class="cluster quiz-result__actions">
+          <GlassButton variant="primary" data-save-card>{q.saveCard}</GlassButton>
+          <GlassButton data-share-result>{q.shareResult}</GlassButton>
+          <GlassButton href={href(routes.quiz(lang))}>{q.retake}</GlassButton>
+        </div>
+        <p class="muted t-small" role="status" aria-live="polite" data-result-note></p>
+        <p>
+          <a data-watch-link href={href(routes.moment(lang, showcase.slugs[lang], stage))}>
+            {fmt(q.watch, { name: showcase.text[lang].name })}
+          </a>
+        </p>
+        <p class="muted t-small">{q.disclaimer}</p>
+      </article>
+
+      <nav class="quiz-result__neighbours" aria-label={q.allResultsTitle}>
+        {prev && <a class="chip" href={href(routes.quizResult(lang, prev))} rel="prev">← {QUIZ_RESULTS[prev].text[lang].title}</a>}
+        {next && <a class="chip" href={href(routes.quizResult(lang, next))} rel="next">{QUIZ_RESULTS[next].text[lang].title} →</a>}
+      </nav>
+
+      <GlassSurface tier="standard" class="panel quiz-result__cta">
+        <p class="t-subheading">{q.friendCta}</p>
+        <GlassButton variant="primary" href={href(routes.quiz(lang))}>{q.takeQuiz}</GlassButton>
+      </GlassSurface>
+    </div>
+  </section>
+
+  <script>
+    import { initQuizResult } from '../../../../scripts/quiz-result';
+    initQuizResult();
+  </script>
+</BaseLayout>

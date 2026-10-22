@@ -311,6 +311,66 @@
   color: var(--text-faint);
 }
 
+/* Save and share ----------------------------------------------------------- */
+.tl__share-wrap {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-3) 0;
+}
+.tl__share {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.tl__share-note {
+  margin: 0;
+  min-height: 1.4em;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+.tl__share-note:empty {
+  display: none;
+}
+.tl__clip-busy {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--r-md);
+  background: var(--leaf-soft);
+}
+.tl__clip-busy p {
+  margin: 0;
+  font-size: var(--text-sm);
+}
+.tl__clip-busy progress {
+  width: min(100%, 20rem);
+  accent-color: var(--accent);
+}
+.tl__clip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+.tl__clip video {
+  width: min(100%, 11rem);
+  aspect-ratio: 9 / 16;
+  border-radius: var(--r-md);
+  background: #000;
+}
+.tl__clip-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  flex: 1;
+  min-width: 12rem;
+}
+.tl__clip-actions p {
+  margin: 0;
+}
+
 /* Fullscreen: native API or the CSS fallback used on iPhone. -------------- */
 .tl.is-fullscreen {
   position: fixed;

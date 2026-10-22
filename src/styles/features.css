@@ -1,0 +1,481 @@
+/* ==========================================================================
+   Feature pages: quiz, planner, share landing pages, embeds and classroom.
+   ========================================================================== */
+
+/* ---- Quiz -------------------------------------------------------------- */
+.quiz {
+  padding: var(--space-5);
+  margin-top: var(--space-5);
+}
+.quiz__step {
+  min-width: 0;
+  margin: 0 0 var(--space-5);
+  padding: 0;
+  border: 0;
+}
+.quiz__legend {
+  display: block;
+  padding: 0;
+  margin-bottom: var(--space-4);
+  font-family: var(--font-serif);
+  font-size: var(--text-xl);
+  font-weight: 500;
+  line-height: var(--leading-tight);
+  outline-offset: 6px;
+}
+.quiz__n {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--leaf);
+}
+.quiz__options {
+  display: grid;
+  gap: var(--space-3);
+}
+.quiz-option,
+.quiz-flower {
+  position: relative;
+  display: flex;
+  cursor: pointer;
+}
+/* The real radio covers the whole card so the hit area is the card and keyboard focus is native. */
+.quiz-option input,
+.quiz-flower input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.quiz-option span {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: var(--tap);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-solid);
+  border-radius: var(--r-md);
+  background: var(--glass-interactive-bg);
+  transition:
+    background var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+}
+.quiz-option span::before {
+  content: '';
+  flex: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-right: var(--space-3);
+  border: 2px solid var(--text-faint);
+  border-radius: 50%;
+}
+.quiz-option:hover span {
+  background: var(--glass-interactive-hover-bg);
+}
+.quiz-option input:checked + span {
+  border-color: var(--leaf);
+  background: var(--leaf-soft);
+  box-shadow: inset 0 0 0 1px var(--leaf);
+  font-weight: 600;
+}
+.quiz-option input:checked + span::before {
+  border-color: var(--leaf);
+  background: radial-gradient(circle, var(--leaf) 42%, transparent 48%);
+}
+.quiz-option input:focus-visible + span,
+.quiz-flower input:focus-visible + img {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.quiz__flowers {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+}
+.quiz-flower {
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 1px solid var(--border-solid);
+  border-radius: var(--r-md);
+  background: var(--glass-interactive-bg);
+  text-align: center;
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+.quiz-flower img {
+  width: 100%;
+  height: auto; /* the height attribute would otherwise override aspect-ratio */
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+  background: linear-gradient(180deg, var(--stage-bg-top), var(--stage-bg-bottom));
+}
+.quiz-flower:hover {
+  background: var(--glass-interactive-hover-bg);
+}
+.quiz-flower:has(input:checked) {
+  border-color: var(--leaf);
+  background: var(--leaf-soft);
+  box-shadow: inset 0 0 0 1px var(--leaf);
+  font-weight: 600;
+}
+.quiz__nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-solid);
+}
+.quiz__progress {
+  flex: 1 1 8rem;
+  height: 0.5rem;
+  accent-color: var(--accent);
+}
+.quiz__count {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+.quiz-results-list {
+  padding-left: 1.5rem;
+}
+
+.quiz-result__art {
+  margin: var(--space-5) 0;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, var(--stage-bg-top), var(--stage-bg-bottom));
+  box-shadow: var(--glass-shadow-2);
+}
+.quiz-result__art img {
+  width: 100%;
+  height: auto;
+}
+.quiz-result__art figcaption {
+  padding: var(--space-3) var(--space-4);
+  text-align: center;
+  font-family: var(--font-serif);
+  font-size: var(--text-lg);
+  background: var(--glass-elevated-bg);
+}
+.quiz-result__tip {
+  margin-bottom: var(--space-5);
+}
+.quiz-result__actions {
+  margin-bottom: var(--space-3);
+}
+.quiz-result__neighbours {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: var(--space-6) 0;
+}
+.quiz-result__cta {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+}
+.quiz-result__cta p {
+  margin: 0;
+}
+
+/* ---- Planner ----------------------------------------------------------- */
+.planner__form {
+  padding: var(--space-5);
+  margin-top: var(--space-5);
+}
+.planner__grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+.planner__result {
+  margin: var(--space-5) 0;
+}
+.planner__result:empty {
+  display: none;
+}
+.planner__panel {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-5);
+}
+.planner__panel > * {
+  margin: 0;
+}
+.planner__panel > .badge {
+  justify-self: start;
+}
+.planner__window {
+  margin-top: var(--space-2);
+}
+.planner__dates {
+  font-family: var(--font-serif);
+  font-size: var(--text-2xl);
+  font-weight: 500;
+  line-height: var(--leading-tight);
+}
+.planner__goal {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-solid);
+}
+.planner__goal > * {
+  margin: 0;
+}
+.planner__fit {
+  font-weight: 700;
+  font-size: var(--text-lg);
+}
+.planner__fit--ready {
+  color: var(--leaf);
+}
+.planner__fit--maybe {
+  color: var(--text);
+}
+.planner__fit--late {
+  color: var(--danger);
+}
+.planner__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-base);
+}
+.planner__table th,
+.planner__table td {
+  padding: var(--space-3);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border-solid);
+}
+.planner__table thead th {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+.planner__table tbody th {
+  font-weight: 600;
+}
+.planner__table tr.is-selected {
+  background: var(--leaf-soft);
+}
+
+/* ---- Share landing page ("moment") ------------------------------------ */
+.moment-stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+}
+.moment-stages li {
+  margin: 0;
+}
+.moment-stages .chip[aria-current='page'] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+.moment-stages__n {
+  display: inline-grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: var(--leaf-soft);
+  color: var(--leaf);
+  font-size: var(--text-xs);
+  font-weight: 700;
+}
+.moment-stages .chip[aria-current='page'] .moment-stages__n {
+  background: rgba(255, 255, 255, 0.28);
+  color: inherit;
+}
+.moment-pager {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+/* ---- Embed ------------------------------------------------------------- */
+.embed-code {
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--r-md);
+}
+.embed-code summary {
+  min-height: var(--tap);
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  cursor: pointer;
+}
+.embed-code__body {
+  display: grid;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+}
+.embed-code__body p {
+  margin: 0;
+}
+.embed-code__text {
+  min-height: 9rem;
+  padding: var(--space-3) var(--space-4);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  resize: vertical;
+}
+.embed-body {
+  background-attachment: scroll;
+}
+.embed {
+  padding: var(--space-3);
+}
+.embed__title {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-xl);
+}
+.embed__title .sci {
+  margin-left: var(--space-2);
+  font-size: var(--text-base);
+}
+.embed__credit {
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-sm);
+  text-align: right;
+}
+
+/* ---- Printable stage cards -------------------------------------------- */
+.cards-blind {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  font-weight: 500;
+}
+.stage-cards {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  margin: var(--space-5) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.stage-card {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-solid);
+  border-radius: var(--r-md);
+  background: var(--surface-solid);
+  break-inside: avoid;
+}
+.stage-card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: linear-gradient(180deg, var(--stage-bg-top), var(--stage-bg-bottom));
+}
+.stage-card__body {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+}
+.stage-card__n {
+  display: inline-grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  margin: 0 0 var(--space-2);
+  border-radius: 50%;
+  background: var(--leaf-soft);
+  color: var(--leaf);
+  font-weight: 700;
+  font-size: var(--text-sm);
+}
+.stage-card__body h2 {
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-lg);
+}
+.stage-card__days {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.stage-card__desc {
+  margin: 0;
+  font-size: var(--text-sm);
+}
+.stage-card__foot {
+  margin: 0;
+  padding: var(--space-2) var(--space-4);
+  border-top: 1px dashed var(--border-solid);
+  font-size: var(--text-xs);
+  color: var(--text-faint);
+}
+/* Sorting-game mode: only the picture is left on the card. */
+.stage-cards.is-blind .stage-card__body {
+  visibility: hidden;
+}
+
+@page {
+  size: A4 portrait;
+  margin: 10mm;
+}
+@media print {
+  .site-header,
+  .site-footer,
+  .skip-link,
+  .toast,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    min-height: 0;
+    background: #fff !important;
+    color: #000;
+  }
+  [data-stage-cards] {
+    gap: 4mm;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 0;
+  }
+  .stage-card {
+    border: 1px dashed #666;
+    border-radius: 3mm;
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .stage-card__body h2 {
+    font-size: 11pt;
+  }
+  .stage-card__desc,
+  .stage-card__days {
+    font-size: 8.5pt;
+  }
+  .section {
+    padding-block: 0;
+  }
+  h1 {
+    font-size: 16pt;
+    margin-bottom: 3mm;
+  }
+}

@@ -23,7 +23,7 @@ const devArtPosterSlash: AstroIntegration = {
   hooks: {
     'astro:server:setup': ({ server }) => {
       server.middlewares.use((req, _res, next) => {
-        if (req.url) req.url = req.url.replace(/(\/art\/[^/?#]+\.svg)(?=[?#]|$)/, '$1/');
+        if (req.url) req.url = req.url.replace(/(\/art\/[^?#]+\.svg)(?=[?#]|$)/, '$1/');
         next();
       });
     },

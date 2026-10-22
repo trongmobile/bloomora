@@ -13,12 +13,15 @@
 | 404 | `/404.html` song ngữ, `noindex`, không nằm trong sitemap. |
 | JSON-LD | `WebSite` (trang chủ), `BreadcrumbList` (trang con), `Article` (bài viết và trang loài). Không có `Organization`, `aggregateRating`, `Review` hay `VideoObject` vì site không có dữ liệu thật cho chúng. |
 | Open Graph / Twitter | `og:title/description/url/image/type/locale(+alternate)`, `twitter:card=summary_large_image`. URL ảnh luôn tuyệt đối https. |
+| Trang chia sẻ, embed, thẻ in | `/<lang>/flowers/<loài>/moment/<giai đoạn>/`, `/<lang>/quiz/result/<giai đoạn>/`, `/<lang>/embed/<loài>/`, `/<lang>/classroom/cards/<loài>/` là trang thật có canonical và hreflang riêng nhưng **`noindex, follow`** và **không nằm trong sitemap** (`indexable: false` trong `src/lib/pages.ts`), để không tạo hàng trăm trang gần trùng. `verify-build` kiểm tra từng trang loại này phải noindex và không có trong sitemap. |
 | Search Console | Đặt `PUBLIC_GSC_VERIFICATION` để thêm thẻ `google-site-verification`. |
 
 ## Ảnh OG
 
 - Mặc định: `/og-image.png` (1200×630).
 - Mỗi loài: `/og/flowers/{id}.png` (1200×630), ví dụ `/og/flowers/sunflower.png`.
+- Mỗi giai đoạn của mỗi loài, theo ngôn ngữ: `/og/moments/{lang}/{id}-{stage}.png`, ví dụ `/og/moments/vi/lotus-bud-development.png`. Hiện 144 ảnh.
+- Mỗi kết quả quiz, theo ngôn ngữ: `/og/quiz/{lang}/{stage}.png`. Hiện 18 ảnh.
 - Sinh bởi `scripts/generate-og.ts` (`npm run og`, chạy tự động trước `npm run build`) bằng `opentype.js` + `sharp`. Chữ được chuyển thành đường vector từ font Be Vietnam Pro / Newsreader đi kèm trong `assets/og-fonts/`, nên dấu tiếng Việt hiển thị đúng và không phụ thuộc font hệ thống.
 - Hình minh họa lấy từ chính engine SVG của site. Không dùng ảnh có bản quyền.
 - Các file này nằm trong `.gitignore` vì được tạo lại mỗi lần build (CI chạy `npm run build` nên luôn có).

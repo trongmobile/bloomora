@@ -13,8 +13,9 @@ import { bioStateAt } from '../../src/lib/timelapse/keyframes';
 import { buildTimeline } from '../../src/lib/timelapse/timeline';
 
 const sunflower = FLOWERS.find((f) => f.id === 'sunflower')!;
+const SHARE_URLS = { flower: 'https://bloomora.example/en/flowers/sunflower/', momentBase: 'https://bloomora.example/en/flowers/sunflower/moment/' };
 const baseProps = (over: Partial<PlayerProps> = {}): PlayerProps => ({
-  ...buildPlayerProps(sunflower, 'en', getDict('en'), '/art/sunflower.svg'),
+  ...buildPlayerProps(sunflower, 'en', getDict('en'), '/art/sunflower.svg', SHARE_URLS),
   ...over,
 });
 
@@ -229,7 +230,7 @@ describe('TimeLapsePlayer', () => {
 
   it('works for every species', () => {
     for (const flower of FLOWERS) {
-      const { unmount } = render(<TimeLapsePlayer {...buildPlayerProps(flower, 'vi', getDict('vi'), `/art/${flower.id}.svg`)} />);
+      const { unmount } = render(<TimeLapsePlayer {...buildPlayerProps(flower, 'vi', getDict('vi'), `/art/${flower.id}.svg`, SHARE_URLS)} />);
       expect(root().dataset.hydrated).toBe('true');
       expect(root().querySelector('svg')).not.toBeNull();
       unmount();

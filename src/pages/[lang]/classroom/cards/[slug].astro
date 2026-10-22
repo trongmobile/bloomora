@@ -1,0 +1,89 @@
+---
+import type { GetStaticPaths } from 'astro';
+import GlassButton from '../../../../components/design-system/GlassButton.astro';
+import Breadcrumbs from '../../../../components/site/Breadcrumbs.astro';
+import { FLOWERS } from '../../../../data';
+import { LANGS, type FlowerData, type Lang } from '../../../../data/types';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { fmt, getDict } from '../../../../i18n';
+import { formatDayRange } from '../../../../lib/duration';
+import { alternatesFor } from '../../../../lib/pages';
+import { getRegistry } from '../../../../lib/content';
+import { href } from '../../../../lib/href';
+import { breadcrumbLd } from '../../../../lib/jsonld';
+import { routes } from '../../../../lib/routes';
+
+export const getStaticPaths = (() =>
+  LANGS.flatMap((lang) => FLOWERS.map((flower) => ({ params: { lang, slug: flower.slugs[lang] }, props: { flower } })))) satisfies GetStaticPaths;
+
+const lang = Astro.params.lang as Lang;
+const { flower } = Astro.props as { flower: FlowerData };
+const dict = getDict(lang);
+const c = dict.classroom;
+const text = flower.text[lang];
+const registry = await getRegistry();
+const ctx = { site: Astro.site ?? 'https://bloomora.example', base: import.meta.env.BASE_URL };
+const path = routes.cards(lang, flower.slugs[lang]);
+const crumbs = [
+  { name: dict.nav.home, path: routes.home(lang) },
+  { name: dict.nav.classroom, path: routes.classroom(lang) },
+  { name: text.name, path },
+];
+---
+
+<BaseLayout
+  lang={lang}
+  title={fmt(c.cardsMetaTitle, { name: text.name })}
+  description={fmt(c.cardsMetaDescription, { name: text.name })}
+  path={path}
+  alternates={alternatesFor(registry, `cards:${flower.id}`)}
+  image={{ path: routes.ogFlower(flower.id), alt: text.altText }}
+  noindex
+  jsonLd={[breadcrumbLd(ctx, crumbs)]}
+>
+  <section class="section section--tight">
+    <div class="container">
+      <div class="no-print">
+        <Breadcrumbs lang={lang} items={crumbs} />
+      </div>
+      <h1>{fmt(c.cardsTitle, { name: text.name })}</h1>
+      <div class="no-print" data-cards-tools>
+        <p class="lead">{c.cardsLead}</p>
+        <div class="cluster">
+          <GlassButton variant="primary" data-print hidden>{c.print}</GlassButton>
+          <label class="cards-blind">
+            <input type="checkbox" data-blind />
+            {c.blind}
+          </label>
+          <GlassButton href={href(routes.classroom(lang))}>{c.back}</GlassButton>
+        </div>
+        <p class="muted t-small">{c.printHint}</p>
+      </div>
+
+      <ol class="stage-cards" data-stage-cards>
+        {
+          flower.stages.map((s, i) => {
+            const st = text.stages[s.id];
+            return (
+              <li class="stage-card">
+                <img src={href(routes.artMoment(flower.id, s.id))} alt="" width="800" height="600" loading="eager" decoding="async" />
+                <div class="stage-card__body" data-card-text>
+                  <p class="stage-card__n">{i + 1}</p>
+                  <h2>{st?.name ?? dict.stageNames[s.id]}</h2>
+                  <p class="stage-card__days">{dict.player.estimate}: {formatDayRange(s.days, lang)}</p>
+                  <p class="stage-card__desc">{st?.description ?? dict.stageBlurbs[s.id]}</p>
+                </div>
+                <p class="stage-card__foot">{c.cardFooter}</p>
+              </li>
+            );
+          })
+        }
+      </ol>
+    </div>
+  </section>
+
+  <script>
+    import { initCards } from '../../../../scripts/cards';
+    initCards();
+  </script>
+</BaseLayout>

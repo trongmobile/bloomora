@@ -1,0 +1,38 @@
+---
+import type { GetStaticPaths } from 'astro';
+import FlowerPlayer from '../../../components/site/FlowerPlayer.astro';
+import { FLOWERS } from '../../../data';
+import { LANGS, type FlowerData, type Lang } from '../../../data/types';
+import EmbedLayout from '../../../layouts/EmbedLayout.astro';
+import { fmt, getDict } from '../../../i18n';
+import { href } from '../../../lib/href';
+import { alternatesFor } from '../../../lib/pages';
+import { getRegistry } from '../../../lib/content';
+import { routes } from '../../../lib/routes';
+
+export const getStaticPaths = (() =>
+  LANGS.flatMap((lang) => FLOWERS.map((flower) => ({ params: { lang, slug: flower.slugs[lang] }, props: { flower } })))) satisfies GetStaticPaths;
+
+const lang = Astro.params.lang as Lang;
+const { flower } = Astro.props as { flower: FlowerData };
+const dict = getDict(lang);
+const text = flower.text[lang];
+const registry = await getRegistry();
+---
+
+<EmbedLayout
+  lang={lang}
+  title={fmt(dict.embed.iframeTitle, { name: text.name })}
+  description={text.metaDescription}
+  path={routes.embed(lang, flower.slugs[lang])}
+  alternates={alternatesFor(registry, `embed:${flower.id}`)}
+  image={{ path: routes.ogFlower(flower.id), alt: text.altText }}
+>
+  <div class="embed">
+    <h1 class="embed__title">{text.name} <span class="sci">{flower.scientificName}</span></h1>
+    <FlowerPlayer flower={flower} lang={lang} eager compact idPrefix="embed" />
+    <p class="embed__credit">
+      <a href={href(routes.flower(lang, flower.slugs[lang]))} target="_blank" rel="noopener">{fmt(dict.embed.credit, { name: text.name })} ↗</a>
+    </p>
+  </div>
+</EmbedLayout>

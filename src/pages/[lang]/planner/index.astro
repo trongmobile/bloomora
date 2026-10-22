@@ -1,0 +1,136 @@
+---
+import type { GetStaticPaths } from 'astro';
+import GlassSurface from '../../../components/design-system/GlassSurface.astro';
+import Breadcrumbs from '../../../components/site/Breadcrumbs.astro';
+import ShareActions from '../../../components/site/ShareActions.astro';
+import { FLOWERS } from '../../../data';
+import { OCCASIONS } from '../../../data/occasions';
+import { LANGS, type Lang } from '../../../data/types';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { fmt, getDict } from '../../../i18n';
+import { formatDayRange } from '../../../lib/duration';
+import { alternatesFor } from '../../../lib/pages';
+import { getRegistry } from '../../../lib/content';
+import { href } from '../../../lib/href';
+import { breadcrumbLd } from '../../../lib/jsonld';
+import { routes } from '../../../lib/routes';
+import { absoluteUrl } from '../../../lib/url';
+
+export const getStaticPaths = (() => LANGS.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
+
+const lang = Astro.params.lang as Lang;
+const dict = getDict(lang);
+const p = dict.planner;
+const registry = await getRegistry();
+const site = Astro.site ?? 'https://bloomora.example';
+const base = import.meta.env.BASE_URL;
+const ctx = { site, base };
+const canonical = absoluteUrl(site, base, routes.planner(lang));
+const crumbs = [
+  { name: dict.nav.home, path: routes.home(lang) },
+  { name: dict.nav.planner, path: routes.planner(lang) },
+];
+const defaultFlower = FLOWERS[0]!.id;
+const config = {
+  lang,
+  defaultFlower,
+  url: canonical,
+  labels: p,
+  levels: dict.taxonomy.confidence,
+  flowers: FLOWERS.map((f) => ({
+    id: f.id,
+    name: f.text[lang].name,
+    href: href(routes.flower(lang, f.slugs[lang])),
+    days: f.daysToBloom,
+    confidence: f.confidence,
+    startNote: f.text[lang].startNote,
+  })),
+  occasions: OCCASIONS.map((o) => ({ id: o.id, name: o.name[lang], fixed: o.fixed, dates: o.dates })),
+};
+---
+
+<BaseLayout
+  lang={lang}
+  title={p.metaTitle}
+  description={p.metaDescription}
+  path={routes.planner(lang)}
+  alternates={alternatesFor(registry, 'planner')}
+  jsonLd={[breadcrumbLd(ctx, crumbs)]}
+>
+  <section class="section section--tight">
+    <div class="container container--narrow">
+      <Breadcrumbs lang={lang} items={crumbs} />
+      <h1>{p.title}</h1>
+      <p class="lead">{p.lead}</p>
+      <noscript><p class="muted">{p.noscript}</p></noscript>
+
+      <div data-planner data-config={JSON.stringify(config)}>
+        <GlassSurface as="form" tier="elevated" class="planner__form panel" aria-label={p.formLabel} novalidate>
+          <div class="planner__grid">
+            <div class="field">
+              <label for="pl-flower">{p.flower}</label>
+              <select class="input" id="pl-flower" data-planner-flower>
+                {FLOWERS.map((f) => <option value={f.id}>{f.text[lang].name}</option>)}
+              </select>
+            </div>
+            <div class="field">
+              <label for="pl-start">{p.start}</label>
+              <input class="input" id="pl-start" type="date" data-planner-start />
+            </div>
+            <div class="field">
+              <label for="pl-goal">{p.goal}</label>
+              <select class="input" id="pl-goal" data-planner-goal>
+                <option value="none">{p.goalNone}</option>
+                {OCCASIONS.map((o) => <option value={o.id}>{o.name[lang]}</option>)}
+                <option value="custom">{p.goalCustom}</option>
+              </select>
+            </div>
+            <div class="field" data-planner-custom hidden>
+              <label for="pl-goal-date">{p.goalDate}</label>
+              <input class="input" id="pl-goal-date" type="date" data-planner-goal-date />
+            </div>
+          </div>
+        </GlassSurface>
+
+        <div class="planner__result" data-planner-result role="status" aria-live="polite"></div>
+        <ShareActions lang={lang} url={canonical} title={`${p.title} | Bloomora`} text={p.lead} data-planner-share />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight" aria-labelledby="planner-table">
+    <div class="container container--narrow">
+      <h2 id="planner-table">{p.tableTitle}</h2>
+      <div class="table-scroll">
+        <table class="planner__table" data-planner-table>
+          <thead>
+            <tr>
+              <th scope="col">{p.colFlower}</th>
+              <th scope="col">{p.colBloom}</th>
+              <th scope="col" data-planner-fit-col hidden>{p.colFit}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              FLOWERS.map((f) => (
+                <tr data-flower-id={f.id}>
+                  <th scope="row"><a href={href(routes.flower(lang, f.slugs[lang]))}>{f.text[lang].name}</a></th>
+                  <td data-bloom>{fmt(p.fromStart, { range: formatDayRange(f.daysToBloom, lang) })}</td>
+                  <td data-fit hidden></td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <h2 style="margin-top: var(--space-6)">{p.howTitle}</h2>
+      <p>{p.howBody}</p>
+      <p class="muted">{p.estimateNote}</p>
+    </div>
+  </section>
+
+  <script>
+    import { initPlanner } from '../../../scripts/planner';
+    initPlanner();
+  </script>
+</BaseLayout>

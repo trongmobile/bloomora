@@ -28,11 +28,14 @@ const year = new Date().getFullYear();
         <ul>
           <li><a href={href(routes.flowers(lang))}>{dict.nav.flowers}</a></li>
           <li><a href={href(routes.learn(lang))}>{dict.nav.learn}</a></li>
+          <li><a href={href(routes.quiz(lang))}>{dict.nav.quiz}</a></li>
+          <li><a href={href(routes.planner(lang))}>{dict.nav.planner}</a></li>
         </ul>
       </div>
       <div>
         <h2>{dict.footer.project}</h2>
         <ul>
+          <li><a href={href(routes.classroom(lang))}>{dict.nav.classroom}</a></li>
           <li><a href={href(routes.about(lang))}>{dict.nav.about}</a></li>
         </ul>
       </div>

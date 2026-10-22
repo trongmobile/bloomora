@@ -9,6 +9,7 @@ import FlowerSearch from '../../../components/site/FlowerSearch.astro';
 import { FLOWERS } from '../../../data';
 import { LANGS, type Lang } from '../../../data/types';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { FLOWER_LIST_PAGE_SIZE } from '../../../config/site';
 import { getDict } from '../../../i18n';
 import { alternatesFor } from '../../../lib/pages';
 import { getRegistry } from '../../../lib/content';
@@ -42,7 +43,7 @@ const crumbs = [
       <p class="lead">{dict.flowers.lead}</p>
       <noscript><p class="muted">{dict.flowers.noscript}</p></noscript>
 
-      <div data-flower-list data-page-size="6" style="margin-top: var(--space-6)">
+      <div data-flower-list data-page-size={FLOWER_LIST_PAGE_SIZE} style="margin-top: var(--space-6)">
         <GlassSurface class="filters" role="search" aria-label={dict.flowers.filtersLabel}>
           <div class="filters__grid">
             <FlowerSearch lang={lang} />

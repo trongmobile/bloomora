@@ -1,3 +1,4 @@
+import { FLOWER_LIST_PAGE_SIZE } from '../config/site';
 import { fmt } from '../i18n';
 import {
   EMPTY_FILTERS,
@@ -25,7 +26,7 @@ function init(root: HTMLElement): void {
     return { el, haystack, group, speed, colors: splitList(el.dataset.colors), seasons: splitList(el.dataset.seasons) };
   });
 
-  const pageSize = Number(root.dataset.pageSize) || 6;
+  const pageSize = Number(root.dataset.pageSize) || FLOWER_LIST_PAGE_SIZE;
   const controls = new Map<(typeof KEYS)[number], HTMLInputElement | HTMLSelectElement>();
   for (const key of KEYS) {
     const el = root.querySelector<HTMLInputElement | HTMLSelectElement>(`[data-filter="${key}"]`);

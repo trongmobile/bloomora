@@ -3,12 +3,19 @@ import type { Dict } from '../i18n';
 import type { PlayerProps } from '../components/timelapse/types';
 
 /** Builds the serialisable props for the React time-lapse island. */
-export function buildPlayerProps(flower: FlowerData, lang: Lang, dict: Dict, posterSrc: string): PlayerProps {
+export function buildPlayerProps(
+  flower: FlowerData,
+  lang: Lang,
+  dict: Dict,
+  posterSrc: string,
+  shareUrls: PlayerProps['shareUrls'],
+): PlayerProps {
   const text = flower.text[lang];
   return {
     lang,
     flowerId: flower.id,
     flowerName: text.name,
+    scientificName: flower.scientificName,
     visual: flower.visual,
     stages: flower.stages,
     stageTexts: flower.stages.map((s) => ({
@@ -22,5 +29,6 @@ export function buildPlayerProps(flower: FlowerData, lang: Lang, dict: Dict, pos
     startNote: text.startNote,
     timeNote: text.timeNote,
     labels: dict.player,
+    shareUrls,
   };
 }

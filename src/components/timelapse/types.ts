@@ -13,6 +13,7 @@ export interface PlayerProps {
   lang: Lang;
   flowerId: string;
   flowerName: string;
+  scientificName: string;
   visual: FlowerVisual;
   stages: StageTiming[];
   stageTexts: PlayerStageText[];
@@ -25,4 +26,10 @@ export interface PlayerProps {
   labels: Dict['player'];
   /** Unique prefix for SVG ids when several players share a page. */
   idPrefix?: string;
+  /** Absolute URLs used by the share tools. `momentBase` ends with "/" and takes a stage id. */
+  shareUrls: { flower: string; momentBase: string };
+  /** Open on this stage (a share link or a moment page) instead of the poster frame. */
+  initialStage?: StageId;
+  /** Trim the notes under the player (used when it is embedded in another page). */
+  compact?: boolean;
 }

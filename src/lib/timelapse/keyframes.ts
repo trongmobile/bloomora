@@ -3,8 +3,8 @@
  * illustration renderers understand. These are visual keyframes, not biological
  * measurements — the illustration is an educational simulation.
  */
-import type { StageId } from '../../data/types';
-import { positionAt, type Timeline } from './timeline';
+import { STAGE_IDS, type StageId } from '../../data/types';
+import { clamp01, positionAt, type Timeline } from './timeline';
 
 export interface BioState {
   /** Visibility of the seed / bulb in the soil. */
@@ -50,7 +50,7 @@ export const STAGE_END_STATE: Record<StageId, BioState> = {
 
 const KEYS = Object.keys(START_STATE) as (keyof BioState)[];
 
-function lerpState(a: BioState, b: BioState, t: number): BioState {
+export function lerpState(a: BioState, b: BioState, t: number): BioState {
   const out = { ...a };
   for (const k of KEYS) out[k] = a[k] + (b[k] - a[k]) * t;
   return out;
@@ -62,4 +62,14 @@ export function bioStateAt(timeline: Timeline, progress: number): BioState {
   const prev = pos.index === 0 ? START_STATE : STAGE_END_STATE[timeline.segments[pos.index - 1]!.id];
   const end = STAGE_END_STATE[pos.segment.id];
   return lerpState(prev, end, pos.local);
+}
+
+/**
+ * Species-independent state part-way through one canonical stage. Used where there is no
+ * species timeline to ask (quiz results, stage cards): the stage is the thing being shown.
+ */
+export function bioStateForStage(stageId: StageId, local = 0.6): BioState {
+  const i = STAGE_IDS.indexOf(stageId);
+  const prev = i <= 0 ? START_STATE : STAGE_END_STATE[STAGE_IDS[i - 1]!];
+  return lerpState(prev, STAGE_END_STATE[stageId], clamp01(local));
 }

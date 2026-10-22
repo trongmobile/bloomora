@@ -28,6 +28,22 @@
 2. Front matter (schema trong `src/content.config.ts`): `title`, `description` (60–200), `lang`, `translationKey`, `datePublished`, `readingMinutes`, `relatedFlowers`, `keywords`, `sources` (schema cho phép ≥ 1, nhưng test yêu cầu ≥ 3 nguồn https).
 3. Chỉ nêu một khẳng định cụ thể (số, tên địa danh, vùng khí hậu) khi có nguồn trong `sources` hỗ trợ.
 
+## Trắc nghiệm (quiz)
+
+Dữ liệu ở `src/data/quiz.ts`, logic chấm điểm ở `src/lib/quiz.ts`.
+
+- Quiz **chỉ để vui**: chín giai đoạn của hoa là phép ẩn dụ, không phải khoa học hay đánh giá tâm lý. Giữ dòng lưu ý (`quiz.disclaimer`) trên trang và trên thẻ kết quả.
+- Mỗi câu có đúng 4 lựa chọn, mỗi lựa chọn bỏ phiếu cho một giai đoạn khác nhau. Giai đoạn nhiều phiếu nhất thắng; hòa thì chọn giai đoạn gần trung bình các câu trả lời nhất, rồi giai đoạn sớm hơn.
+- Giọng văn ấm, không phán xét: không giai đoạn nào "tốt" hay "xấu" (kể cả *tàn* là lúc cây kết hạt). Mỗi kết quả có `title`, `body` (50–200 ký tự vì là meta description), `tip`, bằng cả hai ngôn ngữ, viết riêng.
+- `showcase` là loài có hình minh họa đại diện cho giai đoạn trên trang kết quả và ảnh OG.
+- `tests/unit/quiz.test.ts` kiểm tra: đủ 4 lựa chọn khác nhau, đủ chín kết quả hai ngôn ngữ, và **mọi giai đoạn đều có thể là kết quả** (duyệt toàn bộ tổ hợp).
+
+## Mốc dịp lễ của công cụ gieo – nở
+
+`src/data/occasions.ts`. Ngày cố định (Valentine 14/2, 8/3, 20/10, 20/11) được tính theo năm. **Tết thì chỉ liệt kê, không tính**: bảng `TET_DATES` có 2027-02-06, 2028-01-26, 2029-02-13, đã đối chiếu với lịch công bố. Đừng thêm năm từ trí nhớ hoặc từ lịch âm của `Intl` (Node cho lệch một ngày ở một số năm, ví dụ 2027). Năm chưa có trong bảng thì công cụ báo "chưa có ngày" và để người dùng chọn ngày tùy ý.
+
+Kết quả của công cụ luôn là một **khoảng** lấy từ `daysToBloom`, kèm lời nhắc đây là ước tính và nhãn độ tin cậy của loài.
+
 ## Thay minh họa bằng ảnh hoặc video thật
 
 Trong `media` của loài (mặc định `{ type: 'svg' }`):

@@ -51,3 +51,26 @@ export const CompressIcon = (p: P) => (
     <path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" />
   </svg>
 );
+export const ShareIcon = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13" />
+  </svg>
+);
+export const ImageIcon = (p: P) => (
+  <svg {...base} {...p}>
+    <rect x="3.5" y="4" width="17" height="16" rx="3" />
+    <circle cx="9" cy="9.5" r="1.6" />
+    <path d="m4 18 5.2-5 3.8 3.6 2.6-2.4L20 17" />
+  </svg>
+);
+export const VideoIcon = (p: P) => (
+  <svg {...base} {...p}>
+    <rect x="3" y="6" width="13" height="12" rx="3" />
+    <path d="m16 10.5 5-2.5v8l-5-2.5z" />
+  </svg>
+);
+export const DownloadIcon = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M12 3v12M7 10.5 12 15.5l5-5M5 20h14" />
+  </svg>
+);

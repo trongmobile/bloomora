@@ -1,0 +1,106 @@
+---
+import type { GetStaticPaths } from 'astro';
+import GlassButton from '../../../../../components/design-system/GlassButton.astro';
+import Breadcrumbs from '../../../../../components/site/Breadcrumbs.astro';
+import FlowerPlayer from '../../../../../components/site/FlowerPlayer.astro';
+import ShareActions from '../../../../../components/site/ShareActions.astro';
+import { FLOWERS } from '../../../../../data';
+import { LANGS, type FlowerData, type Lang, type StageId } from '../../../../../data/types';
+import BaseLayout from '../../../../../layouts/BaseLayout.astro';
+import { fmt, getDict } from '../../../../../i18n';
+import { formatDayRange } from '../../../../../lib/duration';
+import { alternatesFor } from '../../../../../lib/pages';
+import { getRegistry } from '../../../../../lib/content';
+import { href } from '../../../../../lib/href';
+import { breadcrumbLd } from '../../../../../lib/jsonld';
+import { routes } from '../../../../../lib/routes';
+import { absoluteUrl } from '../../../../../lib/url';
+
+export const getStaticPaths = (() =>
+  LANGS.flatMap((lang) =>
+    FLOWERS.flatMap((flower) =>
+      flower.stages.map((s) => ({ params: { lang, slug: flower.slugs[lang], stage: s.id }, props: { flower } })),
+    ),
+  )) satisfies GetStaticPaths;
+
+const lang = Astro.params.lang as Lang;
+const stage = Astro.params.stage as StageId;
+const { flower } = Astro.props as { flower: FlowerData };
+const dict = getDict(lang);
+const text = flower.text[lang];
+const slug = flower.slugs[lang];
+const timing = flower.stages.find((s) => s.id === stage)!;
+const index = flower.stages.findIndex((s) => s.id === stage);
+const stageText = text.stages[stage];
+const stageName = (id: StageId) => text.stages[id]?.name ?? dict.stageNames[id];
+const description = stageText?.description ?? dict.stageBlurbs[stage];
+const prev = flower.stages[index - 1];
+const next = flower.stages[index + 1];
+const registry = await getRegistry();
+const site = Astro.site ?? 'https://bloomora.example';
+const base = import.meta.env.BASE_URL;
+const ctx = { site, base };
+const path = routes.moment(lang, slug, stage);
+const canonical = absoluteUrl(site, base, path);
+const crumbs = [
+  { name: dict.nav.home, path: routes.home(lang) },
+  { name: dict.flowers.title, path: routes.flowers(lang) },
+  { name: text.name, path: routes.flower(lang, slug) },
+  { name: stageName(stage), path },
+];
+const title = fmt(dict.moment.metaTitle, { flower: text.name, stage: stageName(stage) });
+---
+
+<BaseLayout
+  lang={lang}
+  title={title}
+  description={`${text.name} — ${stageName(stage)}: ${description}`}
+  path={path}
+  alternates={alternatesFor(registry, `moment:${flower.id}:${stage}`)}
+  image={{ path: routes.ogMoment(lang, flower.id, stage), alt: `${text.name} — ${stageName(stage)}: ${text.altText}` }}
+  noindex
+  jsonLd={[breadcrumbLd(ctx, crumbs)]}
+>
+  <article>
+    <header class="container detail-head">
+      <Breadcrumbs lang={lang} items={crumbs} />
+      <h1>{text.name}: {stageName(stage)}</h1>
+      <p class="lead">
+        {fmt(dict.player.stageOf, { n: index + 1, total: flower.stages.length })} · {dict.player.estimate}: {formatDayRange(timing.days, lang)}
+      </p>
+      <ShareActions lang={lang} url={canonical} title={`${title} | Bloomora`} text={description} />
+    </header>
+
+    <section class="section section--tight container" id="timelapse" aria-labelledby="moment-player">
+      <h2 id="moment-player" class="visually-hidden">{dict.detail.playerTitle}</h2>
+      <FlowerPlayer flower={flower} lang={lang} eager stage={stage} idPrefix="moment" />
+    </section>
+
+    <section class="section section--tight container container--narrow">
+      <p>{description}</p>
+      <p class="muted">{fmt(dict.moment.intro, { name: text.name })}</p>
+      <p>
+        <GlassButton variant="primary" href={href(routes.flower(lang, slug))}>{fmt(dict.moment.fullPage, { name: text.name })}</GlassButton>
+      </p>
+      <nav aria-label={dict.moment.stagesNav}>
+        <h2 class="t-subheading">{fmt(dict.moment.otherStages, { name: text.name })}</h2>
+        <ol class="moment-stages">
+          {
+            flower.stages.map((s, i) => (
+              <li>
+                <a class="chip" href={href(routes.moment(lang, slug, s.id))} aria-current={s.id === stage ? 'page' : undefined}>
+                  <span class="moment-stages__n">{i + 1}</span>
+                  {stageName(s.id)}
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+      </nav>
+      <p class="moment-pager">
+        {prev && <a rel="prev" href={href(routes.moment(lang, slug, prev.id))}>← {dict.moment.prev}: {stageName(prev.id)}</a>}
+        {next && <a rel="next" href={href(routes.moment(lang, slug, next.id))}>{dict.moment.next}: {stageName(next.id)} →</a>}
+      </p>
+    </section>
+  </article>
+</BaseLayout>

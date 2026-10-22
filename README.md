@@ -33,7 +33,8 @@ npm run preview
 | Lệnh | Việc làm |
 | --- | --- |
 | `npm run dev` | Dev server |
-| `npm run og` | Sinh `public/og-image.png`, `public/og/flowers/{id}.png`, `apple-touch-icon.png` |
+| `npm run og` | Sinh `public/og-image.png`, `public/og/flowers/{id}.png`, `public/og/moments/…`, `public/og/quiz/…`, `apple-touch-icon.png` |
+| `npm run clips` | Xuất clip dọc 9:16 (MP4) và thẻ PNG cho TikTok/Reels/Shorts vào `out/clips/` (cần ffmpeg). Xem [docs/GROWTH.md](docs/GROWTH.md) |
 | `npm run build` | `og` (prebuild) + `astro build` + `scripts/verify-build.mjs` |
 | `npm run build:only` | Chỉ `astro build` (dùng trước e2e) |
 | `npm run lint` / `typecheck` / `test` | ESLint / `astro check` / Vitest |
@@ -73,16 +74,17 @@ npm run test:e2e
 assets/og-fonts/               font .woff dùng để vẽ chữ trong ảnh OG (chuyển thành path)
 docs/                          tài liệu (xem bên dưới)
 public/                        favicon.svg; og-image.png, og/, apple-touch-icon.png được sinh khi build
-scripts/                       generate-og.ts, verify-build.mjs
+scripts/                       generate-og.ts, render-clips.ts, lib/text-path.ts, verify-build.mjs
 src/
   config/        site.ts (hằng số), analytics.ts (đọc env GoatCounter)
   data/          dữ liệu 8 loài (flowers/*.ts), kiểu dữ liệu, taxonomy
   content/       bài viết (articles/{vi,en}/*.md, content collection có schema)
   i18n/          từ điển vi / en
   lib/           logic thuần: url, seo, jsonld, sitemap, filter, search-index, routes,
-                 art/ (SVG theo từng loài), timelapse/ (timeline, keyframes, reducer của player)
+                 art/ (SVG theo từng loài), timelapse/ (timeline, keyframes, reducer của player),
+                 clip/ (bố cục khung 9:16 dùng chung cho clip, thẻ ảnh và thẻ quiz), quiz, planner, moment, embed
   components/    design-system/ (Glass*), site/, seo/, analytics/, timelapse/ (React)
-  scripts/       JS phía client nhỏ: theme, menu, share, toast, bộ lọc, opt-out analytics
+  scripts/       JS phía client nhỏ: theme, menu, share, toast, bộ lọc, opt-out analytics, quiz, planner, embed, thẻ in
   styles/        tokens, glass, base, layout, components, timelapse
   pages/         /, /[lang]/..., 404, sitemap.xml, robots.txt
 tests/unit, tests/e2e
@@ -101,13 +103,24 @@ Dữ liệu, UI, engine animation, SEO, analytics và script OG nằm ở các m
 - **Chia sẻ**: Web Share API, sao chép liên kết có fallback, toast thông báo.
 - **Analytics**: GoatCounter, xem [docs/ANALYTICS.md](docs/ANALYTICS.md).
 
+### Để người ta chia sẻ và dùng lại
+
+Chi tiết cách dùng và đo lường nằm ở [docs/GROWTH.md](docs/GROWTH.md).
+
+- **Lưu và chia sẻ khoảnh khắc**: trong player có *Chia sẻ khoảnh khắc này* (link tới trang riêng của giai đoạn đang xem, có ảnh OG riêng), *Lưu ảnh dọc* (PNG 1080×1920) và *Tạo clip dọc* (video 9:16 ghi ngay trong trình duyệt, MP4 hoặc WebM tùy trình duyệt). Mọi thứ chạy trên máy người dùng, không tải lên đâu cả.
+- **Deep link theo giai đoạn**: `…/flowers/<loài>/?stage=<giai đoạn>#timelapse` và trang `…/flowers/<loài>/moment/<giai đoạn>/` (noindex, có ảnh OG theo loài + giai đoạn + ngôn ngữ).
+- **Trắc nghiệm** `/<lang>/quiz/`: "Bạn đang ở giai đoạn nào của đời hoa?", 7 câu + chọn hoa, kết quả là trang tĩnh `/<lang>/quiz/result/<giai đoạn>/` (noindex, có ảnh OG) cùng thẻ kết quả PNG 9:16. Chỉ mang tính giải trí.
+- **Lịch gieo – nở** `/<lang>/planner/`: chọn loài và ngày bắt đầu để xem khoảng thời gian nở ước tính, đặt mốc (Tết, Valentine, 8/3, 20/10, 20/11 hoặc ngày tùy chọn) để biết hạn bắt đầu. Liên kết chia sẻ giữ nguyên lựa chọn (`?f=&s=&g=`).
+- **Nhúng và lớp học**: mỗi trang loài có mã iframe (`/<lang>/embed/<loài>/`, noindex, nhận `?theme=light|dark`), trang `/<lang>/classroom/` cho giáo viên, và thẻ chín giai đoạn in được `/<lang>/classroom/cards/<loài>/` (có chế độ ẩn tên để chơi sắp xếp).
+
 ## Tài liệu
 
 - [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — deploy GitHub Pages, custom domain, base path
 - [docs/ANALYTICS.md](docs/ANALYTICS.md) — GoatCounter
 - [docs/SEO.md](docs/SEO.md) — SEO, OG, Facebook Sharing Debugger, Search Console
 - [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md) — token, tầng kính, fallback, a11y
-- [docs/CONTENT.md](docs/CONTENT.md) — thêm loài / bài viết, quy tắc về nguồn và số liệu
+- [docs/CONTENT.md](docs/CONTENT.md) — thêm loài / bài viết, quy tắc về nguồn và số liệu, quiz và mốc dịp lễ
+- [docs/GROWTH.md](docs/GROWTH.md) — chia sẻ, clip, đăng bài, giáo viên, đo lường
 
 ## Giới hạn đã biết
 
@@ -115,3 +128,5 @@ Dữ liệu, UI, engine animation, SEO, analytics và script OG nằm ở các m
 - Dữ liệu thời gian là khoảng ước tính, độ tin cậy ghi rõ ở từng loài.
 - Không có JavaScript: trang vẫn đọc được (poster SVG tĩnh), nhưng theme mặc định là sáng và player không chạy.
 - WebKit/Safari chưa được kiểm thử tự động mặc định.
+- Clip tạo trong trình duyệt ghi theo thời gian thực; thiết bị yếu có thể rớt khung hình, và trình duyệt không hỗ trợ MP4 sẽ cho WebM. Muốn MP4 chuẩn cho mạng xã hội, dùng `npm run clips`.
+- Bảng ngày Tết chỉ có 2027–2029 (đã đối chiếu nguồn). Các năm sau phải được thêm sau khi kiểm chứng; trong lúc đó công cụ gieo – nở cho chọn ngày tùy ý.

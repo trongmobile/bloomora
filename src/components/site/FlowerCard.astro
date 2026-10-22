@@ -42,7 +42,7 @@ const filterAttrs = filterable
       <p class="flower-card__tagline">{text.tagline}</p>
       <div class="flower-card__meta">
         <GlassBadge>{dict.taxonomy.group[flower.group]}</GlassBadge>
-        <GlassBadge>{dict.flowers.bloomIn} {formatDayRange(flower.daysToBloom, lang)}</GlassBadge>
+        <GlassBadge>{`${dict.flowers.bloomIn} ${formatDayRange(flower.daysToBloom, lang)}`}</GlassBadge>
       </div>
     </div>
   </GlassSurface>

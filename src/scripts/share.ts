@@ -1,6 +1,6 @@
 import { showToast } from './toast';
 
-async function copyText(text: string): Promise<boolean> {
+export async function copyText(text: string): Promise<boolean> {
   try {
     if (navigator.clipboard?.writeText && window.isSecureContext) {
       await navigator.clipboard.writeText(text);
@@ -29,9 +29,12 @@ async function copyText(text: string): Promise<boolean> {
 
 export function initShare(root: ParentNode = document): void {
   root.querySelectorAll<HTMLElement>('[data-share]').forEach((box) => {
-    const url = box.dataset.url ?? location.href;
-    const title = box.dataset.title ?? document.title;
-    const text = box.dataset.text ?? '';
+    // Read at click time: pages such as the planner update data-url/data-text as the visitor changes inputs.
+    const current = () => ({
+      url: box.dataset.url ?? location.href,
+      title: box.dataset.title ?? document.title,
+      text: box.dataset.text ?? '',
+    });
     const msgCopied = box.dataset.msgCopied ?? 'Copied';
     const msgFailed = box.dataset.msgFailed ?? 'Copy failed';
     const msgShared = box.dataset.msgShared ?? '';
@@ -41,7 +44,7 @@ export function initShare(root: ParentNode = document): void {
       nativeBtn.hidden = false;
       nativeBtn.addEventListener('click', async () => {
         try {
-          await navigator.share({ title, text, url });
+          await navigator.share(current());
           if (msgShared) showToast(msgShared);
         } catch {
           /* user dismissed the sheet: nothing to report */
@@ -50,7 +53,7 @@ export function initShare(root: ParentNode = document): void {
     }
 
     box.querySelector<HTMLButtonElement>('[data-share-copy]')?.addEventListener('click', async () => {
-      showToast((await copyText(url)) ? msgCopied : msgFailed);
+      showToast((await copyText(current().url)) ? msgCopied : msgFailed);
     });
   });
 }

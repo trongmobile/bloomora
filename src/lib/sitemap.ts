@@ -1,5 +1,5 @@
 import { absoluteUrl } from './url';
-import { alternatesFor, type SitePage } from './pages';
+import { alternatesFor, indexablePages, type SitePage } from './pages';
 
 function esc(value: string): string {
   return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -7,7 +7,7 @@ function esc(value: string): string {
 
 /** Builds sitemap.xml including xhtml:link hreflang alternates for translated pages. */
 export function buildSitemapXml(pages: readonly SitePage[], site: string | URL, base: string): string {
-  const urls = pages.map((page) => {
+  const urls = indexablePages(pages).map((page) => {
     const loc = absoluteUrl(site, base, page.path);
     const alts = alternatesFor(pages, page.key)
       .map((a) => `    <xhtml:link rel="alternate" hreflang="${esc(a.hreflang)}" href="${esc(absoluteUrl(site, base, a.path))}"/>`)

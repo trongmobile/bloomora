@@ -180,4 +180,34 @@ test.describe('responsive layout', () => {
     await page.waitForLoadState('networkidle');
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
   });
+
+  // The pages added for sharing, planning and teaching must hold up on the smallest phones too.
+  for (const path of [
+    '/vi/quiz/',
+    '/en/quiz/result/bud-development/?f=rose',
+    '/vi/planner/?f=marigold&s=2026-10-22&g=tet',
+    '/en/classroom/',
+    '/vi/flowers/hoa-sen/moment/blooming/',
+    '/en/classroom/cards/sunflower/',
+    '/vi/embed/hoa-sen/',
+  ]) {
+    test(`no horizontal scrolling at 320px on ${path}`, async ({ page }) => {
+      await page.setViewportSize({ width: 320, height: 700 });
+      await page.goto(url(path));
+      await page.waitForLoadState('networkidle');
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+    });
+  }
+
+  test('the header still fits between the phone menu and the full navigation (1000 px, 900 px)', async ({ page }) => {
+    for (const width of [1000, 900, 820]) {
+      await page.setViewportSize({ width, height: 700 });
+      await page.goto(url('/vi/'));
+      const { scroll, client } = await page.evaluate(() => {
+        const inner = document.querySelector('.site-header__inner')!;
+        return { scroll: inner.scrollWidth, client: inner.clientWidth };
+      });
+      expect(scroll, `header overflows at ${width}px`).toBeLessThanOrEqual(client + 1);
+    }
+  });
 });

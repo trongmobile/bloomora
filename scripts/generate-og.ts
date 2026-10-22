@@ -3,6 +3,8 @@
  *
  *   public/og-image.png            1200×630 default share image
  *   public/og/flowers/{id}.png     1200×630 one per species
+ *   public/og/moments/{lang}/{id}-{stage}.png   one per species, stage and language (share landing pages)
+ *   public/og/quiz/{lang}/{stage}.png           one per quiz result and language
  *   public/apple-touch-icon.png    180×180
  *
  * Everything is drawn from our own SVG illustrations and the self-hosted
@@ -10,111 +12,29 @@
  * opentype.js, so rendering does not depend on system fonts). No photos.
  * Run with `npm run og`; it also runs automatically before `npm run build`.
  */
-import { mkdirSync, readFileSync } from 'node:fs';
+import { mkdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import opentype, { type Font, type Path } from 'opentype.js';
 import sharp from 'sharp';
 import { FLOWERS, getFlower } from '../src/data';
-import type { FlowerData } from '../src/data/types';
+import { QUIZ_RESULTS } from '../src/data/quiz';
+import { LANGS, STAGE_IDS, type FlowerData, type Lang, type StageId } from '../src/data/types';
+import { fmt, getDict } from '../src/i18n';
+import { momentBioState } from '../src/lib/moment';
+import { routes } from '../src/lib/routes';
 import { renderFlowerInner } from '../src/lib/art';
 import { bioStateAt } from '../src/lib/timelapse/keyframes';
 import { posterProgress } from '../src/lib/timelapse/poster';
 import { buildTimeline } from '../src/lib/timelapse/timeline';
 import { OG_HEIGHT, OG_WIDTH, SITE_NAME } from '../src/config/site';
+import { measure, textPath, wrap, type Face } from './lib/text-path';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const FONT_DIR = join(ROOT, 'assets', 'og-fonts');
 const PUBLIC = join(ROOT, 'public');
 
 const INK = '#23202a';
 const MUTED = '#5b5563';
 const ACCENT = '#a3254f';
-
-// ---------------------------------------------------------------- fonts
-
-type Face = 'sans400' | 'sans600' | 'serif500' | 'serif500i';
-const FILES: Record<Face, string[]> = {
-  sans400: ['be-vietnam-pro-latin-400-normal', 'be-vietnam-pro-latin-ext-400-normal', 'be-vietnam-pro-vietnamese-400-normal'],
-  sans600: ['be-vietnam-pro-latin-600-normal', 'be-vietnam-pro-latin-ext-600-normal', 'be-vietnam-pro-vietnamese-600-normal'],
-  serif500: ['newsreader-latin-500-normal', 'newsreader-latin-ext-500-normal', 'newsreader-vietnamese-500-normal'],
-  serif500i: ['newsreader-latin-500-italic', 'newsreader-latin-ext-500-italic', 'newsreader-vietnamese-500-italic'],
-};
-
-const cache = new Map<Face, Font[]>();
-function fontsFor(face: Face): Font[] {
-  let fonts = cache.get(face);
-  if (!fonts) {
-    fonts = FILES[face].map((name) => {
-      const buf = readFileSync(join(FONT_DIR, `${name}.woff`));
-      return opentype.parse(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength));
-    });
-    cache.set(face, fonts);
-  }
-  return fonts;
-}
-
-/** The first subset font that really has a glyph for the character (glyph 0 is .notdef). */
-function pick(fonts: Font[], ch: string): Font {
-  for (const f of fonts) {
-    if (f.charToGlyphIndex(ch) > 0) return f;
-  }
-  return fonts[0]!;
-}
-
-function measure(text: string, face: Face, size: number): number {
-  const fonts = fontsFor(face);
-  let w = 0;
-  for (const ch of text.normalize('NFC')) {
-    const f = pick(fonts, ch);
-    w += f.getAdvanceWidth(ch, size);
-  }
-  return w;
-}
-
-/** Serialises a glyph outline with fixed two-decimal numbers separated by spaces (parsers differ on "263" vs "263.00" and on "-" separators). */
-function pathData(path: Path): string {
-  const n = (v: number): string => v.toFixed(2);
-  let d = '';
-  for (const c of path.commands) {
-    if (c.type === 'M' || c.type === 'L') d += `${c.type}${n(c.x)} ${n(c.y)} `;
-    else if (c.type === 'Q') d += `Q${n(c.x1)} ${n(c.y1)} ${n(c.x)} ${n(c.y)} `;
-    else if (c.type === 'C') d += `C${n(c.x1)} ${n(c.y1)} ${n(c.x2)} ${n(c.y2)} ${n(c.x)} ${n(c.y)} `;
-    else d += 'Z ';
-  }
-  return d;
-}
-
-/** Text as one SVG <path>, drawn character by character with per-character font fallback. */
-function textPath(text: string, face: Face, size: number, x: number, y: number, fill: string, opts: { anchor?: 'start' | 'middle' } = {}): string {
-  const fonts = fontsFor(face);
-  const total = measure(text, face, size);
-  let cx = opts.anchor === 'middle' ? x - total / 2 : x;
-  let d = '';
-  for (const ch of text.normalize('NFC')) {
-    const f = pick(fonts, ch);
-    d += pathData(f.getPath(ch, cx, y, size));
-    cx += f.getAdvanceWidth(ch, size);
-  }
-  return d ? `<path d="${d}" fill="${fill}"/>` : '';
-}
-
-function wrap(text: string, face: Face, size: number, maxWidth: number): string[] {
-  const words = text.split(/\s+/);
-  const lines: string[] = [];
-  let line = '';
-  for (const w of words) {
-    const next = line ? `${line} ${w}` : w;
-    if (line && measure(next, face, size) > maxWidth) {
-      lines.push(line);
-      line = w;
-    } else {
-      line = next;
-    }
-  }
-  if (line) lines.push(line);
-  return lines;
-}
 
 // ---------------------------------------------------------------- pieces
 
@@ -129,7 +49,7 @@ function posterInner(flower: FlowerData, idPrefix: string): string {
 }
 
 /** A rounded card holding the flower illustration. */
-function artCard(flower: FlowerData, x: number, y: number, w: number, id: string, rot = 0): string {
+function artCard(flower: FlowerData, x: number, y: number, w: number, id: string, rot = 0, inner = posterInner(flower, `og-${id}`)): string {
   const h = Math.round((w * 3) / 4);
   const r = Math.round(w * 0.06);
   const cx = x + w / 2;
@@ -139,7 +59,7 @@ function artCard(flower: FlowerData, x: number, y: number, w: number, id: string
     `<rect x="${x + 6}" y="${y + 12}" width="${w}" height="${h}" rx="${r}" fill="#2a1f2e" opacity=".14" filter="url(#soft)"/>` +
     `<clipPath id="clip-${id}"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}"/></clipPath>` +
     `<g clip-path="url(#clip-${id})"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#f7f4ee"/>` +
-    `<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="0 0 800 600">${posterInner(flower, `og-${id}`)}</svg></g>` +
+    `<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="0 0 800 600">${inner}</svg></g>` +
     `<rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="${h - 2}" rx="${r}" fill="none" stroke="#ffffff" stroke-opacity=".85" stroke-width="2"/>` +
     `</g>`
   );
@@ -192,6 +112,63 @@ function flowerSvg(flower: FlowerData): string {
   return frame(left + artCard(flower, 640, 126, 500, flower.id), mix(flower.visual.palette.petal, 0.35));
 }
 
+/** Wraps text to at most `max` lines, ending the last one with an ellipsis when something was cut. */
+function clampLines(text: string, face: Face, size: number, width: number, max: number): string[] {
+  const all = wrap(text, face, size, width);
+  if (all.length <= max) return all;
+  const kept = all.slice(0, max);
+  kept[max - 1] = `${kept[max - 1]!.replace(/[\s,;:.–-]+$/, '')}…`;
+  return kept;
+}
+
+const firstSentence = (text: string): string => text.split(/(?<=[.!?])\s+/)[0] ?? text;
+
+/** The art of one stage of one species, for the cards on moment and quiz images. */
+function stageInner(flower: FlowerData, stage: StageId, idPrefix: string): string {
+  return renderFlowerInner(flower.visual, momentBioState(flower, stage), { idPrefix });
+}
+
+/** Share landing page of one stage: "Hoa sen · Nụ phát triển". */
+function momentSvg(flower: FlowerData, stage: StageId, lang: Lang): string {
+  const dict = getDict(lang);
+  const text = flower.text[lang];
+  const stageName = text.stages[stage]?.name ?? dict.stageNames[stage];
+  const n = flower.stages.findIndex((s) => s.id === stage) + 1;
+  let left = brandRow();
+  const titleSize = measure(text.name, 'serif500', 84) > 520 ? 64 : 84;
+  left += textPath(text.name, 'serif500', titleSize, 72, 262, INK);
+  const nameSize = measure(stageName, 'sans600', 44) > 500 ? 34 : 44;
+  left += textPath(stageName, 'sans600', nameSize, 74, 330, ACCENT);
+  left += textPath(fmt(dict.player.stageOf, { n, total: flower.stages.length }), 'sans400', 28, 74, 380, MUTED);
+  left += textPath(flower.scientificName, 'serif500i', 30, 74, 430, MUTED);
+  clampLines(firstSentence(text.stages[stage]?.description ?? dict.stageBlurbs[stage]), 'sans400', 22, 480, 2).forEach((line, i) => {
+    left += textPath(line, 'sans400', 22, 74, 480 + i * 32, MUTED);
+  });
+  left += textPath(dict.player.illustrative, 'sans400', 20, 74, 566, MUTED);
+  return frame(left + artCard(flower, 640, 126, 500, `${flower.id}-${stage}`, 0, stageInner(flower, stage, `og-${flower.id}-${stage}`)), mix(flower.visual.palette.petal, 0.35));
+}
+
+/** Result of the quiz: the stage title next to its showcase flower. */
+function quizSvg(stage: StageId, lang: Lang): string {
+  const dict = getDict(lang);
+  const result = QUIZ_RESULTS[stage].text[lang];
+  const flower = getFlower(QUIZ_RESULTS[stage].showcase)!;
+  const index = STAGE_IDS.indexOf(stage);
+  let left = brandRow();
+  left += textPath(dict.quiz.kicker, 'sans600', 24, 74, 200, ACCENT);
+  const titleLines = clampLines(result.title, 'serif500', 68, 540, 2);
+  titleLines.forEach((line, i) => {
+    left += textPath(line, 'serif500', 68, 72, 290 + i * 78, INK);
+  });
+  const y = 290 + (titleLines.length - 1) * 78;
+  left += textPath(fmt(dict.quiz.stageOf, { n: index + 1, total: STAGE_IDS.length }), 'sans600', 28, 74, y + 56, MUTED);
+  clampLines(firstSentence(result.body), 'sans400', 24, 500, 2).forEach((line, i) => {
+    left += textPath(line, 'sans400', 24, 74, y + 112 + i * 34, MUTED);
+  });
+  left += textPath(dict.quiz.disclaimer, 'sans400', 20, 74, 566, MUTED);
+  return frame(left + artCard(flower, 640, 126, 500, `quiz-${stage}`, 0, stageInner(flower, stage, `og-quiz-${stage}`)), mix(flower.visual.palette.petal, 0.35));
+}
+
 function defaultSvg(): string {
   const feature = ['sunflower', 'tulip', 'cherry-blossom'].map((id) => getFlower(id)).filter((f): f is FlowerData => !!f);
   let left = brandRow();
@@ -224,14 +201,44 @@ async function png(svg: string, file: string): Promise<void> {
   await sharp(Buffer.from(svg)).png({ compressionLevel: 9 }).toFile(file);
 }
 
+interface Job {
+  svg: () => string;
+  file: string;
+}
+
+/** Runs `worker` over `items` with a few in flight at a time (sharp rasterises on libvips threads). */
+async function pool<T>(items: readonly T[], size: number, worker: (item: T) => Promise<void>): Promise<void> {
+  let next = 0;
+  await Promise.all(
+    Array.from({ length: Math.min(size, items.length) }, async () => {
+      while (next < items.length) await worker(items[next++]!);
+    }),
+  );
+}
+
 async function main(): Promise<void> {
   const started = Date.now();
-  await png(defaultSvg(), join(PUBLIC, 'og-image.png'));
+  const jobs: Job[] = [{ svg: defaultSvg, file: join(PUBLIC, 'og-image.png') }];
   for (const flower of FLOWERS) {
-    await png(flowerSvg(flower), join(PUBLIC, 'og', 'flowers', `${flower.id}.png`));
+    jobs.push({ svg: () => flowerSvg(flower), file: join(PUBLIC, routes.ogFlower(flower.id)) });
   }
+  let moments = 0;
+  for (const lang of LANGS) {
+    for (const stage of STAGE_IDS) {
+      jobs.push({ svg: () => quizSvg(stage, lang), file: join(PUBLIC, routes.ogQuiz(lang, stage)) });
+    }
+    for (const flower of FLOWERS) {
+      for (const { id: stage } of flower.stages) {
+        moments += 1;
+        jobs.push({ svg: () => momentSvg(flower, stage, lang), file: join(PUBLIC, routes.ogMoment(lang, flower.id, stage)) });
+      }
+    }
+  }
+  await pool(jobs, 6, (job) => png(job.svg(), job.file));
   await png(iconSvg(180), join(PUBLIC, 'apple-touch-icon.png'));
-  console.log(`og: wrote default + ${FLOWERS.length} flower images + apple-touch-icon in ${Date.now() - started} ms`);
+  console.log(
+    `og: wrote default + ${FLOWERS.length} flower + ${moments} moment + ${LANGS.length * STAGE_IDS.length} quiz images + apple-touch-icon in ${Date.now() - started} ms`,
+  );
 }
 
 main().catch((err: unknown) => {

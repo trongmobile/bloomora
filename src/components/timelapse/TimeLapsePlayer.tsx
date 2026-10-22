@@ -3,12 +3,14 @@ import { SPEEDS, type Speed } from '../../lib/timelapse/player';
 import { buildTimeline, positionAt, progressFor } from '../../lib/timelapse/timeline';
 import { bioStateAt } from '../../lib/timelapse/keyframes';
 import { posterProgress } from '../../lib/timelapse/poster';
+import { parseStageParam } from '../../lib/stage-link';
 import { formatElapsed } from '../../lib/duration';
 import { fmt } from '../../i18n';
 import { FlowerMedia } from './FlowerMedia';
 import { FlowerTimeline } from './FlowerTimeline';
 import { GrowthStageDescription } from './GrowthStageDescription';
 import { GrowthStageIndicator } from './GrowthStageIndicator';
+import { PlayerShare } from './PlayerShare';
 import { CompressIcon, ExpandIcon, NextIcon, PauseIcon, PlayIcon, PrevIcon, RestartIcon } from './icons';
 import type { PlayerProps } from './types';
 import { usePlayer, usePrefersReducedMotion } from './usePlayer';
@@ -52,6 +54,14 @@ export default function TimeLapsePlayer(props: PlayerProps) {
 
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
+
+  // Open on a shared stage: from the moment page (prop) or from `?stage=<id>` on a species page.
+  useEffect(() => {
+    const ids = timeline.segments.map((s) => s.id);
+    const wanted = props.initialStage ?? parseStageParam(window.location.search, ids);
+    if (wanted && ids.includes(wanted)) dispatch({ type: 'seek', progress: progressFor(timeline, wanted, 0.6) });
+    // Only on mount: later seeks belong to the visitor.
+  }, []);
 
   const rootRef = useRef<HTMLElement>(null);
   const { active: fullscreen, toggle: toggleFullscreen } = useFullscreen(rootRef);
@@ -262,12 +272,20 @@ export default function TimeLapsePlayer(props: PlayerProps) {
 
       <GrowthStageDescription lang={lang} segment={pos.segment} total={total} text={stageText} labels={labels} />
 
+      <PlayerShare
+        player={props}
+        progress={state.progress}
+        stageId={pos.segment.id}
+        stageName={stageName}
+        onClipStart={() => dispatch({ type: 'pause' })}
+      />
+
       <div className="tl__notes">
         <p>{labels.illustrative}</p>
-        <p>{props.startNote}</p>
-        <p>{props.timeNote}</p>
+        {!props.compact && <p>{props.startNote}</p>}
+        {!props.compact && <p>{props.timeNote}</p>}
         {reduced && <p data-testid="reduced-note">{labels.reducedMotion}</p>}
-        <p className="tl__hint">{labels.keyboardHint}</p>
+        {!props.compact && <p className="tl__hint">{labels.keyboardHint}</p>}
       </div>
 
       <p className="visually-hidden" role="status" aria-live="polite" aria-atomic="true" data-testid="live">

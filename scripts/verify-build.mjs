@@ -73,8 +73,22 @@ for (const id of flowerIds) {
   else if (statSync(f).size < 5000) fail(`og/flowers/${id}.png`, 'suspiciously small');
 }
 for (const lang of ['vi', 'en']) {
-  for (const p of [`${lang}/index.html`, `${lang}/flowers/index.html`, `${lang}/learn/index.html`, `${lang}/about/index.html`]) {
+  for (const p of [
+    `${lang}/index.html`,
+    `${lang}/flowers/index.html`,
+    `${lang}/learn/index.html`,
+    `${lang}/about/index.html`,
+    `${lang}/quiz/index.html`,
+    `${lang}/planner/index.html`,
+    `${lang}/classroom/index.html`,
+  ]) {
     if (!existsSync(join(DIST, p))) fail(p, 'missing page');
+  }
+  // Every quiz result has a page and its own share image.
+  const stages = ['seed', 'germination', 'seedling', 'vegetative', 'bud-formation', 'bud-development', 'blooming', 'full-bloom', 'wilting'];
+  for (const stage of stages) {
+    if (!existsSync(join(DIST, lang, 'quiz', 'result', stage, 'index.html'))) fail(`${lang}/quiz/result/${stage}/`, 'missing quiz result page');
+    if (!existsSync(join(DIST, 'og', 'quiz', lang, `${stage}.png`))) fail(`og/quiz/${lang}/${stage}.png`, 'missing quiz result image');
   }
 }
 
@@ -83,17 +97,29 @@ function pngSize(file) {
   const b = readFileSync(file);
   return { w: b.readUInt32BE(16), h: b.readUInt32BE(20) };
 }
-for (const f of ['og-image.png', ...flowerIds.map((id) => `og/flowers/${id}.png`)]) {
+for (const f of ['og-image.png', ...files.map(rel).filter((r) => /^og\/.+\.png$/.test(r))]) {
   const p = join(DIST, f);
   if (!existsSync(p)) continue;
   const { w, h } = pngSize(p);
   if (w !== 1200 || h !== 630) fail(f, `expected 1200×630, got ${w}×${h}`);
 }
 
+// Every share landing page ("moment") has its image, and the static art it opens with.
+for (const lang of ['vi', 'en']) {
+  const images = files.map(rel).filter((r) => r.startsWith(`og/moments/${lang}/`));
+  const pages = htmlFiles.map(rel).filter((r) => new RegExp(`^${lang}/flowers/[^/]+/moment/[^/]+/index\\.html$`).test(r));
+  if (pages.length === 0) fail(`${lang}/flowers/*/moment/`, 'no share landing pages were built');
+  if (images.length !== pages.length) fail(`og/moments/${lang}/`, `${images.length} images for ${pages.length} moment pages`);
+}
+if (files.map(rel).filter((r) => /^art\/moments\/[^/]+\/[^/]+\.svg$/.test(r)).length < flowerIds.length * 9) {
+  fail('art/moments/', 'expected one illustration per species and stage');
+}
+
 // ------------------------------------------------------------------ per-page checks
 const canonicalSeen = new Map();
 let goatPages = 0;
 const indexable = [];
+const quiet = [];
 
 for (const file of htmlFiles) {
   const html = read(file);
@@ -133,6 +159,18 @@ for (const file of htmlFiles) {
     if (!noindex) {
       if (canonicalSeen.has(canonical)) fail(where, `canonical duplicates ${canonicalSeen.get(canonical)}`);
       canonicalSeen.set(canonical, where);
+    }
+  }
+
+  // Landing pages, embeds and printables are noindex by design; each one must say so and stay out of the sitemap.
+  const mustBeQuiet = /\/(moment|quiz\/result|embed|classroom\/cards)\//.test(route);
+  if (mustBeQuiet && !noindex) fail(where, 'share/embed/printable page must be noindex');
+  if (noindex && route !== '/404.html') {
+    quiet.push({ route, canonical, where });
+    const ogImage = meta('og:image');
+    if (ogImage?.startsWith(site)) {
+      const local = ogImage.slice(site.length + base.length);
+      if (!existsSync(join(DIST, local))) fail(where, `og:image points to a file that is not in dist: ${local}`);
     }
   }
 
@@ -212,6 +250,9 @@ if (existsSync(sitemapPath)) {
     if (!page.canonical || !locs.includes(page.canonical)) fail('sitemap.xml', `indexable page missing from sitemap: ${page.where}`);
   }
   if (locs.some((l) => l.endsWith('/404.html') || l.includes('/404'))) fail('sitemap.xml', 'contains the 404 page');
+  for (const page of quiet) {
+    if (page.canonical && locs.includes(page.canonical)) fail('sitemap.xml', `noindex page is listed: ${page.where}`);
+  }
   const alternates = (xml.match(/hreflang="/g) ?? []).length;
   if (alternates < locs.length * 2) fail('sitemap.xml', `hreflang alternates look incomplete (${alternates} for ${locs.length} URLs)`);
 }

@@ -10,12 +10,26 @@ test.describe('flower list: search and filters', () => {
     await expect(list(page)).toHaveAttribute('data-filters-ready', 'true');
   });
 
-  test('shows the first page of results and loads more', async ({ page }) => {
-    await expect(visibleCards(page)).toHaveCount(6);
-    await expect(list(page)).toHaveAttribute('data-total', '8');
-    await page.locator('[data-load-more]').click();
-    await expect(visibleCards(page)).toHaveCount(8);
-    await expect(page.locator('[data-load-more]')).toBeHidden();
+  test('shows up to 8 results and offers "load more" only when there are more than 8', async ({ page }) => {
+    const total = Number(await list(page).getAttribute('data-total'));
+    await expect(list(page)).toHaveAttribute('data-page-size', '8');
+    await expect(visibleCards(page)).toHaveCount(Math.min(total, 8));
+    const more = page.locator('[data-load-more]');
+    if (total > 8) {
+      await expect(more).toBeVisible();
+      await more.click();
+      await expect(visibleCards(page)).toHaveCount(Math.min(total, 16));
+    } else {
+      await expect(more).toBeHidden();
+    }
+  });
+
+  test('bloom-time badges keep a space between the label and the duration', async ({ page }) => {
+    const badges = page.locator('[data-flower-card]:not([hidden]) .badge', { hasText: 'Nở sau' });
+    await expect(badges.first()).toHaveText(/^Nở sau \d/);
+    for (const text of await badges.allTextContents()) expect(text).toMatch(/^Nở sau \d/);
+    await page.goto(url('/en/flowers/'));
+    await expect(page.locator('.badge', { hasText: 'Blooms after' }).first()).toHaveText(/^Blooms after \d/);
   });
 
   test('searches by Vietnamese name with and without diacritics', async ({ page }) => {
@@ -63,7 +77,7 @@ test.describe('flower list: search and filters', () => {
     await expect(page.locator('[data-results-count]')).not.toBeEmpty();
     await page.locator('[data-empty] [data-reset]').click();
     await expect(page.locator('[data-empty]')).toBeHidden();
-    await expect(visibleCards(page)).toHaveCount(6);
+    await expect(visibleCards(page)).toHaveCount(Math.min(Number(await list(page).getAttribute('data-total')), 8));
   });
 
   test('keeps the query in the URL and restores it on reload', async ({ page }) => {

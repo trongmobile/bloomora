@@ -2,7 +2,22 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import { url } from './helpers';
 
-const PAGES = ['/vi/', '/en/flowers/', '/en/flowers/sunflower/', '/vi/flowers/hoa-sen/', '/en/learn/', '/en/learn/flower-care-basics/', '/vi/about/'];
+const PAGES = [
+  '/vi/',
+  '/en/flowers/',
+  '/en/flowers/sunflower/',
+  '/vi/flowers/hoa-sen/',
+  '/en/learn/',
+  '/en/learn/flower-care-basics/',
+  '/vi/about/',
+  '/vi/quiz/',
+  '/en/quiz/result/bud-development/?f=rose',
+  '/en/planner/?f=marigold&g=tet',
+  '/vi/classroom/',
+  '/en/flowers/lotus/moment/blooming/',
+  '/vi/embed/hoa-sen/',
+  '/en/classroom/cards/sunflower/',
+];
 
 for (const scheme of ['light', 'dark'] as const) {
   test.describe(`axe WCAG 2.x A/AA — ${scheme}`, () => {

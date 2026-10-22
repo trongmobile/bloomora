@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { FLOWERS } from '../../src/data';
 import { buildHead, composeTitle } from '../../src/lib/seo';
 import { articleLd, breadcrumbLd, serializeJsonLd, websiteLd } from '../../src/lib/jsonld';
-import { GATEWAY_KEY, alternatesFor, buildPageRegistry, type ArticleRef } from '../../src/lib/pages';
+import { GATEWAY_KEY, alternatesFor, buildPageRegistry, indexablePages, type ArticleRef } from '../../src/lib/pages';
 import { buildRobotsTxt, buildSitemapXml } from '../../src/lib/sitemap';
 import { routes } from '../../src/lib/routes';
 import { isAbsoluteHttps } from '../../src/lib/url';
@@ -154,12 +154,27 @@ describe('page registry, sitemap and robots', () => {
   it('writes a valid sitemap with absolute https URLs and the base path', () => {
     const xml = buildSitemapXml(registry, project.site, project.base);
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]!);
-    expect(locs).toHaveLength(registry.length);
+    expect(locs).toHaveLength(indexablePages(registry).length);
     expect(new Set(locs).size).toBe(locs.length);
     expect(locs.every((l) => l.startsWith('https://owner.github.io/bloomora/'))).toBe(true);
     expect(locs).toContain('https://owner.github.io/bloomora/vi/flowers/hoa-huong-duong/');
     expect(xml).toContain('hreflang="x-default"');
     expect(xml).not.toContain('404');
+  });
+
+  it('keeps share, embed and printable pages out of the sitemap but gives them hreflang partners', () => {
+    const quiet = registry.filter((p) => p.indexable === false);
+    expect(quiet.length).toBeGreaterThan(100);
+    const xml = buildSitemapXml(registry, project.site, project.base);
+    for (const page of quiet) expect(xml).not.toContain(`/bloomora${page.path}<`);
+    expect(xml).not.toContain('/moment/');
+    expect(xml).not.toContain('/embed/');
+    expect(xml).not.toContain('/quiz/result/');
+    const lotus = registry.filter((p) => p.key === 'moment:lotus:blooming');
+    expect(lotus.map((p) => p.path)).toEqual(['/vi/flowers/hoa-sen/moment/blooming/', '/en/flowers/lotus/moment/blooming/']);
+    expect(alternatesFor(registry, 'moment:lotus:blooming').map((a) => a.hreflang)).toEqual(['vi', 'en', 'x-default']);
+    // The three tool pages are real, indexable pages in both languages.
+    for (const key of ['quiz', 'planner', 'classroom']) expect(registry.filter((p) => p.key === key && p.indexable !== false)).toHaveLength(2);
   });
 
   it('points robots.txt at the sitemap and does not block the site', () => {

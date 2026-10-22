@@ -20,6 +20,8 @@ const links = [
   { label: dict.nav.home, path: routes.home(lang), exact: true },
   { label: dict.nav.flowers, path: routes.flowers(lang), exact: false },
   { label: dict.nav.learn, path: routes.learn(lang), exact: false },
+  { label: dict.nav.quiz, path: routes.quiz(lang), exact: false },
+  { label: dict.nav.planner, path: routes.planner(lang), exact: false },
   { label: dict.nav.about, path: routes.about(lang), exact: false },
 ].map((l) => ({ ...l, current: l.exact ? path === l.path : path.startsWith(l.path) }));
 ---

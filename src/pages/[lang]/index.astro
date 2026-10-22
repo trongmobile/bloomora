@@ -56,6 +56,32 @@ const listHref = (query: string) => href(`${routes.flowers(lang)}?${query}`);
     </div>
   </section>
 
+  <section class="section section--tight" aria-labelledby="tools-title">
+    <div class="container">
+      <div class="section__head">
+        <h2 id="tools-title">{dict.home.toolsTitle}</h2>
+        <p class="lead">{dict.home.toolsLead}</p>
+      </div>
+      <ul class="grid">
+        {
+          [
+            { title: dict.home.toolQuizTitle, body: dict.home.toolQuizBody, path: routes.quiz(lang) },
+            { title: dict.home.toolPlannerTitle, body: dict.home.toolPlannerBody, path: routes.planner(lang) },
+            { title: dict.home.toolClassroomTitle, body: dict.home.toolClassroomBody, path: routes.classroom(lang) },
+          ].map((tool, i) => (
+            <li class="rise" style={`--i:${i}`}>
+              <GlassSurface as="article" tier="interactive" class="article-card">
+                <h3><a class="flower-card__link" href={href(tool.path)}>{tool.title}</a></h3>
+                <p>{tool.body}</p>
+                <p class="meta">{dict.home.toolOpen} →</p>
+              </GlassSurface>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
   <section class="section" aria-labelledby="popular-title">
     <div class="container">
       <div class="section__head">
