@@ -232,12 +232,10 @@
 }
 .hero__art {
   justify-self: center;
-  width: min(100%, 26rem);
+  width: min(100%, 28rem);
   aspect-ratio: 1;
   display: grid;
   place-items: center;
-  padding: var(--space-5);
-  border-radius: 50%;
 }
 .hero__art svg {
   width: 100%;
@@ -254,27 +252,7 @@
   }
 }
 .bloom-emblem {
-  color: var(--leaf);
   overflow: visible;
-}
-.bloom-emblem__track {
-  stroke: currentColor;
-  stroke-opacity: 0.4;
-  stroke-width: 1.2;
-}
-.bloom-emblem__stage {
-  fill: currentColor;
-  fill-opacity: 0.75;
-}
-.bloom-emblem__stage--last {
-  fill: var(--stage-accent, var(--accent));
-  fill-opacity: 1;
-}
-.bloom-emblem--sunflower {
-  --stage-accent: #b97708;
-}
-:root[data-theme='dark'] .bloom-emblem--sunflower {
-  --stage-accent: #ffd36b;
 }
 .bloom-emblem .bloom,
 .bloom-emblem .ring {
@@ -290,30 +268,18 @@
   animation-direction: reverse;
 }
 
-/* Lotus: the flower bobs on the water and the ripples swell outwards. */
+/* Lotus: the flower gently bobs. */
 @keyframes lotus-bob {
   50% {
     transform: translateY(-3px);
   }
 }
-@keyframes lotus-ripple {
-  50% {
-    transform: scale(1.07);
-    stroke-opacity: 0.12;
-  }
-}
 .bloom-emblem .lotus {
   animation: lotus-bob 7s ease-in-out infinite;
 }
-.bloom-emblem .lotus-ripple {
-  stroke: var(--leaf);
-  stroke-opacity: 0.4;
-  transform-origin: 0 50px;
-  animation: lotus-ripple 6s ease-in-out infinite;
-}
 
 /* The four blooms cross-fade: each stays for 30s of a 120s cycle and fades over ~1.2s. The 1.2s negative offset starts
-   the first one already faded in, so the page never loads on an empty circle. */
+   the first one already faded in, so the hero never loads empty. */
 @keyframes bloom-slide {
   0% {
     opacity: 0;

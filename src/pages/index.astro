@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import GlassButton from '../components/design-system/GlassButton.astro';
-import GlassSurface from '../components/design-system/GlassSurface.astro';
 import HeroBloom from '../components/site/HeroBloom.astro';
 import { getDict } from '../i18n';
 import { LANG_STORAGE_KEY } from '../config/site';
@@ -42,7 +41,7 @@ const alternates = alternatesFor(registry, 'gateway');
           <GlassButton href={href(routes.home('en'))} hreflang="en" lang="en" data-lang-switch="en">English</GlassButton>
         </div>
       </div>
-      <GlassSurface tier="elevated" class="hero__art"><HeroBloom /></GlassSurface>
+      <div class="hero__art"><HeroBloom /></div>
     </div>
   </section>
   <script is:inline define:vars={{ key: LANG_STORAGE_KEY, vi: href(routes.home('vi')), en: href(routes.home('en')) }}>

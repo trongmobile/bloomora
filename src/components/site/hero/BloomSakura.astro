@@ -1,7 +1,6 @@
 ---
 /** Cherry blossom: two layers of five notched petals, a fan of stamens, and a few petals drifting round it. */
 import { spread } from '../../../lib/hero-art';
-import StageRing from './StageRing.astro';
 
 const W = 1.25;
 const n = (v: number) => +(v * W).toFixed(2);
@@ -30,12 +29,8 @@ const drifting = [
 }));
 ---
 
-<svg class="bloom-emblem bloom-emblem--sakura" viewBox="-120 -120 240 240" aria-hidden="true" focusable="false">
+<svg class="bloom-emblem bloom-emblem--sakura" viewBox="-104 -104 208 208" aria-hidden="true" focusable="false">
   <defs>
-    <radialGradient id="hk-glow">
-      <stop offset="0%" stop-color="#ffa6c4" stop-opacity=".42"></stop>
-      <stop offset="100%" stop-color="#ffa6c4" stop-opacity="0"></stop>
-    </radialGradient>
     <linearGradient id="hk-g-back" x1="0" y1="1" x2="0" y2="0">
       <stop offset="0%" stop-color="#df5a89"></stop>
       <stop offset="100%" stop-color="#fbbcd1"></stop>
@@ -53,9 +48,6 @@ const drifting = [
       <path d="M-9 -22L-5 -52M9 -22L5 -52" fill="none" stroke="#b8396a" stroke-opacity=".2" stroke-width=".7" stroke-linecap="round"></path>
     </g>
   </defs>
-
-  <circle r="104" fill="url(#hk-glow)"></circle>
-  <StageRing />
 
   <g class="ring ring--rev" style="--spin:70s">
     {

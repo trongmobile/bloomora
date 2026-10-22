@@ -1,7 +1,6 @@
 ---
 /** Layered pink bloom (12 + 8 + 6 petals) with a sunflower-style seed centre. */
 import { petalPath, spiralSeeds, spread } from '../../../lib/hero-art';
-import StageRing from './StageRing.astro';
 
 const rings = [
   { id: 'back', angles: spread(12, 15), base: 8, length: 84, width: 17, spin: 160, rev: false },
@@ -17,12 +16,8 @@ const rings = [
 const seeds = spiralSeeds(26, 2.4);
 ---
 
-<svg class="bloom-emblem bloom-emblem--dahlia" viewBox="-120 -120 240 240" aria-hidden="true" focusable="false">
+<svg class="bloom-emblem bloom-emblem--dahlia" viewBox="-104 -104 208 208" aria-hidden="true" focusable="false">
   <defs>
-    <radialGradient id="hb-glow">
-      <stop offset="0%" stop-color="#ef8fb0" stop-opacity=".42"></stop>
-      <stop offset="100%" stop-color="#ef8fb0" stop-opacity="0"></stop>
-    </radialGradient>
     <linearGradient id="hb-g-back" x1="0" y1="1" x2="0" y2="0">
       <stop offset="0%" stop-color="#a82c59"></stop>
       <stop offset="100%" stop-color="#f3a3bf"></stop>
@@ -48,9 +43,6 @@ const seeds = spiralSeeds(26, 2.4);
       ))
     }
   </defs>
-
-  <circle r="104" fill="url(#hb-glow)"></circle>
-  <StageRing />
 
   <g class="bloom">
     {

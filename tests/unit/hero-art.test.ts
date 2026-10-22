@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { petalPath, spiralSeeds, spread, stageDots } from '../../src/lib/hero-art';
+import { petalPath, spiralSeeds, spread } from '../../src/lib/hero-art';
 
 describe('hero art geometry', () => {
   it('draws a closed petal that starts at its base and ends at its tip', () => {
@@ -23,15 +23,4 @@ describe('hero art geometry', () => {
     expect(minGap).toBeGreaterThan(1.8);
   });
 
-  it('places nine stage dots clockwise from the top, growing, with only the last marked as the bloom', () => {
-    const dots = stageDots();
-    expect(dots).toHaveLength(9);
-    expect(dots[0]).toMatchObject({ x: 0, y: -108, last: false });
-    expect(dots.map((d) => d.r)).toEqual([...dots.map((d) => d.r)].sort((a, b) => a - b));
-    expect(dots[0]!.r).toBe(1.8);
-    expect(dots[8]!.r).toBe(5.4);
-    expect(dots.filter((d) => d.last)).toHaveLength(1);
-    expect(dots[8]!.last).toBe(true);
-    for (const d of dots) expect(Math.hypot(d.x, d.y)).toBeCloseTo(108, 1);
-  });
 });

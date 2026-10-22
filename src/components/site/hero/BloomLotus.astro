@@ -1,10 +1,9 @@
 ---
-/** Lotus seen from the side: three fans of pointed petals rising from still water, with lily pads and ripples. */
+/** Lotus seen from the side: three fans of pointed petals. */
 import { petalPath } from '../../../lib/hero-art';
-import StageRing from './StageRing.astro';
 
-/** Where the petals meet, just above the water. */
-const BASE_Y = 44;
+/** Where the petals meet; set so the flower sits in the vertical middle of the viewBox. */
+const BASE_Y = 48;
 
 const tiers = [
   { id: 'back', angles: [-66, -33, 0, 33, 66], length: 96, width: 21 },
@@ -16,19 +15,10 @@ const tiers = [
   sheen: petalPath(t.length * 0.16, t.length * 0.62, t.width * 0.3),
 }));
 
-const ripples = [
-  { rx: 82, ry: 15, delay: 0 },
-  { rx: 64, ry: 11, delay: -2 },
-  { rx: 46, ry: 8, delay: -4 },
-];
 ---
 
-<svg class="bloom-emblem bloom-emblem--lotus" viewBox="-120 -120 240 240" aria-hidden="true" focusable="false">
+<svg class="bloom-emblem bloom-emblem--lotus" viewBox="-104 -104 208 208" aria-hidden="true" focusable="false">
   <defs>
-    <radialGradient id="hl-glow" cy="45%">
-      <stop offset="0%" stop-color="#ff9cc4" stop-opacity=".3"></stop>
-      <stop offset="100%" stop-color="#ff9cc4" stop-opacity="0"></stop>
-    </radialGradient>
     <linearGradient id="hl-g-back" x1="0" y1="1" x2="0" y2="0">
       <stop offset="0%" stop-color="#fff0f6"></stop>
       <stop offset="100%" stop-color="#d63d7e"></stop>
@@ -41,10 +31,6 @@ const ripples = [
       <stop offset="0%" stop-color="#ffffff"></stop>
       <stop offset="100%" stop-color="#f58bb5"></stop>
     </linearGradient>
-    <linearGradient id="hl-pad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#3a9a68"></stop>
-      <stop offset="100%" stop-color="#1d6444"></stop>
-    </linearGradient>
     {
       tiers.map((t) => (
         <g id={`hl-p-${t.id}`}>
@@ -54,17 +40,6 @@ const ripples = [
       ))
     }
   </defs>
-
-  <circle cy="-8" r="104" fill="url(#hl-glow)"></circle>
-  <StageRing />
-
-  <g class="lotus-water">
-    {ripples.map((r) => <ellipse class="lotus-ripple" style={`animation-delay:${r.delay}s`} cy="50" rx={r.rx} ry={r.ry} fill="none" stroke-width="1.2"></ellipse>)}
-    <ellipse cx="-50" cy="58" rx="26" ry="7" fill="url(#hl-pad)" fill-opacity=".92"></ellipse>
-    <path d="M-50 58L-72 54" stroke="#0f3f2a" stroke-opacity=".5" stroke-width=".8" fill="none"></path>
-    <ellipse cx="54" cy="55" rx="20" ry="5.5" fill="url(#hl-pad)" fill-opacity=".85"></ellipse>
-    <path d="M54 55L70 52" stroke="#0f3f2a" stroke-opacity=".5" stroke-width=".8" fill="none"></path>
-  </g>
 
   <g class="lotus">
     {

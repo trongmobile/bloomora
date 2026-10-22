@@ -1,7 +1,6 @@
 ---
 /** Sunflower: two staggered rings of 21 golden rays round a dense spiral of seeds. */
 import { petalPath, spiralSeeds, spread } from '../../../lib/hero-art';
-import StageRing from './StageRing.astro';
 
 const rings = [
   { id: 'back', angles: spread(21), base: 30, length: 62, width: 10, spin: 220, rev: false },
@@ -19,12 +18,8 @@ const dark = dots(seeds.filter((_, i) => i % 3 !== 0));
 const amber = dots(seeds.filter((_, i) => i % 3 === 0));
 ---
 
-<svg class="bloom-emblem bloom-emblem--sunflower" viewBox="-120 -120 240 240" aria-hidden="true" focusable="false">
+<svg class="bloom-emblem bloom-emblem--sunflower" viewBox="-104 -104 208 208" aria-hidden="true" focusable="false">
   <defs>
-    <radialGradient id="hs-glow">
-      <stop offset="0%" stop-color="#ffd24a" stop-opacity=".45"></stop>
-      <stop offset="100%" stop-color="#ffd24a" stop-opacity="0"></stop>
-    </radialGradient>
     <linearGradient id="hs-g-back" x1="0" y1="1" x2="0" y2="0">
       <stop offset="0%" stop-color="#cf7f08"></stop>
       <stop offset="100%" stop-color="#ffcf45"></stop>
@@ -46,9 +41,6 @@ const amber = dots(seeds.filter((_, i) => i % 3 === 0));
       ))
     }
   </defs>
-
-  <circle r="104" fill="url(#hs-glow)"></circle>
-  <StageRing />
 
   <g class="bloom">
     {

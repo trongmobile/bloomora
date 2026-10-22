@@ -1,8 +1,0 @@
----
-import { stageDots } from '../../../lib/hero-art';
-
-const dots = stageDots();
----
-
-<circle class="bloom-emblem__track" r="108" fill="none" stroke-dasharray="1.5 5.5" stroke-linecap="round"></circle>
-{dots.map((d) => <circle class={d.last ? 'bloom-emblem__stage bloom-emblem__stage--last' : 'bloom-emblem__stage'} cx={d.x} cy={d.y} r={d.r}></circle>)}

@@ -4,7 +4,6 @@ import { getDict } from '../../i18n';
 import { href } from '../../lib/href';
 import { routes } from '../../lib/routes';
 import GlassButton from '../design-system/GlassButton.astro';
-import GlassSurface from '../design-system/GlassSurface.astro';
 import HeroBloom from './HeroBloom.astro';
 
 interface Props {
@@ -24,8 +23,8 @@ const dict = getDict(lang);
         <GlassButton href={href(routes.learn(lang))}>{dict.home.heroCtaSecondary}</GlassButton>
       </div>
     </div>
-    <GlassSurface tier="elevated" class="hero__art">
+    <div class="hero__art">
       <HeroBloom />
-    </GlassSurface>
+    </div>
   </div>
 </section>

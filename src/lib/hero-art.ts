@@ -24,16 +24,3 @@ export function spiralSeeds(count: number, spacing: number): { x: number; y: num
     return { x: round(radius * Math.cos(angle)), y: round(radius * Math.sin(angle)) };
   });
 }
-
-/** Stage dots round the flower, clockwise from the top, each larger than the last; the final one is the full bloom. */
-export function stageDots(count = 9, radius = 108): { x: number; y: number; r: number; last: boolean }[] {
-  return Array.from({ length: count }, (_, i) => {
-    const angle = ((-90 + (360 / count) * i) * Math.PI) / 180;
-    return {
-      x: round(radius * Math.cos(angle)),
-      y: round(radius * Math.sin(angle)),
-      r: round(1.8 + (3.6 * i) / Math.max(1, count - 1)),
-      last: i === count - 1,
-    };
-  });
-}
