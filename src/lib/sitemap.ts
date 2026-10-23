@@ -1,6 +1,9 @@
 import { absoluteUrl } from './url';
 import { alternatesFor, indexablePages, type SitePage } from './pages';
 
+/** Site-relative path the sitemap is served from (robots.txt points here). */
+export const SITEMAP_PATH = '/vi/sitemap.xml';
+
 function esc(value: string): string {
   return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
@@ -28,5 +31,5 @@ export function buildSitemapXml(pages: readonly SitePage[], site: string | URL, 
 }
 
 export function buildRobotsTxt(site: string | URL, base: string): string {
-  return `User-agent: *\nAllow: /\n\nSitemap: ${absoluteUrl(site, base, '/sitemap.xml')}\n`;
+  return `User-agent: *\nAllow: /\n\nSitemap: ${absoluteUrl(site, base, SITEMAP_PATH)}\n`;
 }

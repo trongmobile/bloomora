@@ -12,6 +12,8 @@ import { join, relative, resolve, sep } from 'node:path';
 
 const DIST = resolve(process.argv[2] ?? 'dist');
 const PLACEHOLDER_HOST = 'bloomora.example';
+/** Same path as SITEMAP_PATH in src/lib/sitemap.ts. */
+const SITEMAP = 'vi/sitemap.xml';
 const STRICT = process.env.VERIFY_STRICT === '1';
 
 const errors = [];
@@ -64,7 +66,7 @@ const flowerIds = files
   .filter((f) => /^art\/[^/]+\.svg$/.test(rel(f)))
   .map((f) => rel(f).replace(/^art\//, '').replace(/\.svg$/, ''));
 
-const must = ['index.html', '404.html', 'robots.txt', 'sitemap.xml', 'favicon.svg', 'apple-touch-icon.png', 'og-image.png'];
+const must = ['index.html', '404.html', 'robots.txt', SITEMAP, 'favicon.svg', 'apple-touch-icon.png', 'og-image.png'];
 for (const f of must) if (!existsSync(join(DIST, f))) fail(f, 'missing from dist');
 if (flowerIds.length < 8) fail('art/', `expected at least 8 species, found ${flowerIds.length}`);
 for (const id of flowerIds) {
@@ -234,27 +236,27 @@ if (goatPages > 0 && goatPages !== htmlFiles.length) {
 }
 
 // ------------------------------------------------------------------ sitemap
-const sitemapPath = join(DIST, 'sitemap.xml');
+const sitemapPath = join(DIST, SITEMAP);
 if (existsSync(sitemapPath)) {
   const xml = read(sitemapPath);
   const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => decode(m[1]));
-  if (new Set(locs).size !== locs.length) fail('sitemap.xml', 'duplicate <loc> entries');
+  if (new Set(locs).size !== locs.length) fail(SITEMAP, 'duplicate <loc> entries');
   for (const loc of locs) {
-    if (!loc.startsWith('https://')) fail('sitemap.xml', `not absolute https: ${loc}`);
-    if (!loc.startsWith(`${site}${base}`)) fail('sitemap.xml', `${loc} is outside ${site}${base}`);
+    if (!loc.startsWith('https://')) fail(SITEMAP, `not absolute https: ${loc}`);
+    if (!loc.startsWith(`${site}${base}`)) fail(SITEMAP, `${loc} is outside ${site}${base}`);
     const path = loc.slice(`${site}${base}`.length) || '/';
     const file = path.endsWith('/') ? join(DIST, path, 'index.html') : join(DIST, path);
-    if (!existsSync(file)) fail('sitemap.xml', `${loc} has no matching file in dist`);
+    if (!existsSync(file)) fail(SITEMAP, `${loc} has no matching file in dist`);
   }
   for (const page of indexable) {
-    if (!page.canonical || !locs.includes(page.canonical)) fail('sitemap.xml', `indexable page missing from sitemap: ${page.where}`);
+    if (!page.canonical || !locs.includes(page.canonical)) fail(SITEMAP, `indexable page missing from sitemap: ${page.where}`);
   }
-  if (locs.some((l) => l.endsWith('/404.html') || l.includes('/404'))) fail('sitemap.xml', 'contains the 404 page');
+  if (locs.some((l) => l.endsWith('/404.html') || l.includes('/404'))) fail(SITEMAP, 'contains the 404 page');
   for (const page of quiet) {
-    if (page.canonical && locs.includes(page.canonical)) fail('sitemap.xml', `noindex page is listed: ${page.where}`);
+    if (page.canonical && locs.includes(page.canonical)) fail(SITEMAP, `noindex page is listed: ${page.where}`);
   }
   const alternates = (xml.match(/hreflang="/g) ?? []).length;
-  if (alternates < locs.length * 2) fail('sitemap.xml', `hreflang alternates look incomplete (${alternates} for ${locs.length} URLs)`);
+  if (alternates < locs.length * 2) fail(SITEMAP, `hreflang alternates look incomplete (${alternates} for ${locs.length} URLs)`);
 }
 
 // ------------------------------------------------------------------ robots
@@ -262,7 +264,7 @@ const robotsPath = join(DIST, 'robots.txt');
 if (existsSync(robotsPath)) {
   const robots = read(robotsPath);
   const line = /^Sitemap:\s*(\S+)/im.exec(robots)?.[1];
-  if (line !== `${site}${base}/sitemap.xml`) fail('robots.txt', `Sitemap line is "${line}", expected "${site}${base}/sitemap.xml"`);
+  if (line !== `${site}${base}/${SITEMAP}`) fail('robots.txt', `Sitemap line is "${line}", expected "${site}${base}/${SITEMAP}"`);
   if (/^Disallow:\s*\/\s*$/im.test(robots)) fail('robots.txt', 'disallows the whole site');
 }
 

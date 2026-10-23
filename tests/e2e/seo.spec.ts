@@ -3,7 +3,7 @@ import { BASE, url } from './helpers';
 
 /** The sitemap lists absolute URLs on the configured SITE_URL; map them onto the test server. */
 async function sitemapPaths(request: APIRequestContext): Promise<{ loc: string; path: string }[]> {
-  const res = await request.get(url('/sitemap.xml'));
+  const res = await request.get(url('/vi/sitemap.xml'));
   expect(res.ok()).toBe(true);
   const xml = await res.text();
   return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => {
@@ -150,12 +150,12 @@ test.describe('crawl files', () => {
     expect(res.status()).toBe(200);
     const text = await res.text();
     expect(text).toMatch(/User-agent: \*/);
-    expect(text).toMatch(/Sitemap: https:\/\/.+\/sitemap\.xml/);
+    expect(text).toMatch(/Sitemap: https:\/\/.+\/vi\/sitemap\.xml/);
     expect(text).not.toMatch(/Disallow:\s*\/\s*$/m);
   });
 
   test('sitemap has hreflang alternates and no 404 or duplicate URLs', async ({ request }) => {
-    const xml = await (await request.get(url('/sitemap.xml'))).text();
+    const xml = await (await request.get(url('/vi/sitemap.xml'))).text();
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
     expect(new Set(locs).size).toBe(locs.length);
     expect(xml).toContain('xmlns:xhtml');

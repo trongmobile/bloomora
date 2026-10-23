@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
-import { getRegistry } from '../lib/content';
-import { buildSitemapXml } from '../lib/sitemap';
+import { getRegistry } from '../../lib/content';
+import { buildSitemapXml } from '../../lib/sitemap';
 
 export const GET: APIRoute = async ({ site }) => {
   const registry = await getRegistry();

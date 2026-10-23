@@ -9,7 +9,7 @@
 | hreflang | `vi`, `en`, `x-default` hai chiều, URL tuyệt đối. Nội dung vi và en được viết riêng, không phải cùng một đoạn văn lặp lại (có test). |
 | `/` | Trang cổng ngôn ngữ (`x-default`): chuyển bằng JS theo lựa chọn đã lưu hoặc `navigator.language`, và vẫn có link tới `/vi/` và `/en/` khi tắt JS. |
 | `robots.txt` | `Allow: /` + dòng `Sitemap:` tuyệt đối. Sinh bởi `src/pages/robots.txt.ts`. |
-| `sitemap.xml` | Mọi trang có `<loc>`, `<lastmod>` và `xhtml:link` hreflang. Không có 404 hay URL trùng. Sinh bởi `src/pages/sitemap.xml.ts`. |
+| `vi/sitemap.xml` | Mọi trang có `<loc>`, `<lastmod>` và `xhtml:link` hreflang. Không có 404 hay URL trùng. Phục vụ tại `/vi/sitemap.xml`, sinh bởi `src/pages/vi/sitemap.xml.ts`. |
 | 404 | `/404.html` song ngữ, `noindex`, không nằm trong sitemap. |
 | JSON-LD | `WebSite` (trang chủ), `BreadcrumbList` (trang con), `Article` (bài viết và trang loài). Không có `Organization`, `aggregateRating`, `Review` hay `VideoObject` vì site không có dữ liệu thật cho chúng. |
 | Open Graph / Twitter | `og:title/description/url/image/type/locale(+alternate)`, `twitter:card=summary_large_image`. URL ảnh luôn tuyệt đối https. |
@@ -48,7 +48,7 @@ Làm sau khi site đã chạy trên domain thật (Facebook không đọc đư�
 ## Kiểm tra khác
 
 - Google Rich Results Test: <https://search.google.com/test/rich-results> (kiểm JSON-LD).
-- Google Search Console: thêm property, xác minh bằng token (`PUBLIC_GSC_VERIFICATION`) rồi gửi `<site>/<base>/sitemap.xml`.
+- Google Search Console: thêm property, xác minh bằng token (`PUBLIC_GSC_VERIFICATION`) rồi gửi `<site>/<base>/vi/sitemap.xml`.
 - Chia sẻ thử qua Zalo, Messenger, LinkedIn: các trình quét này dùng cùng thẻ Open Graph.
 
 ## Việc bạn phải tự cung cấp

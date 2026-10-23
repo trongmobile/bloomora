@@ -62,7 +62,7 @@ src/
   components/    design-system/ (Glass*), site/, seo/, analytics/, timelapse/ (React)
   scripts/       JS phía client nhỏ: theme, menu, share, toast, bộ lọc, opt-out analytics, quiz, planner, embed, thẻ in
   styles/        tokens, glass, base, layout, components, timelapse
-  pages/         /, /[lang]/..., 404, sitemap.xml, robots.txt
+  pages/         /, /[lang]/..., 404, vi/sitemap.xml, robots.txt
 tests/unit, tests/e2e
 ```
 

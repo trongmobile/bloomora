@@ -179,7 +179,7 @@ describe('page registry, sitemap and robots', () => {
 
   it('points robots.txt at the sitemap and does not block the site', () => {
     const robots = buildRobotsTxt(project.site, project.base);
-    expect(robots).toContain('Sitemap: https://owner.github.io/bloomora/sitemap.xml');
+    expect(robots).toContain('Sitemap: https://owner.github.io/bloomora/vi/sitemap.xml');
     expect(robots).not.toMatch(/Disallow:\s*\/\s*$/m);
   });
 });

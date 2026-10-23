@@ -57,7 +57,7 @@ SITE_URL=https://alice.github.io BASE_PATH=/bloomora/ npm run preview   # http:/
 
 ## Kiểm tra sau khi deploy
 
-- Mở `/robots.txt`, `/sitemap.xml`, `/og-image.png` và `/og/flowers/sunflower.png` trên domain thật.
+- Mở `/robots.txt`, `/vi/sitemap.xml`, `/og-image.png` và `/og/flowers/sunflower.png` trên domain thật.
 - Xem [SEO.md](SEO.md) cho Facebook Sharing Debugger và Search Console.
 - Nếu bật GoatCounter, mở trang rồi kiểm tra lượt xem trong dashboard sau vài phút.
 
