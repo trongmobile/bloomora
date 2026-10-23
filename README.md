@@ -1,4 +1,4 @@
-# Bloomora — Liquid Glass Flower Time-lapse Explorer
+# Bloomora — Flower Time-lapse Explorer
 
 Website tĩnh song ngữ (Tiếng Việt / English) giúp khám phá vòng đời của hoa qua time-lapse minh họa 9 giai đoạn, từ hạt giống đến lúc tàn. Giao diện theo phong cách **Botanical Liquid Glass**.
 
@@ -30,42 +30,18 @@ npm run preview
 
 ## Lệnh
 
-| Lệnh | Việc làm |
-| --- | --- |
-| `npm run dev` | Dev server |
-| `npm run og` | Sinh `public/og-image.png`, `public/og/flowers/{id}.png`, `public/og/moments/…`, `public/og/quiz/…`, `apple-touch-icon.png` |
-| `npm run clips` | Xuất clip dọc 9:16 (MP4) và thẻ PNG cho TikTok/Reels/Shorts vào `out/clips/` (cần ffmpeg). Xem [docs/GROWTH.md](docs/GROWTH.md) |
-| `npm run build` | `og` (prebuild) + `astro build` + `scripts/verify-build.mjs` |
-| `npm run build:only` | Chỉ `astro build` (dùng trước e2e) |
-| `npm run lint` / `typecheck` / `test` | ESLint / `astro check` / Vitest |
-| `npm run check` | lint + typecheck + test |
-| `npm run test:e2e` | Playwright trên `dist/` (cần build trước) |
-| `npm run test:e2e:base` | Build với `BASE_PATH=/bloomora/` rồi chạy e2e (mô phỏng project site) |
-| `npm run verify` | Kiểm tra lại `dist/` (canonical, sitemap, OG, hreflang, base path…) |
-
-### Biến môi trường
-
-| Biến | Ý nghĩa |
-| --- | --- |
-| `SITE_URL` | Origin tuyệt đối của site (vd. `https://hoa.example.com` hoặc `https://<user>.github.io`). Mặc định là placeholder `https://bloomora.example` — canonical/sitemap/OG sẽ **sai** cho đến khi bạn đặt giá trị thật. |
-| `BASE_PATH` | `/` cho custom domain hoặc user site; `/<repo>/` cho project site. |
-| `PUBLIC_GOATCOUNTER_CODE` | Code GoatCounter. Để trống = tắt analytics. |
-| `PUBLIC_ANALYTICS_ENABLED` | `false` để tắt dù có code. |
-| `PUBLIC_GSC_VERIFICATION` | Token xác minh Google Search Console (tùy chọn). |
-
-Trong CI các biến này được workflow tự tính, xem [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
-
-### Kiểm thử e2e
-
-```bash
-npx playwright install chromium    # lần đầu
-npm run build:only
-npm run test:e2e
-```
-
-- Môi trường đã cài sẵn Chromium khác phiên bản Playwright: đặt `PW_CHROMIUM_PATH=/đường/dẫn/chrome`.
-- Safari/WebKit: `npx playwright install webkit`, rồi `PW_WEBKIT=1 npm run test:e2e`. Mặc định **không chạy WebKit**, nên hành vi trên Safari chưa được kiểm tra tự động.
-- Bản build có GoatCounter: đặt `PUBLIC_GOATCOUNTER_CODE` khi build **và** khi chạy e2e để các test analytics chạy đầy đủ.
+| Lệnh                                  | Việc làm                                                                                                                        |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`                         | Dev server                                                                                                                      |
+| `npm run og`                          | Sinh `public/og-image.png`, `public/og/flowers/{id}.png`, `public/og/moments/…`, `public/og/quiz/…`, `apple-touch-icon.png`     |
+| `npm run clips`                       | Xuất clip dọc 9:16 (MP4) và thẻ PNG cho TikTok/Reels/Shorts vào `out/clips/` (cần ffmpeg). Xem [docs/GROWTH.md](docs/GROWTH.md) |
+| `npm run build`                       | `og` (prebuild) + `astro build` + `scripts/verify-build.mjs`                                                                    |
+| `npm run build:only`                  | Chỉ `astro build` (dùng trước e2e)                                                                                              |
+| `npm run lint` / `typecheck` / `test` | ESLint / `astro check` / Vitest                                                                                                 |
+| `npm run check`                       | lint + typecheck + test                                                                                                         |
+| `npm run test:e2e`                    | Playwright trên `dist/` (cần build trước)                                                                                       |
+| `npm run test:e2e:base`               | Build với `BASE_PATH=/bloomora/` rồi chạy e2e (mô phỏng project site)                                                           |
+| `npm run verify`                      | Kiểm tra lại `dist/` (canonical, sitemap, OG, hreflang, base path…)                                                             |
 
 ## Cấu trúc thư mục
 
@@ -97,30 +73,17 @@ Dữ liệu, UI, engine animation, SEO, analytics và script OG nằm ở các m
 - **Trang chủ**, **danh sách hoa** (tìm kiếm theo tên vi/en/khoa học, lọc nhóm/màu/mùa/thời gian nở, trạng thái rỗng/lỗi, "xem thêm"), **chi tiết loài** (9 giai đoạn, chăm sóc, sự thật, nguồn, loài liên quan, breadcrumb, chia sẻ, OG riêng), **bài viết** học thuật nhẹ, trang **giới thiệu**.
 - **Trình phát time-lapse**: phát/tạm dừng, bắt đầu lại, thanh thời gian kéo được, giai đoạn trước/sau, tốc độ 0.5/1/2/4/8x, phần trăm, tên giai đoạn, thời gian tham chiếu, toàn màn hình, bàn phím + cảm ứng. Một interface cho 3 loại media: ảnh theo giai đoạn, SVG (mặc định) và video lazy-load có fallback.
 - **i18n thật**: nội dung vi và en được viết riêng cho từng loài/bài, `hreflang` vi/en/x-default.
-- **Giao diện**: sáng/tối không nháy (script inline trong `<head>`), 4 tầng kính, fallback khi không có `backdrop-filter`, khi bật *reduced transparency* hoặc thiết bị yếu; tôn trọng `prefers-reduced-motion`; mục tiêu chạm ≥ 44px; font tiếng Việt đầy đủ dấu.
-- **SEO**: title/description/canonical theo từng route, `robots.txt`, `sitemap.xml` (có hreflang), JSON-LD `WebSite`, `BreadcrumbList`, `Article` (không có Organization/rating/VideoObject giả).
-- **OG**: ảnh 1200×630 mặc định và riêng từng loài, vẽ từ chính SVG của site, không dùng ảnh có bản quyền.
-- **Chia sẻ**: Web Share API, sao chép liên kết có fallback, toast thông báo.
-- **Analytics**: GoatCounter, xem [docs/ANALYTICS.md](docs/ANALYTICS.md).
+- **Giao diện**: sáng/tối không nháy (script inline trong `<head>`), 4 tầng kính, fallback khi không có `backdrop-filter`, khi bật _reduced transparency_ hoặc thiết bị yếu; tôn trọng `prefers-reduced-motion`; mục tiêu chạm ≥ 44px; font tiếng Việt đầy đủ dấu.
 
 ### Để người ta chia sẻ và dùng lại
 
 Chi tiết cách dùng và đo lường nằm ở [docs/GROWTH.md](docs/GROWTH.md).
 
-- **Lưu và chia sẻ khoảnh khắc**: trong player có *Chia sẻ khoảnh khắc này* (link tới trang riêng của giai đoạn đang xem, có ảnh OG riêng), *Lưu ảnh dọc* (PNG 1080×1920) và *Tạo clip dọc* (video 9:16 ghi ngay trong trình duyệt, MP4 hoặc WebM tùy trình duyệt). Mọi thứ chạy trên máy người dùng, không tải lên đâu cả.
+- **Lưu và chia sẻ khoảnh khắc**: trong player có _Chia sẻ khoảnh khắc này_ (link tới trang riêng của giai đoạn đang xem, có ảnh OG riêng), _Lưu ảnh dọc_ (PNG 1080×1920) và _Tạo clip dọc_ (video 9:16 ghi ngay trong trình duyệt, MP4 hoặc WebM tùy trình duyệt). Mọi thứ chạy trên máy người dùng, không tải lên đâu cả.
 - **Deep link theo giai đoạn**: `…/flowers/<loài>/?stage=<giai đoạn>#timelapse` và trang `…/flowers/<loài>/moment/<giai đoạn>/` (noindex, có ảnh OG theo loài + giai đoạn + ngôn ngữ).
 - **Trắc nghiệm** `/<lang>/quiz/`: "Bạn đang ở giai đoạn nào của đời hoa?", 7 câu + chọn hoa, kết quả là trang tĩnh `/<lang>/quiz/result/<giai đoạn>/` (noindex, có ảnh OG) cùng thẻ kết quả PNG 9:16. Chỉ mang tính giải trí.
 - **Lịch gieo – nở** `/<lang>/planner/`: chọn loài và ngày bắt đầu để xem khoảng thời gian nở ước tính, đặt mốc (Tết, Valentine, 8/3, 20/10, 20/11 hoặc ngày tùy chọn) để biết hạn bắt đầu. Liên kết chia sẻ giữ nguyên lựa chọn (`?f=&s=&g=`).
 - **Nhúng và lớp học**: mỗi trang loài có mã iframe (`/<lang>/embed/<loài>/`, noindex, nhận `?theme=light|dark`), trang `/<lang>/classroom/` cho giáo viên, và thẻ chín giai đoạn in được `/<lang>/classroom/cards/<loài>/` (có chế độ ẩn tên để chơi sắp xếp).
-
-## Tài liệu
-
-- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — deploy GitHub Pages, custom domain, base path
-- [docs/ANALYTICS.md](docs/ANALYTICS.md) — GoatCounter
-- [docs/SEO.md](docs/SEO.md) — SEO, OG, Facebook Sharing Debugger, Search Console
-- [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md) — token, tầng kính, fallback, a11y
-- [docs/CONTENT.md](docs/CONTENT.md) — thêm loài / bài viết, quy tắc về nguồn và số liệu, quiz và mốc dịp lễ
-- [docs/GROWTH.md](docs/GROWTH.md) — chia sẻ, clip, đăng bài, giáo viên, đo lường
 
 ## Giới hạn đã biết
 
