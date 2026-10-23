@@ -1,0 +1,108 @@
+name: Deploy to GitHub Pages
+
+# Pull request: lint, typecheck, unit test, build (+ verify), e2e. No deploy.
+# Push to main / manual run: the same, then deploy. See docs/DEPLOYMENT.md.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # SITE_URL / BASE_PATH are exported for every later step, so the build and the e2e run agree.
+      - name: Resolve site URL and base path
+        env:
+          CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN }}
+        run: |
+          lower() { printf '%s' "$1" | tr '[:upper:]' '[:lower:]'; }
+          owner="$(lower "$GITHUB_REPOSITORY_OWNER")"
+          repo="${GITHUB_REPOSITORY#*/}"
+          if [ -n "$CUSTOM_DOMAIN" ]; then
+            site="https://${CUSTOM_DOMAIN}"
+            base="/"
+          elif [ "$(lower "$repo")" = "${owner}.github.io" ]; then
+            site="https://${owner}.github.io"
+            base="/"
+          else
+            site="https://${owner}.github.io"
+            base="/${repo}/"
+          fi
+          echo "SITE_URL=${site}" >> "$GITHUB_ENV"
+          echo "BASE_PATH=${base}" >> "$GITHUB_ENV"
+          echo "Building for ${site}${base}"
+
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+
+      # `npm run build` = og images (prebuild) + astro build + scripts/verify-build.mjs.
+      - run: npm run build
+        env:
+          PUBLIC_GOATCOUNTER_CODE: ${{ vars.PUBLIC_GOATCOUNTER_CODE }}
+          PUBLIC_GSC_VERIFICATION: ${{ vars.PUBLIC_GSC_VERIFICATION }}
+
+      - run: npx playwright install --with-deps chromium
+
+      # Must see the same PUBLIC_GOATCOUNTER_CODE the dist/ was built with (the analytics specs branch on it).
+      - run: npm run test:e2e
+        env:
+          PUBLIC_GOATCOUNTER_CODE: ${{ vars.PUBLIC_GOATCOUNTER_CODE }}
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Prepare Pages files
+        if: github.event_name != 'pull_request'
+        env:
+          CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN }}
+        run: |
+          touch dist/.nojekyll
+          if [ -n "$CUSTOM_DOMAIN" ]; then
+            printf '%s\n' "$CUSTOM_DOMAIN" > dist/CNAME
+          fi
+
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
