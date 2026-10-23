@@ -125,12 +125,78 @@ test.describe('navigation', () => {
     expect(pad).toBeGreaterThanOrEqual(header - 1);
   });
 
-  test('unknown URLs get the bilingual, non-indexed 404 page', async ({ page }) => {
+  test('unknown URLs get a non-indexed 404 page', async ({ page }) => {
     const res = await page.goto(url('/en/does-not-exist/'));
     expect(res?.status()).toBe(404);
-    await expect(page.locator('h1')).toBeVisible();
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
-    await expect(page.getByRole('link', { name: /Bloomora|Home|Trang chủ/ }).first()).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
+  });
+});
+
+test.describe('404 page language', () => {
+  const TEXT = {
+    vi: { title: 'Không tìm thấy trang này', other: 'This page could not be found', footer: 'Các loài hoa' },
+    en: { title: 'This page could not be found', other: 'Không tìm thấy trang này', footer: 'Flowers' },
+  } as const;
+
+  /** Only the expected language is shown: content, header, footer, <html lang> and the tab title. */
+  async function expectOnly(page: import('@playwright/test').Page, lang: 'vi' | 'en') {
+    const t = TEXT[lang];
+    await expect(page.getByRole('heading', { level: 1, name: t.title })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
+    await expect(page.getByRole('heading', { name: t.other })).toHaveCount(0);
+    await expect(page.locator('html')).toHaveAttribute('lang', lang);
+    await expect(page).toHaveTitle(`${t.title} | Bloomora`);
+    await expect(page.locator('footer.site-footer:visible')).toHaveCount(1);
+    await expect(page.locator('footer.site-footer:visible')).toContainText(t.footer);
+    await expect(page.locator('header.site-header:visible')).toHaveCount(1);
+  }
+
+  for (const lang of ['vi', 'en'] as const) {
+    test(`shows only ${lang} under /${lang}/`, async ({ page }) => {
+      const res = await page.goto(url(`/${lang}/does-not-exist/`));
+      expect(res?.status()).toBe(404);
+      await expectOnly(page, lang);
+    });
+  }
+
+  test('the URL language beats a stored preference', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('bloomora-lang', 'vi'));
+    await page.goto(url('/en/does-not-exist/'));
+    await expectOnly(page, 'en');
+  });
+
+  test('outside /vi/ and /en/ it uses the stored language, then the browser language', async ({ browser }) => {
+    const stored = await browser.newContext({ locale: 'vi-VN' });
+    const storedPage = await stored.newPage();
+    await storedPage.addInitScript(() => localStorage.setItem('bloomora-lang', 'en'));
+    await storedPage.goto(url('/does-not-exist/'));
+    await expectOnly(storedPage, 'en');
+    await stored.close();
+
+    for (const [locale, lang] of [['vi-VN', 'vi'], ['en-US', 'en']] as const) {
+      const context = await browser.newContext({ locale });
+      const page = await context.newPage();
+      await page.goto(url('/does-not-exist/'));
+      await expectOnly(page, lang);
+      await context.close();
+    }
+  });
+
+  test('without JavaScript it falls back to both languages with a Vietnamese header and footer', async ({ browser }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false });
+    const page = await context.newPage();
+    await page.goto(url('/en/does-not-exist/'));
+    await expect(page.getByRole('heading', { level: 1 })).toHaveCount(2);
+    await expect(page.locator('footer.site-footer:visible')).toHaveCount(1);
+    await expect(page.locator('header.site-header:visible')).toHaveCount(1);
+    await context.close();
+  });
+
+  test('the visible header links to the visitor language', async ({ page }) => {
+    await page.goto(url('/en/does-not-exist/'));
+    const home = page.locator('header.site-header:visible a.brand');
+    await expect(home).toHaveAttribute('href', url('/en/'));
   });
 });
 

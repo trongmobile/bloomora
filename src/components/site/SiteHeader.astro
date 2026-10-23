@@ -13,8 +13,10 @@ interface Props {
   lang: Lang;
   path: string;
   alternates?: Alternate[];
+  /** Id of the mobile menu panel; only needs to change when the header is rendered twice (404 page). */
+  menuId?: string;
 }
-const { lang, path, alternates } = Astro.props;
+const { lang, path, alternates, menuId = 'mobile-menu' } = Astro.props;
 const dict = getDict(lang);
 const links = [
   { label: dict.nav.home, path: routes.home(lang), exact: true },
@@ -50,7 +52,7 @@ const links = [
     <div class="site-header__tools">
       <LangSwitch lang={lang} alternates={alternates} />
       <ThemeToggle label={dict.theme.toggle} />
-      <GlassMenu id="mobile-menu" label={dict.nav.openMenu} class="menu--mobile">
+      <GlassMenu id={menuId} label={dict.nav.openMenu} class="menu--mobile">
         <nav aria-label={dict.nav.label}>
           <ul>
             {
