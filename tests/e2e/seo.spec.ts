@@ -1,4 +1,5 @@
 import { expect, test, type APIRequestContext } from '@playwright/test';
+import { FLOWERS } from '../../src/data';
 import { BASE, url } from './helpers';
 
 /** The sitemap lists absolute URLs on the configured SITE_URL; map them onto the test server. */
@@ -58,7 +59,7 @@ test.describe('metadata per route', () => {
 
   test('the per-species OG image of each flower page exists, is a 1200×630 PNG and is unique', async ({ request, page }) => {
     const seen = new Set<string>();
-    for (const slug of ['sunflower', 'rose', 'lotus', 'tulip', 'chrysanthemum', 'cherry-blossom', 'morning-glory', 'marigold']) {
+    for (const { id: slug } of FLOWERS) {
       await page.goto(url(`/en/flowers/${slug}/`), { waitUntil: 'domcontentloaded' });
       const og = await page.locator('meta[property="og:image"]').getAttribute('content');
       expect(og, slug).toBe(new URL(og!).href);

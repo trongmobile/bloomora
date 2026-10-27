@@ -16,6 +16,10 @@ import { roseArchetype } from './archetypes/rose';
 import { lotus } from './archetypes/lotus';
 import { sakura } from './archetypes/sakura';
 import { morningGlory } from './archetypes/morning-glory';
+import { dahlia } from './archetypes/dahlia';
+import { carnation } from './archetypes/carnation';
+import { lavender } from './archetypes/lavender';
+import { cosmos } from './archetypes/cosmos';
 
 const RENDERERS: Partial<Record<FlowerVisual['archetype'], ArchetypeRenderer>> = {
   sunflower,
@@ -26,6 +30,10 @@ const RENDERERS: Partial<Record<FlowerVisual['archetype'], ArchetypeRenderer>> =
   lotus,
   sakura,
   'morning-glory': morningGlory,
+  dahlia,
+  carnation,
+  lavender,
+  cosmos,
 };
 
 export interface RenderSvgOptions extends RenderOptions {

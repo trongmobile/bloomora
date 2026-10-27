@@ -30,7 +30,7 @@ export type Season = 'spring' | 'summer' | 'autumn' | 'winter';
 /** Rough "time to first bloom" band used by the duration filter. */
 export type SpeedBand = 'fast' | 'medium' | 'slow';
 /** What the time-lapse starts from. Most species start from seed; some honestly do not. */
-export type StartMaterial = 'seed' | 'bulb' | 'seed-or-cutting' | 'seed-or-rhizome';
+export type StartMaterial = 'seed' | 'bulb' | 'tuber' | 'seed-or-cutting' | 'seed-or-rhizome';
 /** How much published data supports the timing numbers. Shown to the reader. */
 export type Confidence = 'moderate' | 'low';
 
@@ -42,7 +42,11 @@ export type Archetype =
   | 'chrysanthemum'
   | 'sakura'
   | 'morning-glory'
-  | 'marigold';
+  | 'marigold'
+  | 'dahlia'
+  | 'carnation'
+  | 'lavender'
+  | 'cosmos';
 
 export interface StageTiming {
   id: StageId;

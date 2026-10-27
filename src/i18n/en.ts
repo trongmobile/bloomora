@@ -389,7 +389,7 @@ export const en: Dict = {
     season: { spring: 'Spring', summer: 'Summer', autumn: 'Autumn', winter: 'Winter' },
     speed: { fast: 'Fast (up to about 4 months)', medium: 'Medium (up to about 1 year)', slow: 'Slow (can exceed 1 year)' },
     speedShort: { fast: 'Fast', medium: 'Medium', slow: 'Slow' },
-    start: { seed: 'Seed', bulb: 'Bulb', 'seed-or-cutting': 'Seed or cutting', 'seed-or-rhizome': 'Seed or rhizome' },
+    start: { seed: 'Seed', bulb: 'Bulb', tuber: 'Tuber', 'seed-or-cutting': 'Seed or cutting', 'seed-or-rhizome': 'Seed or rhizome' },
     confidence: { moderate: 'Moderate', low: 'Low' },
   },
   stageNames: {

@@ -7,6 +7,10 @@ import { chrysanthemum } from './flowers/chrysanthemum';
 import { cherryBlossom } from './flowers/cherry-blossom';
 import { morningGlory } from './flowers/morning-glory';
 import { marigold } from './flowers/marigold';
+import { dahlia } from './flowers/dahlia';
+import { carnation } from './flowers/carnation';
+import { lavender } from './flowers/lavender';
+import { cosmos } from './flowers/cosmos';
 
 /** All flowers, in the order they should be listed. */
 export const FLOWERS: readonly FlowerData[] = [
@@ -18,6 +22,10 @@ export const FLOWERS: readonly FlowerData[] = [
   cherryBlossom,
   morningGlory,
   marigold,
+  dahlia,
+  carnation,
+  lavender,
+  cosmos,
 ];
 
 const byId = new Map(FLOWERS.map((f) => [f.id, f]));

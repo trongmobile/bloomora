@@ -395,7 +395,7 @@ export const vi = {
     season: { spring: 'Xuân', summer: 'Hè', autumn: 'Thu', winter: 'Đông' },
     speed: { fast: 'Nhanh (tối đa khoảng 4 tháng)', medium: 'Trung bình (đến khoảng 1 năm)', slow: 'Chậm (có thể hơn 1 năm)' },
     speedShort: { fast: 'Nhanh', medium: 'Trung bình', slow: 'Chậm' },
-    start: { seed: 'Hạt', bulb: 'Củ giống', 'seed-or-cutting': 'Hạt hoặc cành giâm', 'seed-or-rhizome': 'Hạt hoặc thân rễ' },
+    start: { seed: 'Hạt', bulb: 'Củ giống', tuber: 'Củ rễ', 'seed-or-cutting': 'Hạt hoặc cành giâm', 'seed-or-rhizome': 'Hạt hoặc thân rễ' },
     confidence: { moderate: 'Trung bình', low: 'Thấp' },
   },
   stageNames: {

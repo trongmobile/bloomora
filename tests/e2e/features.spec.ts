@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test, type Page } from '@playwright/test';
+import { FLOWERS } from '../../src/data';
 import { trackErrors, url, waitForPlayer } from './helpers';
 
 const pngSize = (buf: Buffer) => ({ w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) });
@@ -130,7 +131,7 @@ test.describe('bloom planner', () => {
     const ctx = await browser.newContext({ javaScriptEnabled: false });
     const page = await ctx.newPage();
     await page.goto(url('/en/planner/'));
-    await expect(page.locator('[data-planner-table] tbody tr')).toHaveCount(8);
+    await expect(page.locator('[data-planner-table] tbody tr')).toHaveCount(FLOWERS.length);
     await expect(page.locator('[data-planner-table] tbody tr').first()).toContainText('after the start date');
     await ctx.close();
   });
@@ -257,8 +258,8 @@ test.describe('embed and classroom', () => {
   test('the classroom page links every species to its presentation, cards and page', async ({ page }) => {
     await page.goto(url('/en/classroom/'));
     await expect(page.locator('h1')).toHaveText('Bloomora for classrooms');
-    await expect(page.getByRole('link', { name: 'Open presentation' })).toHaveCount(8);
-    await expect(page.getByRole('link', { name: 'Open cards' })).toHaveCount(8);
+    await expect(page.getByRole('link', { name: 'Open presentation' })).toHaveCount(FLOWERS.length);
+    await expect(page.getByRole('link', { name: 'Open cards' })).toHaveCount(FLOWERS.length);
     await page.getByRole('link', { name: 'Open cards' }).first().click();
     await expect(page.locator('.stage-card')).toHaveCount(9);
   });

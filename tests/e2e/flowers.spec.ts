@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { FLOWERS } from '../../src/data';
 import { trackErrors, url } from './helpers';
 
 const list = (page: import('@playwright/test').Page) => page.locator('[data-flower-list]');
@@ -56,12 +57,12 @@ test.describe('flower list: search and filters', () => {
     await expect(visibleCards(page).first()).toContainText(/tulip/i);
 
     await page.locator('[data-reset]').first().click();
-    await expect(list(page)).toHaveAttribute('data-total', '8');
+    await expect(list(page)).toHaveAttribute('data-total', String(FLOWERS.length));
 
     await page.locator('#filter-color').selectOption('yellow');
     const yellow = Number(await list(page).getAttribute('data-total'));
     expect(yellow).toBeGreaterThan(0);
-    expect(yellow).toBeLessThan(8);
+    expect(yellow).toBeLessThan(FLOWERS.length);
     await page.locator('#filter-speed').selectOption('fast');
     const both = Number(await list(page).getAttribute('data-total'));
     expect(both).toBeGreaterThan(0);
@@ -106,7 +107,7 @@ test('without JavaScript every flower is listed and linked', async ({ browser })
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   await page.goto(url('/en/flowers/'));
-  await expect(page.locator('[data-flower-card]')).toHaveCount(8);
+  await expect(page.locator('[data-flower-card]')).toHaveCount(FLOWERS.length);
   for (const card of await page.locator('[data-flower-card] a').all()) {
     expect(await card.getAttribute('href')).toMatch(/\/en\/flowers\/[a-z-]+\/$/);
   }
