@@ -46,7 +46,11 @@ export type Archetype =
   | 'dahlia'
   | 'carnation'
   | 'lavender'
-  | 'cosmos';
+  | 'cosmos'
+  | 'zinnia'
+  | 'gerbera'
+  | 'daisy'
+  | 'echinacea';
 
 export interface StageTiming {
   id: StageId;
