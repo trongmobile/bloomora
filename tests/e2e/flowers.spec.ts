@@ -46,15 +46,15 @@ test.describe('flower list: search and filters', () => {
     const input = page.locator('#flower-search');
     await input.fill('lotus');
     await expect(visibleCards(page)).toHaveCount(1);
-    await input.fill('Prunus');
+    await input.fill('Prunus serrulata');
     await expect(visibleCards(page)).toHaveCount(1);
     await expect(visibleCards(page).first().locator('a').first()).toHaveAttribute('href', /hoa-anh-dao/);
   });
 
   test('filters by group, colour, season and growth time, and combines them', async ({ page }) => {
     await page.locator('#filter-group').selectOption('bulb');
-    await expect(visibleCards(page)).toHaveCount(1);
-    await expect(visibleCards(page).first()).toContainText(/tulip/i);
+    await expect(visibleCards(page)).toHaveCount(2);
+    await expect(visibleCards(page).filter({ hasText: /tulip/i })).toHaveCount(1);
 
     await page.locator('[data-reset]').first().click();
     await expect(list(page)).toHaveAttribute('data-total', String(FLOWERS.length));

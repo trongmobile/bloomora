@@ -59,8 +59,8 @@ test.describe('metadata per route', () => {
 
   test('the per-species OG image of each flower page exists, is a 1200×630 PNG and is unique', async ({ request, page }) => {
     const seen = new Set<string>();
-    for (const { id: slug } of FLOWERS) {
-      await page.goto(url(`/en/flowers/${slug}/`), { waitUntil: 'domcontentloaded' });
+    for (const { id: slug, slugs } of FLOWERS) {
+      await page.goto(url(`/en/flowers/${slugs.en}/`), { waitUntil: 'domcontentloaded' });
       const og = await page.locator('meta[property="og:image"]').getAttribute('content');
       expect(og, slug).toBe(new URL(og!).href);
       expect(og, slug).toContain(`/og/flowers/${slug}.png`);
