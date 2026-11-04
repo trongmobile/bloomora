@@ -24,6 +24,10 @@ import { zinnia } from './archetypes/zinnia';
 import { gerbera } from './archetypes/gerbera';
 import { daisy } from './archetypes/daisy-flower';
 import { echinacea } from './archetypes/echinacea';
+import { peach } from './archetypes/peach';
+import { mai } from './archetypes/mai';
+import { orchid } from './archetypes/orchid';
+import { narcissus } from './archetypes/narcissus';
 
 const RENDERERS: Partial<Record<FlowerVisual['archetype'], ArchetypeRenderer>> = {
   sunflower,
@@ -42,6 +46,10 @@ const RENDERERS: Partial<Record<FlowerVisual['archetype'], ArchetypeRenderer>> =
   gerbera,
   daisy,
   echinacea,
+  peach,
+  mai,
+  orchid,
+  narcissus,
 };
 
 export interface RenderSvgOptions extends RenderOptions {

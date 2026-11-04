@@ -101,6 +101,7 @@ export const vi = {
     noscript: 'Bộ lọc cần JavaScript. Danh sách đầy đủ vẫn hiển thị bên dưới.',
     viewTimelapse: 'Xem time-lapse',
     bloomIn: 'Nở sau',
+    newBadge: 'Mới',
   },
   detail: {
     metaTitleSuffix: 'time-lapse vòng đời, cách chăm sóc',

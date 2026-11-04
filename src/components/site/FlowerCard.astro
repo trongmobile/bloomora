@@ -41,6 +41,7 @@ const filterAttrs = filterable
       <p class="sci">{flower.scientificName}</p>
       <p class="flower-card__tagline">{text.tagline}</p>
       <div class="flower-card__meta">
+        {flower.isNew && <GlassBadge class="badge--new">{dict.flowers.newBadge}</GlassBadge>}
         <GlassBadge>{dict.taxonomy.group[flower.group]}</GlassBadge>
         <GlassBadge>{`${dict.flowers.bloomIn} ${formatDayRange(flower.daysToBloom, lang)}`}</GlassBadge>
       </div>

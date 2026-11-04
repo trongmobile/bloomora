@@ -95,6 +95,7 @@ export const en: Dict = {
     noscript: 'Filters need JavaScript. The full list is shown below.',
     viewTimelapse: 'View time-lapse',
     bloomIn: 'Blooms after',
+    newBadge: 'New',
   },
   detail: {
     metaTitleSuffix: 'life-cycle time-lapse and care',

@@ -146,11 +146,27 @@ function place(c: Ctx, tree: Tree): Placed[] {
   return placed;
 }
 
-function blossomDefs(c: Ctx): string {
+/** Notched petal of a cherry blossom, pointing up from the origin. */
+const NOTCHED_PETAL = 'M0 0C-8 -3 -11 -12 -5 -15.5L0 -12.2L5 -15.5C11 -12 8 -3 0 0Z';
+
+export interface BlossomTreeOptions {
+  /** The seed drawn in the soil, centred at (CX, SEED_Y + 6). */
+  seed: (k: number) => string;
+  /** Path of one petal pointing up from the origin. */
+  petal: string;
+  /** Fruit dots drawn under each fifth blossom once the petals have fallen, bottom layer first. */
+  fruit: { fill: string; stroke: string; r: number; dy: number }[];
+  /** How far the leaves turn autumn-orange while the buds form (0 = evergreen). */
+  autumn: number;
+  /** Colour the buds are mixed towards. */
+  bud: string;
+}
+
+function blossomDefs(c: Ctx, petal: string): string {
   const p = c.pal;
   let petals = '';
   for (let i = 0; i < 5; i++) {
-    petals += `<path transform="rotate(${i * 72})" d="M0 0C-8 -3 -11 -12 -5 -15.5L0 -12.2L5 -15.5C11 -12 8 -3 0 0Z" fill="${c.url('sakuraPetal')}" stroke="${p.petalDeep}" stroke-width=".5" stroke-opacity=".5"/>`;
+    petals += `<path transform="rotate(${i * 72})" d="${petal}" fill="${c.url('sakuraPetal')}" stroke="${p.petalDeep}" stroke-width=".5" stroke-opacity=".5"/>`;
   }
   let st = '';
   for (let i = 0; i < 8; i++) {
@@ -160,22 +176,21 @@ function blossomDefs(c: Ctx): string {
   return `<g id="${c.id('blossom')}">${petals}<path d="${st}" stroke="${p.centerDeep}" stroke-width=".7" fill="none"/><circle r="1.5" fill="${p.center}"/></g>`;
 }
 
-export const sakura: ArchetypeRenderer = {
+export function blossomTree(o: BlossomTreeOptions): ArchetypeRenderer {
+  return {
   defs(c) {
     const p = c.pal;
     return (
       radialGradient(c.id('sakuraPetal'), [[0, p.center], [0.28, p.petalDeep], [1, p.petal]], 0.5, 0.88, 0.95, 0.5, 0.95) +
       linearGradient(c.id('leafDry'), [[0, '#7a6a30'], [1, '#c2b46a']], 0, 0, 1, 0) +
-      blossomDefs(c)
+      blossomDefs(c, o.petal)
     );
   },
   plant(c) {
     const { s, pal } = c;
     let under = roots(c, { depth: 90, spread: 170, laterals: 8 });
     // The seed: a small stone from the cherry fruit.
-    if (s.seed > 0.02) {
-      under += `<g transform="translate(${CX} ${SEED_Y + 6}) rotate(-20)" opacity="${f(clamp01(s.seed))}" aria-hidden="true"><ellipse rx="12" ry="15" fill="#b98d5e" stroke="#6a4a2a" stroke-width="1.3"/><path d="M0 -13V13" stroke="#8a6238" stroke-width="1.4" opacity=".7"/></g>`;
-    }
+    under += o.seed(s.seed);
     if (s.stem < 0.01) return under;
     // The tree above ground is drawn at a reduced scale so a full canopy fits inside the frame.
     let out = '';
@@ -199,7 +214,7 @@ export const sakura: ArchetypeRenderer = {
       if (level === 0) out += `<path d="${d}" fill="none" stroke="${lighten(bark, 0.3)}" stroke-width="${f(w * 0.2)}" stroke-linecap="round" opacity=".45" transform="translate(${f(-w * 0.2)} 0)"/>`;
     }
     // Leaves: young leaves while it is a sapling, none during bloom, new leaves after.
-    const autumn = smooth(0.0, 0.3, s.bud);
+    const autumn = smooth(0.0, 0.3, s.bud) * o.autumn;
     const leafVis = s.leaf * Math.max(1 - smooth(0.05, 0.55, s.bud), smooth(0.15, 0.7, s.wilt));
     if (leafVis > 0.04) {
       const leafCol = mix(mix(pal.leaf, '#e2a53c', autumn * (1 - smooth(0.15, 0.7, s.wilt))), '#9a8a4a', 0);
@@ -257,22 +272,39 @@ export const sakura: ArchetypeRenderer = {
         }
       });
       if (budDots.length) {
-        const budCol = mix(pal.petalDeep, '#c4456b', 0.3);
+        const budCol = mix(pal.petalDeep, o.bud, 0.3);
         out += `<path d="${dotsPath(budDots)}" fill="${budCol}" stroke="${darken(budCol, 0.3)}" stroke-width=".6"/>`;
       }
       out += uses;
-      // Small cherries after the petals fall.
+      // Small fruits after the petals fall.
       if (s.fruit > 0.3) {
-        const dots: { x: number; y: number; r: number }[] = [];
-        tree.blossoms.forEach((b, i) => {
-          if (i % 5 !== 0) return;
-          const [x, y] = pos(b);
-          dots.push({ x, y: y + 4, r: 2.4 * smooth(0.3, 1, s.fruit) });
-        });
-        out += `<path d="${dotsPath(dots)}" fill="#8a1f33" stroke="#4a0f1c" stroke-width=".6"/>`;
+        for (const layer of o.fruit) {
+          const dots: { x: number; y: number; r: number }[] = [];
+          tree.blossoms.forEach((b, i) => {
+            if (i % 5 !== 0) return;
+            const [x, y] = pos(b);
+            dots.push({ x, y: y + layer.dy, r: layer.r * smooth(0.3, 1, s.fruit) });
+          });
+          out += `<path d="${dotsPath(dots)}" fill="${layer.fill}" stroke="${layer.stroke}" stroke-width=".6"/>`;
+        }
       }
     }
     if (s.wilt > 0.12) out += fallenPetals(c, smooth(0.12, 1, s.wilt) * 46, pal.petal, { spread: 230, size: 8, air: 0.55 });
     return `${under}<g transform="translate(${CX} ${GROUND_Y}) scale(${TREE_SCALE}) translate(${-CX} ${-GROUND_Y})">${out}</g>`;
   },
 };
+}
+
+/** A cherry "seed" is a small stone from the fruit. */
+function cherryStone(k: number): string {
+  if (k <= 0.02) return '';
+  return `<g transform="translate(${CX} ${SEED_Y + 6}) rotate(-20)" opacity="${f(clamp01(k))}" aria-hidden="true"><ellipse rx="12" ry="15" fill="#b98d5e" stroke="#6a4a2a" stroke-width="1.3"/><path d="M0 -13V13" stroke="#8a6238" stroke-width="1.4" opacity=".7"/></g>`;
+}
+
+export const sakura: ArchetypeRenderer = blossomTree({
+  seed: cherryStone,
+  petal: NOTCHED_PETAL,
+  fruit: [{ fill: '#8a1f33', stroke: '#4a0f1c', r: 2.4, dy: 4 }],
+  autumn: 1,
+  bud: '#c4456b',
+});

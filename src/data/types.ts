@@ -50,7 +50,11 @@ export type Archetype =
   | 'zinnia'
   | 'gerbera'
   | 'daisy'
-  | 'echinacea';
+  | 'echinacea'
+  | 'peach'
+  | 'mai'
+  | 'orchid'
+  | 'narcissus';
 
 export interface StageTiming {
   id: StageId;
@@ -149,6 +153,8 @@ export interface FlowerData {
   visual: FlowerVisual;
   related: string[];
   featured?: boolean;
+  /** Recently added: listed first and shown with a "new" badge. */
+  isNew?: boolean;
   /** Defaults to { type: 'svg' }. */
   media?: FlowerMediaConfig;
   sources: Source[];

@@ -197,6 +197,11 @@ select.input {
   color: var(--text);
   white-space: nowrap;
 }
+.badge--new {
+  color: var(--accent-contrast);
+  background: var(--accent);
+  border-color: transparent;
+}
 .badge--warn {
   color: var(--danger);
 }
