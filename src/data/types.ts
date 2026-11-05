@@ -54,7 +54,11 @@ export type Archetype =
   | 'peach'
   | 'mai'
   | 'orchid'
-  | 'narcissus';
+  | 'narcissus'
+  | 'celosia'
+  | 'gladiolus'
+  | 'pansy'
+  | 'lily';
 
 export interface StageTiming {
   id: StageId;

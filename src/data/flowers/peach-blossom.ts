@@ -14,7 +14,6 @@ export const peachBlossom: FlowerData = {
   startMaterial: 'seed-or-cutting',
   confidence: 'low',
   featured: false,
-  isNew: true,
   stages: [
     { id: 'seed', days: [60, 120] },
     { id: 'germination', days: [14, 40] },

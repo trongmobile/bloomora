@@ -14,7 +14,6 @@ export const phalaenopsis: FlowerData = {
   startMaterial: 'seed',
   confidence: 'low',
   featured: false,
-  isNew: true,
   stages: [
     { id: 'seed', days: [14, 60] },
     { id: 'germination', days: [30, 90] },

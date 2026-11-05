@@ -14,7 +14,6 @@ export const mai: FlowerData = {
   startMaterial: 'seed-or-cutting',
   confidence: 'low',
   featured: false,
-  isNew: true,
   stages: [
     { id: 'seed', days: [14, 30] },
     { id: 'germination', days: [14, 40] },
