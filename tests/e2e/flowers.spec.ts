@@ -53,7 +53,10 @@ test.describe('flower list: search and filters', () => {
 
   test('filters by group, colour, season and growth time, and combines them', async ({ page }) => {
     await page.locator('#filter-group').selectOption('bulb');
-    await expect(visibleCards(page)).toHaveCount(2);
+    // Derived from the data so adding another bulb flower does not break this test.
+    const bulbs = FLOWERS.filter((f) => f.group === 'bulb').length;
+    await expect(list(page)).toHaveAttribute('data-total', String(bulbs));
+    await expect(visibleCards(page)).toHaveCount(Math.min(bulbs, 8));
     await expect(visibleCards(page).filter({ hasText: /tulip/i })).toHaveCount(1);
 
     await page.locator('[data-reset]').first().click();
