@@ -14,7 +14,6 @@ export const lily: FlowerData = {
   startMaterial: 'bulb',
   confidence: 'low',
   featured: false,
-  isNew: true,
   stages: [
     { id: 'seed', days: [1, 7] },
     { id: 'germination', days: [7, 14] },

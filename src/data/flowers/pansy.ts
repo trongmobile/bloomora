@@ -14,7 +14,6 @@ export const pansy: FlowerData = {
   startMaterial: 'seed',
   confidence: 'moderate',
   featured: false,
-  isNew: true,
   stages: [
     { id: 'seed', days: [1, 2] },
     { id: 'germination', days: [7, 14] },

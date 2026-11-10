@@ -58,7 +58,11 @@ export type Archetype =
   | 'celosia'
   | 'gladiolus'
   | 'pansy'
-  | 'lily';
+  | 'lily'
+  | 'bougainvillea'
+  | 'flame-tree'
+  | 'plumeria'
+  | 'hibiscus';
 
 export interface StageTiming {
   id: StageId;

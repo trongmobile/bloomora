@@ -14,7 +14,6 @@ export const gladiolus: FlowerData = {
   startMaterial: 'bulb',
   confidence: 'moderate',
   featured: false,
-  isNew: true,
   stages: [
     { id: 'seed', days: [1, 3] },
     { id: 'germination', days: [7, 10] },
