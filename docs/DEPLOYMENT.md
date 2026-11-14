@@ -17,7 +17,7 @@ Workflow: `.github/workflows/deploy.yml`.
 | `PUBLIC_GOATCOUNTER_CODE` | Muốn bật analytics (xem [ANALYTICS.md](ANALYTICS.md)). |
 | `PUBLIC_GSC_VERIFICATION` | Xác minh Google Search Console bằng thẻ HTML. |
 
-Không cần secret nào. Không có khóa API.
+Triển khai không cần secret nào và không có khóa API. Ngoại lệ duy nhất là workflow thêm hoa hàng tuần (`weekly-flowers.yml`), cần secret `GEMINI_API_KEY`; xem [AUTOMATION.md](AUTOMATION.md).
 
 ## SITE_URL và BASE_PATH được tính thế nào
 

@@ -1,0 +1,148 @@
+name: Weekly flowers (Gemini)
+
+# Mỗi thứ 3 lúc 09:00 giờ Việt Nam (02:00 UTC), nhờ Gemini thêm 4 loài hoa ở Việt Nam, kiểm tra,
+# rồi mở pull request. Không có gì được đăng cho tới khi người merge PR. Xem docs/AUTOMATION.md.
+on:
+  schedule:
+    - cron: '0 2 * * 2'
+  workflow_dispatch:
+    inputs:
+      count:
+        description: 'Số loài cần thêm (1–20)'
+        required: false
+        default: '4'
+      dry_run:
+        description: 'Chạy thử: sinh và kiểm tra nhưng không đẩy nhánh, không mở PR'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# Không chạy hai lần cùng lúc, và không hủy lần đang chạy dở.
+concurrency:
+  group: weekly-flowers
+  cancel-in-progress: false
+
+jobs:
+  add-flowers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Còn PR của tuần trước chưa merge thì bỏ qua: tránh chồng PR và xung đột ở src/data/index.ts.
+      - name: Skip while an earlier weekly PR is still open
+        id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          open="$(gh pr list --state open --json headRefName,url --jq '[.[] | select(.headRefName | startswith("automation/weekly-flowers-"))][0].url // empty')"
+          if [ -n "$open" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Bỏ qua tuần này: còn PR chưa merge $open"
+            echo "Bỏ qua tuần này vì còn PR chưa merge: $open" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check the Gemini key is configured
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -z "$GEMINI_API_KEY" ]; then
+            echo "::error::Chưa có secret GEMINI_API_KEY. Settings → Secrets and variables → Actions → New repository secret (xem docs/AUTOMATION.md)."
+            exit 1
+          fi
+
+      # Gemini viết hoa mới; script kiểm tra (nguồn mở được, đúng schema, qua cùng luật với tests/unit/data.test.ts)
+      # rồi ghi src/data/flowers/<id>.ts và đăng ký vào src/data/index.ts.
+      - name: Generate flowers with Gemini
+        id: gen
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          COUNT: ${{ inputs.count }}
+        run: |
+          npx tsx scripts/add-flowers.ts --count "${COUNT:-4}" --summary "$RUNNER_TEMP/weekly-flowers-summary.md"
+          cat "$RUNNER_TEMP/weekly-flowers-summary.md" >> "$GITHUB_STEP_SUMMARY"
+
+      # Cùng các cổng như deploy.yml. PR do GITHUB_TOKEN tạo sẽ không kích hoạt deploy.yml,
+      # nên phải chạy ở đây trước khi mở PR.
+      - name: Lint
+        if: steps.gate.outputs.skip != 'true'
+        run: npm run lint
+
+      - name: Typecheck
+        if: steps.gate.outputs.skip != 'true'
+        run: npm run typecheck
+
+      - name: Unit tests
+        if: steps.gate.outputs.skip != 'true'
+        run: npm test
+
+      - name: Build and verify
+        if: steps.gate.outputs.skip != 'true'
+        run: npm run build
+        env:
+          PUBLIC_GOATCOUNTER_CODE: ${{ vars.PUBLIC_GOATCOUNTER_CODE }}
+          PUBLIC_GSC_VERIFICATION: ${{ vars.PUBLIC_GSC_VERIFICATION }}
+
+      - name: Install Playwright browser
+        if: steps.gate.outputs.skip != 'true'
+        run: npx playwright install --with-deps chromium
+
+      # Phải thấy cùng PUBLIC_GOATCOUNTER_CODE với lúc build dist/ (các spec analytics rẽ nhánh theo biến này).
+      - name: End-to-end tests
+        if: steps.gate.outputs.skip != 'true'
+        run: npm run test:e2e
+        env:
+          PUBLIC_GOATCOUNTER_CODE: ${{ vars.PUBLIC_GOATCOUNTER_CODE }}
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Commit, push and open the pull request
+        if: steps.gate.outputs.skip != 'true' && !inputs.dry_run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          IDS: ${{ steps.gen.outputs.ids }}
+          ADDED: ${{ steps.gen.outputs.added }}
+          SUMMARY: ${{ steps.gen.outputs.summary }}
+        run: |
+          set -euo pipefail
+          branch="automation/weekly-flowers-$(date -u +%Y%m%d)-${GITHUB_RUN_NUMBER}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          # Chỉ những đường dẫn script được phép đổi; ảnh OG, dist/ và out/ đã nằm trong .gitignore.
+          git add src README.md
+          git status --short
+          if git diff --cached --quiet; then
+            echo "::error::Không có thay đổi nào để commit."
+            exit 1
+          fi
+          git commit -m "feat(flowers): add ${ADDED} species (weekly, Gemini)" -m "Species: ${IDS//,/, }"
+          git push origin "$branch"
+          if ! gh pr create --base main --head "$branch" \
+              --title "feat(flowers): ${ADDED} loài hoa mới ($(date -u +%Y-%m-%d))" \
+              --body-file "$SUMMARY"; then
+            echo "::error::Không tạo được PR. Bật Settings → Actions → General → 'Allow GitHub Actions to create and approve pull requests'. Nhánh đã được đẩy: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/compare/main...${branch}"
+            exit 1
+          fi

@@ -10,6 +10,8 @@
 
 ## Thêm một loài
 
+Mỗi tuần workflow `weekly-flowers.yml` tự thêm 4 loài bằng Gemini và mở PR cho bạn duyệt (xem [AUTOMATION.md](AUTOMATION.md)). Nó tuân theo đúng các nguyên tắc ở trên. Các bước dưới đây là cách thêm bằng tay.
+
 1. Tạo `src/data/flowers/<id>.ts` theo kiểu `FlowerData` (`src/data/types.ts`), mẫu: `sunflower.ts`.
    - `id`, `slugs.vi`, `slugs.en` (chữ thường, không dấu, nối bằng `-`), `scientificName`, `family`.
    - `group`, `colors`, `bloomSeasons` (dùng cho bộ lọc), `daysToBloom`, `speedBand` (khớp với cận trên của `daysToBloom`: ≤120 ngày `fast`, ≤365 `medium`, còn lại `slow`), `startMaterial`, `confidence`.

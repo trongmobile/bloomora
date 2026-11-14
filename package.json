@@ -11,6 +11,7 @@
     "dev": "astro dev",
     "og": "tsx scripts/generate-og.ts",
     "clips": "tsx scripts/render-clips.ts",
+    "flowers:add": "tsx --env-file-if-exists=.env scripts/add-flowers.ts",
     "prebuild": "npm run og",
     "build": "astro build && node scripts/verify-build.mjs",
     "build:only": "astro build",

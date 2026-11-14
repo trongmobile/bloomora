@@ -2,7 +2,7 @@
 
 Website tĩnh song ngữ (Tiếng Việt / English) giúp khám phá vòng đời của hoa qua time-lapse minh họa 9 giai đoạn, từ hạt giống đến lúc tàn. Giao diện theo phong cách **Botanical Liquid Glass**.
 
-- Không backend, không database, không đăng nhập, không API AI trả phí.
+- Không backend, không database, không đăng nhập. Website không gọi API AI khi chạy; chỉ workflow thêm hoa hàng tuần dùng Gemini lúc soạn nội dung ([docs/AUTOMATION.md](docs/AUTOMATION.md)).
 - Astro 6 (SSG) + TypeScript. React chỉ dùng cho trình phát time-lapse (island).
 - CSS variables + SVG animation. Font tự host (Be Vietnam Pro, Newsreader).
 - Kiểm thử: Vitest (unit, jsdom) và Playwright (e2e, axe a11y).
@@ -35,6 +35,7 @@ npm run preview
 | `npm run dev`                         | Dev server                                                                                                                      |
 | `npm run og`                          | Sinh `public/og-image.png`, `public/og/flowers/{id}.png`, `public/og/moments/…`, `public/og/quiz/…`, `apple-touch-icon.png`     |
 | `npm run clips`                       | Xuất clip dọc 9:16 (MP4) và thẻ PNG cho TikTok/Reels/Shorts vào `out/clips/` (cần ffmpeg). Xem [docs/GROWTH.md](docs/GROWTH.md) |
+| `npm run flowers:add`                 | Nhờ Gemini thêm loài hoa mới (cần `GEMINI_API_KEY`). Workflow tuần chạy lệnh này. Xem [docs/AUTOMATION.md](docs/AUTOMATION.md)  |
 | `npm run build`                       | `og` (prebuild) + `astro build` + `scripts/verify-build.mjs`                                                                    |
 | `npm run build:only`                  | Chỉ `astro build` (dùng trước e2e)                                                                                              |
 | `npm run lint` / `typecheck` / `test` | ESLint / `astro check` / Vitest                                                                                                 |
@@ -47,10 +48,11 @@ npm run preview
 
 ```
 .github/workflows/deploy.yml   CI: lint → typecheck → test → build → e2e → deploy
+.github/workflows/weekly-flowers.yml   thứ 3 hàng tuần: Gemini thêm 4 loài, kiểm tra, mở PR
 assets/og-fonts/               font .woff dùng để vẽ chữ trong ảnh OG (chuyển thành path)
 docs/                          tài liệu (xem bên dưới)
 public/                        favicon.svg; og-image.png, og/, apple-touch-icon.png được sinh khi build
-scripts/                       generate-og.ts, render-clips.ts, lib/text-path.ts, verify-build.mjs
+scripts/                       generate-og.ts, render-clips.ts, add-flowers.ts, lib/ (text-path, gemini, flower-gen…), verify-build.mjs
 src/
   config/        site.ts (hằng số), analytics.ts (đọc env GoatCounter)
   data/          dữ liệu 28 loài (flowers/*.ts), kiểu dữ liệu, taxonomy
