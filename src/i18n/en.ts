@@ -343,7 +343,7 @@ export const en: Dict = {
       'Timings are estimates given as [low, high] ranges and come from the sources listed at the bottom of each flower page. When a source gives no number we say so rather than make one up. Each species carries a confidence label.',
     analyticsTitle: 'Page-view statistics and privacy',
     analyticsBody:
-      'We use GoatCounter, a page-view counter that does not use cookies and does not store personal information about visitors. We do not track extra events. The site works normally if GoatCounter is blocked or down.',
+      'We use GoatCounter, a page-view counter that does not use cookies and does not store personal information about visitors. Besides page views, we count one kind of click: opening a flower from a card, to learn which flowers people look at. That count holds only the flower name, nothing about you. The site works normally if GoatCounter is blocked or down.',
     analyticsOptOut: 'Turn off statistics in this browser',
     analyticsOptIn: 'Turn statistics back on',
     analyticsOptedOut: 'Statistics are off in this browser.',

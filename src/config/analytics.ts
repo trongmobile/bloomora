@@ -17,6 +17,17 @@ export interface AnalyticsConfig {
 
 export const GOATCOUNTER_SCRIPT_SRC = 'https://gc.zgo.at/count.js';
 
+/**
+ * The only custom event the site sends: a click on a flower card. GoatCounter's own count.js binds
+ * it from `data-goatcounter-click`, so there is no tracking code of ours. The name uses the
+ * language-neutral flower id, so the vi and en cards of one species land on the same row.
+ */
+export const FLOWER_CLICK_EVENT_PREFIX = 'click/flower/';
+
+export function flowerClickEventName(flowerId: string): string {
+  return `${FLOWER_CLICK_EVENT_PREFIX}${flowerId}`;
+}
+
 /** GoatCounter site codes are lowercase letters, digits and hyphens. */
 const CODE_PATTERN = /^[a-z0-9](?:[a-z0-9-]{0,48}[a-z0-9])?$/;
 

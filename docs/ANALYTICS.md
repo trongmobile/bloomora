@@ -2,7 +2,7 @@
 
 Bloomora dùng [GoatCounter](https://www.goatcounter.com) vì nó không đặt cookie, không lưu dữ liệu cá nhân và đủ để đếm lượt xem trang. Site **hoạt động bình thường** khi GoatCounter chưa cấu hình, bị chặn hoặc ngừng hoạt động: script tải `async` và không có phần nào của site phụ thuộc vào nó.
 
-Chỉ đếm lượt xem trang. Không có event tracking tùy chỉnh, không có định danh người dùng.
+Đếm lượt xem trang và **một** loại sự kiện: bấm vào thẻ hoa (xem [Đếm lượt bấm thẻ hoa](#đếm-lượt-bấm-thẻ-hoa)). Không có định danh người dùng.
 
 ## Bật analytics
 
@@ -22,6 +22,23 @@ Code hợp lệ gồm chữ thường, số và dấu gạch ngang. Code sai đ�
 - `scripts/verify-build.mjs` bảo đảm mỗi trang có tối đa một script GoatCounter và cấu hình là "tất cả hoặc không có".
 
 Tắt cưỡng bức dù có code: `PUBLIC_ANALYTICS_ENABLED=false`.
+
+## Đếm lượt bấm thẻ hoa
+
+Mỗi thẻ hoa (`FlowerCard.astro`, dùng ở trang chủ, danh sách hoa và mục hoa liên quan) có hai thuộc tính trên link:
+
+```html
+data-goatcounter-click="click/flower/<id>" data-goatcounter-title="<tên tiếng Anh>"
+```
+
+`count.js` của GoatCounter tự gắn sự kiện từ thuộc tính này (bấm thường và bấm giữa chuột, gửi bằng `sendBeacon` nên không mất khi trang chuyển đi). Site **không có JavaScript theo dõi riêng**.
+
+- **Tên sự kiện** dùng `flower.id` (không đổi theo ngôn ngữ), nên thẻ tiếng Việt và tiếng Anh của cùng một loài gộp vào một dòng. Tên dựng bởi `flowerClickEventName()` trong `src/config/analytics.ts`.
+- **Xem số liệu**: trong dashboard GoatCounter, tìm các dòng có tên bắt đầu bằng `click/flower/`. Mỗi dòng là một loài.
+- **Khác với lượt xem trang**: `/vi/flowers/<slug>/` đếm mọi người vào trang đó, kể cả từ Google hay link chia sẻ. `click/flower/<id>` chỉ đếm người bấm từ một thẻ hoa trên site.
+- GoatCounter mặc định gộp các lần bấm liên tiếp trong cùng một phiên, nên con số gần với "số người bấm" hơn "số lần bấm". Muốn đếm từng lần, thêm `data-goatcounter-no-session="1"`.
+- Không có code → thuộc tính nằm trong HTML nhưng không có gì chạy, không có yêu cầu mạng nào. Nút opt-out (`skipgc`) và `allow_local: false` áp dụng cho cả sự kiện này.
+- Thêm một thẻ hoa mới ở nơi khác thì dùng lại `FlowerCard`. `tests/e2e/analytics.spec.ts` kiểm tra mọi thẻ đều có sự kiện và không có phần tử nào khác bị gắn sự kiện.
 
 ## Từ chối theo dõi (opt-out)
 

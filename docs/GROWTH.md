@@ -53,14 +53,16 @@ Vòng đời cây là nội dung phổ thông. Trang `/<lang>/classroom/` có h�
 
 ## Đo lường
 
-Analytics chỉ đếm lượt xem trang (GoatCounter, không cookie, xem [ANALYTICS.md](ANALYTICS.md)). Trong bảng điều khiển của GoatCounter, nhìn:
+Analytics đếm lượt xem trang và bấm thẻ hoa (GoatCounter, không cookie, xem [ANALYTICS.md](ANALYTICS.md)). Trong bảng điều khiển của GoatCounter, nhìn:
 
 - **Referrers** để biết nguồn nào mang người tới (Zalo, Facebook, TikTok, một blog nhúng…).
 - Lượt xem của `/<lang>/quiz/result/…` và `/<lang>/flowers/…/moment/…`: người mở link do bạn bè gửi.
 - Lượt xem của `/<lang>/embed/…`: số lần player được nhúng chạy ở nơi khác.
 - `/<lang>/planner/` và `/<lang>/classroom/` theo mùa.
 
-Không có sự kiện tùy chỉnh nên không đo được số lần bấm nút lưu hay tạo clip. Đó là chủ ý, vì không theo dõi cá nhân.
+- Các dòng `click/flower/<id>`: số lượt bấm vào thẻ hoa theo từng loài (xem [ANALYTICS.md](ANALYTICS.md#đếm-lượt-bấm-thẻ-hoa)). Dùng nó để biết loài nào thu hút người xem khi họ đang lướt danh sách.
+
+Đây là sự kiện duy nhất. Không đo được số lần bấm nút lưu hay tạo clip. Đó là chủ ý, vì không theo dõi cá nhân.
 
 ## Việc bạn phải tự làm
 

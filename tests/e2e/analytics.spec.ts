@@ -36,16 +36,44 @@ test.describe('GoatCounter', () => {
     await expect(tag).toHaveAttribute('data-goatcounter-settings', /"allow_local":false/);
   });
 
-  test('no event tracking or third-party trackers are present', async ({ page }) => {
+  test('no custom tracking code or third-party trackers are present', async ({ page }) => {
     const hosts = new Set<string>();
     await page.route(COUNT_JS, (route) => route.fulfill({ contentType: 'text/javascript', body: '' }));
     page.on('request', (r) => hosts.add(new URL(r.url()).host));
     await page.goto(url('/en/'));
     await page.waitForLoadState('networkidle');
     const html = await page.content();
+    // Events come only from GoatCounter's own data-goatcounter-click binding, never from our JavaScript.
     expect(html).not.toMatch(/goatcounter\.count\(|gtag\(|fbq\(|_paq|plausible|segment\.com|hotjar/i);
     const allowed = ['127.0.0.1:4321', 'gc.zgo.at', `${ANALYTICS_CODE}.goatcounter.com`];
     for (const host of hosts) expect(allowed, `unexpected host ${host}`).toContain(host);
+  });
+
+  test('the only event is a click on a flower card, one name per species', async ({ page }) => {
+    await page.route(COUNT_JS, (route) => route.fulfill({ contentType: 'text/javascript', body: '' }));
+    const names = new Set<string>();
+    for (const path of ['/en/', '/vi/', '/en/flowers/', '/vi/flowers/', '/en/flowers/sunflower/', '/en/planner/', '/en/about/']) {
+      await page.goto(url(path));
+      const tracked = page.locator('[data-goatcounter-click]');
+      for (const el of await tracked.all()) {
+        // Every tracked element is the link of a flower card, and nothing else.
+        await expect(el).toHaveClass(/flower-card__link/);
+        const name = await el.getAttribute('data-goatcounter-click');
+        expect(name, path).toMatch(/^click\/flower\/[a-z0-9-]+$/);
+        expect((await el.getAttribute('data-goatcounter-title'))?.length, path).toBeGreaterThan(0);
+        names.add(name!);
+      }
+      // Every flower card on the page carries the event, so no species is silently left out.
+      // Tool and article cards share the CSS class but link elsewhere, and must stay untracked.
+      expect(await tracked.count(), path).toBe(await page.locator('.flower-card__link[href*="/flowers/"]').count());
+    }
+    // The vi and en cards of one species share one event name.
+    await page.goto(url('/vi/flowers/'));
+    const vi = await page.locator('[data-goatcounter-click]').evaluateAll((els) => els.map((e) => e.getAttribute('data-goatcounter-click')));
+    await page.goto(url('/en/flowers/'));
+    const en = await page.locator('[data-goatcounter-click]').evaluateAll((els) => els.map((e) => e.getAttribute('data-goatcounter-click')));
+    expect([...vi].sort()).toEqual([...en].sort());
+    expect(names.size).toBeGreaterThan(1);
   });
 
   test('the script tag is the same on every page type', async ({ page }) => {

@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { GOATCOUNTER_SCRIPT_SRC, isValidGoatCounterCode, resolveAnalyticsConfig } from '../../src/config/analytics';
+import { FLOWERS } from '../../src/data';
+import {
+  FLOWER_CLICK_EVENT_PREFIX,
+  GOATCOUNTER_SCRIPT_SRC,
+  flowerClickEventName,
+  isValidGoatCounterCode,
+  resolveAnalyticsConfig,
+} from '../../src/config/analytics';
 
 describe('GoatCounter configuration', () => {
   it('is off without a site code', () => {
@@ -28,5 +35,18 @@ describe('GoatCounter configuration', () => {
 
   it('only ever loads the official script host', () => {
     expect(GOATCOUNTER_SCRIPT_SRC).toBe('https://gc.zgo.at/count.js');
+  });
+});
+
+describe('flower card click event', () => {
+  it('is named after the language-neutral flower id', () => {
+    expect(flowerClickEventName('sunflower')).toBe('click/flower/sunflower');
+    expect(FLOWER_CLICK_EVENT_PREFIX).toBe('click/flower/');
+  });
+
+  it('gives every species its own name, safe to put in an attribute and a dashboard row', () => {
+    const names = FLOWERS.map((f) => flowerClickEventName(f.id));
+    expect(new Set(names).size).toBe(FLOWERS.length);
+    for (const name of names) expect(name).toMatch(/^click\/flower\/[a-z0-9-]+$/);
   });
 });

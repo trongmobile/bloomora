@@ -349,7 +349,7 @@ export const vi = {
       'Số liệu thời gian là ước tính dưới dạng khoảng [thấp, cao] và được lấy từ các nguồn ghi ở cuối mỗi trang loài hoa. Khi nguồn không nêu một con số, chúng tôi nói rõ thay vì tự đặt ra. Mỗi loài có nhãn độ tin cậy.',
     analyticsTitle: 'Thống kê lượt xem và quyền riêng tư',
     analyticsBody:
-      'Chúng tôi dùng GoatCounter, một dịch vụ đếm lượt xem không dùng cookie và không lưu thông tin cá nhân của người truy cập. Chúng tôi không theo dõi sự kiện bổ sung. Trang vẫn hoạt động bình thường nếu GoatCounter bị chặn hoặc ngừng hoạt động.',
+      'Chúng tôi dùng GoatCounter, một dịch vụ đếm lượt xem không dùng cookie và không lưu thông tin cá nhân của người truy cập. Ngoài lượt xem trang, chúng tôi đếm một loại lượt bấm duy nhất: mở một loài hoa từ thẻ hoa, để biết người xem quan tâm loài nào. Số đếm chỉ chứa tên loài hoa, không có thông tin gì về bạn. Trang vẫn hoạt động bình thường nếu GoatCounter bị chặn hoặc ngừng hoạt động.',
     analyticsOptOut: 'Tắt thống kê trên trình duyệt này',
     analyticsOptIn: 'Bật lại thống kê',
     analyticsOptedOut: 'Thống kê đang tắt trên trình duyệt này.',
