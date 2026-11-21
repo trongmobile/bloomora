@@ -27,6 +27,16 @@ import { bougainvillea } from './flowers/bougainvillea';
 import { flameTree } from './flowers/flame-tree';
 import { plumeria } from './flowers/plumeria';
 import { hibiscus } from './flowers/hibiscus';
+import { mexicanSunflower } from './flowers/mexican-sunflower';
+import { waterLily } from './flowers/water-lily';
+import { queensCrapeMyrtle } from './flowers/queens-crape-myrtle';
+import { orchidTree } from './flowers/orchid-tree';
+import { tonkinRosewood } from './flowers/tonkin-rosewood';
+import { mossRose } from './flowers/moss-rose';
+import { hydrangea } from './flowers/hydrangea';
+import { azalea } from './flowers/azalea';
+import { buckwheat } from './flowers/buckwheat';
+import { arabianJasmine } from './flowers/arabian-jasmine';
 
 /** All flowers, in the order they should be listed. */
 export const FLOWERS: readonly FlowerData[] = [
@@ -58,6 +68,16 @@ export const FLOWERS: readonly FlowerData[] = [
   flameTree,
   plumeria,
   hibiscus,
+  mexicanSunflower,
+  waterLily,
+  queensCrapeMyrtle,
+  orchidTree,
+  tonkinRosewood,
+  mossRose,
+  hydrangea,
+  azalea,
+  buckwheat,
+  arabianJasmine,
 ];
 
 const byId = new Map(FLOWERS.map((f) => [f.id, f]));

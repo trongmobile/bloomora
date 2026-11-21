@@ -62,7 +62,17 @@ export type Archetype =
   | 'bougainvillea'
   | 'flame-tree'
   | 'plumeria'
-  | 'hibiscus';
+  | 'hibiscus'
+  | 'da-quy'
+  | 'water-lily'
+  | 'bang-lang'
+  | 'ban'
+  | 'sua'
+  | 'moss-rose'
+  | 'hydrangea'
+  | 'azalea'
+  | 'buckwheat'
+  | 'jasmine';
 
 export interface StageTiming {
   id: StageId;

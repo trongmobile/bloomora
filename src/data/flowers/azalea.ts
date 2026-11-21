@@ -1,0 +1,150 @@
+import type { FlowerData } from '../types';
+
+export const azalea: FlowerData = {
+  id: 'azalea',
+  slugs: { vi: 'hoa-do-quyen', en: 'azalea' },
+  scientificName: 'Rhododendron simsii',
+  scientificAliases: ['Rhododendron', 'Sims azalea', 'Indian azalea', 'đỗ quyên', 'hoa đỗ quyên'],
+  family: 'Ericaceae',
+  group: 'shrub-tree',
+  colors: ['pink', 'red'],
+  bloomSeasons: ['winter', 'spring'],
+  daysToBloom: [666, 1710],
+  speedBand: 'slow',
+  startMaterial: 'seed-or-cutting',
+  confidence: 'low',
+  featured: false,
+  isNew: true,
+  stages: [
+    { id: 'seed', days: [14, 28] },
+    { id: 'germination', days: [14, 35] },
+    { id: 'seedling', days: [180, 365] },
+    { id: 'vegetative', days: [365, 1095] },
+    { id: 'bud-formation', days: [60, 120] },
+    { id: 'bud-development', days: [30, 60] },
+    { id: 'blooming', days: [3, 7] },
+    { id: 'full-bloom', days: [14, 35] },
+    { id: 'wilting', days: [30, 90] },
+  ],
+  visual: {
+    archetype: 'azalea',
+    palette: {
+      petal: '#f06aa0',
+      petalDeep: '#b8245f',
+      petalTip: '#ffc1d8',
+      center: '#f6c53a',
+      centerDeep: '#8a2a2a',
+      leaf: '#3f7a45',
+      leafDeep: '#1f4f2c',
+      stem: '#6a4a3a',
+    },
+  },
+  related: ['hibiscus', 'cherry-blossom', 'peach-blossom'],
+  sources: [
+    {
+      title: 'Rhododendron simsii',
+      publisher: 'Wikipedia',
+      url: 'https://en.wikipedia.org/wiki/Rhododendron_simsii',
+      supports: 'Rhododendron simsii is an evergreen or semi-evergreen shrub of the heath family Ericaceae, an azalea grown for its pink to red funnel-shaped flowers and a parent of many pot azaleas.',
+    },
+    {
+      title: 'Rhododendron simsii',
+      publisher: 'Wikipedia (tiếng Việt)',
+      url: 'https://vi.wikipedia.org/wiki/Rhododendron_simsii',
+      supports: 'Trang tiếng Việt về loài Rhododendron simsii, dùng để đối chiếu tên gọi đỗ quyên và đặc điểm hoa hình phễu.',
+    },
+    {
+      title: 'Rhododendron simsii',
+      publisher: 'Useful Tropical Plants',
+      url: 'https://tropical.theferns.info/viewtropical.php?id=Rhododendron+simsii',
+      supports: 'Mô tả cây bụi họ Đỗ quyên ưa đất chua, rễ nông và nhân giống bằng cành giâm hoặc hạt.',
+    },
+  ],
+  text: {
+    vi: {
+      name: 'Hoa đỗ quyên',
+      aliases: ['đỗ quyên', 'hoa đỗ quyên', 'đỗ quyên Tết', 'azalea'],
+      tagline: 'Những chùm hoa hồng đỏ hình phễu nở rộ đầu xuân: loài hoa của vùng núi cao và chậu cảnh ngày Tết.',
+      metaDescription: 'Xem hoa đỗ quyên lớn lên từ hạt hoặc cành giâm đến lúc nở rộ đầu xuân qua time-lapse tương tác: các giai đoạn, thời gian ước tính, cách chăm và điều thú vị.',
+      intro: [
+        'Đỗ quyên (Rhododendron simsii) là cây bụi thuộc họ Đỗ quyên (Ericaceae), thuộc nhóm azalea. Hoa hình phễu màu hồng đến đỏ nở thành chùm vào cuối đông và đầu xuân, nên cây thường được bày trong chậu dịp Tết và ở vùng khí hậu mát.',
+        '“Đỗ quyên” cũng là tên chung của nhiều loài Rhododendron mọc ở núi cao, ví dụ vùng Hoàng Liên Sơn. Các mốc thời gian dưới đây là ước tính thô cho cây trồng từ hạt hoặc cành giâm; nguồn không nêu số ngày cho từng giai đoạn nên con số thực tế có thể khác nhiều.',
+      ],
+      stages: {
+        seed: {
+          description: 'Quả nang nứt ra, rải những hạt rất nhỏ như bụi; hạt cần ánh sáng để nảy mầm nên chỉ rắc trên mặt giá thể.',
+        },
+        'full-bloom': { description: 'Những chùm hoa hồng đỏ hình phễu nở bung, phủ kín tán lá xanh sẫm.' },
+        wilting: {
+          description: 'Hoa tàn và rụng, quả nang nhỏ hình thành; cây ra lá non và tạo mầm hoa cho năm sau.',
+        },
+      },
+      care: {
+        light: 'Sáng nhẹ đến bóng râm một phần; tránh nắng gắt buổi trưa.',
+        water: 'Giữ ẩm đều nhưng không úng; dùng nước ít kiềm nếu có thể.',
+        soil: 'Đất chua, tơi xốp, giàu mùn, thoát nước tốt.',
+        temperature: 'Ưa khí hậu mát; trồng ở nơi thoáng và tránh nóng bức.',
+        extra: 'Rễ nằm nông nên cần che phủ gốc để giữ ẩm.',
+      },
+      facts: [
+        'Đỗ quyên thuộc họ Ericaceae, cùng họ với việt quất.',
+        'Hoa hình phễu, màu hồng đến đỏ, nở thành chùm vào cuối đông và đầu xuân.',
+        'Cây ưa đất chua và có bộ rễ nông.',
+        '“Đỗ quyên” cũng là tên chung của nhiều loài Rhododendron ở vùng núi cao.',
+      ],
+      keywords: [
+        'hoa đỗ quyên',
+        'quá trình phát triển của hoa đỗ quyên',
+        'time-lapse hoa đỗ quyên',
+        'cách trồng hoa đỗ quyên',
+        'vòng đời hoa đỗ quyên',
+      ],
+      altText: 'Minh họa một bụi đỗ quyên với nhiều chùm hoa hình phễu màu hồng đỏ trên cành lá xanh sẫm, lớn lên từ một hạt nhỏ trong đất.',
+      timeNote: 'Các mốc thời gian chỉ là ước tính thô; nguồn không nêu số ngày cho từng giai đoạn và cây lớn chậm hơn nhiều loài cây hoa khác.',
+      startNote: 'Mô phỏng bắt đầu từ một hạt đỗ quyên nhỏ; trong thực tế cây thường được trồng từ cành giâm.',
+    },
+    en: {
+      name: 'Azalea',
+      aliases: ['Rhododendron simsii', 'Sims azalea', 'Indian azalea', 'hoa đỗ quyên'],
+      tagline: 'Clusters of pink-red funnel flowers opening in early spring: the flower of high mountains and of Tết pots.',
+      metaDescription: 'Watch an azalea (hoa đỗ quyên) grow from seed or cutting to an early spring bloom in an interactive time-lapse: growth stages, timing, care tips and facts.',
+      intro: [
+        'Azalea (Rhododendron simsii) is a shrub in the heath family (Ericaceae). Its funnel-shaped pink to red flowers open in clusters in late winter and early spring, so it is often kept in pots at Tết and grown in cool climates.',
+        '“Đỗ quyên” is also the common name for many Rhododendron species of the high mountains, such as around Hoang Lien Son. The timings below are rough estimates for a plant grown from seed or a cutting; the sources give no day counts for each stage, so real figures may differ a lot.',
+      ],
+      stages: {
+        seed: {
+          description: 'The capsule splits and scatters dust-fine seeds; they need light to sprout, so they are only pressed onto the surface of the mix.',
+        },
+        'full-bloom': {
+          description: 'Clusters of pink-red funnel flowers open wide and cover the dark green foliage.',
+        },
+        wilting: {
+          description: 'The flowers fade and fall and small capsules form; the plant puts out new leaves and sets buds for next year.',
+        },
+      },
+      care: {
+        light: 'Bright to partial shade; avoid harsh midday sun.',
+        water: 'Keep evenly moist but not soggy; use low-alkalinity water if possible.',
+        soil: 'Acid, loose, humus-rich, well-drained soil.',
+        temperature: 'Likes cool weather; grow it somewhere airy and avoid stuffy heat.',
+        extra: 'The roots are shallow, so mulch around the base to hold moisture.',
+      },
+      facts: [
+        'Azaleas belong to the heath family Ericaceae, the same family as blueberries.',
+        'The funnel-shaped flowers are pink to red and open in clusters in late winter and early spring.',
+        'The plant likes acid soil and has shallow roots.',
+        '“Đỗ quyên” is also the common name for many Rhododendron species in the high mountains.',
+      ],
+      keywords: [
+        'azalea growth stages',
+        'Rhododendron simsii life cycle',
+        'time-lapse azalea',
+        'how to grow azalea',
+      ],
+      altText: 'Illustration of an azalea shrub with many pink-red funnel-shaped flower clusters on dark green leafy branches, growing from a small seed in the soil.',
+      timeNote: 'Timings are rough estimates; the sources give no day counts for each stage and the plant grows more slowly than many flowers.',
+      startNote: 'The simulation starts from a single tiny azalea seed; in practice the plant is usually grown from cuttings.',
+    },
+  },
+};

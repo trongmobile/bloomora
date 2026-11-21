@@ -1,0 +1,148 @@
+import type { FlowerData } from '../types';
+
+export const tonkinRosewood: FlowerData = {
+  id: 'tonkin-rosewood',
+  slugs: { vi: 'hoa-sua', en: 'tonkin-rosewood' },
+  scientificName: 'Dalbergia tonkinensis',
+  scientificAliases: ['Dalbergia', 'Vietnamese rosewood', 'sưa đỏ', 'sưa trắng', 'huê', 'hoàng hoa'],
+  family: 'Fabaceae',
+  group: 'shrub-tree',
+  colors: ['white'],
+  bloomSeasons: ['spring'],
+  daysToBloom: [1988, 3990],
+  speedBand: 'slow',
+  startMaterial: 'seed',
+  confidence: 'low',
+  featured: false,
+  isNew: true,
+  stages: [
+    { id: 'seed', days: [7, 21] },
+    { id: 'germination', days: [14, 35] },
+    { id: 'seedling', days: [90, 180] },
+    { id: 'vegetative', days: [1825, 3650] },
+    { id: 'bud-formation', days: [30, 60] },
+    { id: 'bud-development', days: [20, 40] },
+    { id: 'blooming', days: [2, 4] },
+    { id: 'full-bloom', days: [5, 10] },
+    { id: 'wilting', days: [60, 120] },
+  ],
+  visual: {
+    archetype: 'sua',
+    palette: {
+      petal: '#fffdf6',
+      petalDeep: '#e5d9a8',
+      petalTip: '#ffffff',
+      center: '#e9c85c',
+      centerDeep: '#a8832a',
+      leaf: '#5f9a3e',
+      leafDeep: '#2f6a2a',
+      stem: '#6a5a48',
+    },
+  },
+  related: ['peach-blossom', 'cherry-blossom', 'orchid-tree'],
+  sources: [
+    {
+      title: 'Dalbergia tonkinensis',
+      publisher: 'Wikipedia',
+      url: 'https://en.wikipedia.org/wiki/Dalbergia_tonkinensis',
+      supports: 'Dalbergia tonkinensis is a tree in the pea family Fabaceae from Vietnam, valued for its dense, fragrant rosewood and threatened by overharvesting.',
+    },
+    {
+      title: 'Dalbergia tonkinensis',
+      publisher: 'Wikipedia (tiếng Việt)',
+      url: 'https://vi.wikipedia.org/wiki/Dalbergia_tonkinensis',
+      supports: 'Trang tiếng Việt về cây sưa, dùng để đối chiếu tên gọi, hoa trắng nở vào đầu xuân và việc cây gỗ quý bị khai thác.',
+    },
+    {
+      title: 'Dalbergia tonkinensis',
+      publisher: 'Useful Tropical Plants',
+      url: 'https://tropical.theferns.info/viewtropical.php?id=Dalbergia+tonkinensis',
+      supports: 'Mô tả cây gỗ lớn nhiệt đới thuộc chi Dalbergia, mọc chậm và nhân giống bằng hạt.',
+    },
+  ],
+  text: {
+    vi: {
+      name: 'Hoa sưa',
+      aliases: ['sưa', 'sưa trắng', 'sưa đỏ', 'huê', 'hoàng hoa'],
+      tagline: 'Chùm hoa trắng muốt nở rộ chỉ trong vài ngày đầu xuân, phủ trắng cả tán cây trụi lá: cái đẹp thoáng qua của mùa xuân Hà Nội.',
+      metaDescription: 'Xem hoa sưa lớn lên từ hạt đến lúc nở trắng cả tán đầu xuân qua time-lapse tương tác: các giai đoạn, thời gian ước tính, cách chăm và điều thú vị.',
+      intro: [
+        'Hoa sưa (Dalbergia tonkinensis) là cây gỗ thuộc họ Đậu (Fabaceae), mọc ở Việt Nam và nổi tiếng vì gỗ quý, thơm và rất cứng. Cây trụi lá rồi nở hoa trắng thơm vào đầu xuân; mùa hoa chỉ kéo dài ngắn ngủi nên mỗi lần sưa nở đều được nhiều người chờ đón.',
+        'Cây lớn rất chậm nên các mốc thời gian dưới đây chỉ là ước tính thô cho cây trồng từ hạt; nguồn không nêu số ngày cho từng giai đoạn nên con số thực tế có thể khác nhiều.',
+      ],
+      stages: {
+        seed: { description: 'Quả dẹt chứa một đến vài hạt; hạt được gieo vào đất ẩm để nảy mầm.' },
+        'full-bloom': {
+          description: 'Những chùm hoa trắng thơm phủ kín tán cây trụi lá và nở rộ chỉ trong ít ngày.',
+        },
+        wilting: { description: 'Cánh hoa rụng như tuyết trắng dưới gốc, rồi cây ra lá non và kết quả dẹt.' },
+      },
+      care: {
+        light: 'Nắng đầy đủ.',
+        water: 'Tưới vừa phải; tránh để đất úng nước.',
+        soil: 'Đất sâu, thoát nước tốt, giàu mùn.',
+        temperature: 'Ưa khí hậu nhiệt đới và cận nhiệt đới của miền Bắc và miền Trung.',
+        extra: 'Cây mọc chậm và cần nhiều năm mới ra hoa đều.',
+      },
+      facts: [
+        'Sưa là loài cây gỗ quý của Việt Nam, gỗ thơm và rất cứng.',
+        'Hoa sưa trắng thơm và nở rộ chỉ trong vài ngày vào đầu xuân.',
+        'Cây thường trụi lá khi hoa nở.',
+        'Việc khai thác gỗ quá mức khiến cây sưa ngoài tự nhiên bị đe dọa.',
+      ],
+      keywords: [
+        'hoa sưa',
+        'quá trình phát triển của hoa sưa',
+        'time-lapse hoa sưa',
+        'vòng đời cây sưa',
+        'mùa hoa sưa',
+      ],
+      altText: 'Minh họa cây sưa với thân nâu sẫm và tán đầy những chùm hoa trắng, lớn lên từ một hạt nhỏ trong đất.',
+      timeNote: 'Các mốc thời gian chỉ là ước tính thô cho cây lớn chậm; nguồn không nêu số ngày cho từng giai đoạn.',
+      startNote: 'Mô phỏng bắt đầu từ một hạt sưa gieo vào đất ẩm.',
+    },
+    en: {
+      name: 'Tonkin rosewood',
+      aliases: ['Dalbergia tonkinensis', 'Vietnamese rosewood', 'hoa sưa', 'sưa'],
+      tagline: 'Clusters of pure white flowers open for just a few days in early spring and cover the bare crown: the fleeting beauty of Hanoi in spring.',
+      metaDescription: 'Watch a Tonkin rosewood (hoa sưa) grow from seed to a crown of white spring bloom in an interactive time-lapse: growth stages, timing, care tips and facts.',
+      intro: [
+        'Tonkin rosewood (Dalbergia tonkinensis) is a tree in the pea family (Fabaceae) from Vietnam, famous for its precious, fragrant and very hard wood. The tree drops its leaves and then opens scented white flowers in early spring; the bloom lasts only briefly, so each flowering is eagerly awaited.',
+        'The tree grows very slowly, so the timings below are rough estimates for a tree grown from seed; the sources give no day counts for each stage, so real figures may differ a lot.',
+      ],
+      stages: {
+        seed: {
+          description: 'The flat pod holds one to a few seeds; the seeds are sown in damp soil to sprout.',
+        },
+        'full-bloom': {
+          description: 'Clusters of fragrant white flowers cover the leafless crown and are at their best for only a few days.',
+        },
+        wilting: {
+          description: 'The petals fall like white snow around the trunk, then the tree puts out new leaves and sets flat pods.',
+        },
+      },
+      care: {
+        light: 'Full sun.',
+        water: 'Water moderately and avoid waterlogged soil.',
+        soil: 'Deep, well-drained, humus-rich soil.',
+        temperature: 'Likes the tropical and subtropical climate of northern and central Vietnam.',
+        extra: 'It grows slowly and needs many years before it flowers well.',
+      },
+      facts: [
+        'Tonkin rosewood is a precious Vietnamese timber tree with fragrant, very hard wood.',
+        'The scented white flowers peak for only a few days in early spring.',
+        'The tree is often leafless when it flowers.',
+        'Overharvesting of the timber has threatened wild trees.',
+      ],
+      keywords: [
+        'Tonkin rosewood growth stages',
+        'Dalbergia tonkinensis life cycle',
+        'time-lapse hoa sưa',
+        'Vietnamese rosewood flower',
+      ],
+      altText: 'Illustration of a dark-trunked rosewood tree with a crown full of white flower clusters, growing from a small seed in the soil.',
+      timeNote: 'Timings are rough estimates for a slow-growing tree; the sources give no day counts for each stage.',
+      startNote: 'The simulation starts from a single seed sown in damp soil.',
+    },
+  },
+};

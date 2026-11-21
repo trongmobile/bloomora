@@ -1,0 +1,150 @@
+import type { FlowerData } from '../types';
+
+export const mossRose: FlowerData = {
+  id: 'moss-rose',
+  slugs: { vi: 'hoa-muoi-gio', en: 'moss-rose' },
+  scientificName: 'Portulaca grandiflora',
+  scientificAliases: ['Portulaca', 'rose moss', 'sun rose', 'ten o\'clock flower', 'mười giờ', 'hoa mười giờ'],
+  family: 'Portulacaceae',
+  group: 'annual',
+  colors: ['pink', 'red', 'yellow', 'orange', 'white', 'purple'],
+  bloomSeasons: ['summer', 'autumn'],
+  daysToBloom: [56, 104],
+  speedBand: 'fast',
+  startMaterial: 'seed-or-cutting',
+  confidence: 'low',
+  featured: false,
+  isNew: true,
+  stages: [
+    { id: 'seed', days: [3, 7] },
+    { id: 'germination', days: [5, 10] },
+    { id: 'seedling', days: [14, 21] },
+    { id: 'vegetative', days: [21, 40] },
+    { id: 'bud-formation', days: [7, 14] },
+    { id: 'bud-development', days: [5, 10] },
+    { id: 'blooming', days: [1, 2] },
+    { id: 'full-bloom', days: [60, 120] },
+    { id: 'wilting', days: [14, 30] },
+  ],
+  visual: {
+    archetype: 'moss-rose',
+    palette: {
+      petal: '#f0457f',
+      petalDeep: '#b3175a',
+      petalTip: '#ff8fb3',
+      center: '#f6c53a',
+      centerDeep: '#b8841a',
+      leaf: '#6aa84a',
+      leafDeep: '#3a7a34',
+      stem: '#b0506a',
+    },
+  },
+  related: ['daisy', 'marigold', 'zinnia'],
+  sources: [
+    {
+      title: 'Portulaca grandiflora',
+      publisher: 'Wikipedia',
+      url: 'https://en.wikipedia.org/wiki/Portulaca_grandiflora',
+      supports: 'Portulaca grandiflora is a low, succulent annual native to South America and widely grown as an ornamental, with showy flowers in many colours that open in sun and close in the afternoon.',
+    },
+    {
+      title: 'Portulaca grandiflora',
+      publisher: 'Wikipedia (tiếng Việt)',
+      url: 'https://vi.wikipedia.org/wiki/Hoa_m%C6%B0%E1%BB%9Di_gi%E1%BB%9D',
+      supports: 'Trang tiếng Việt về hoa mười giờ, dùng để đối chiếu tên gọi, nhiều màu hoa và việc hoa chỉ nở khi có nắng.',
+    },
+    {
+      title: 'Portulaca grandiflora',
+      publisher: 'Useful Tropical Plants',
+      url: 'https://tropical.theferns.info/viewtropical.php?id=Portulaca+grandiflora',
+      supports: 'Mô tả cây thân mọng nước chịu hạn, nhân giống dễ bằng hạt hoặc cành giâm.',
+    },
+  ],
+  text: {
+    vi: {
+      name: 'Hoa mười giờ',
+      aliases: ['mười giờ', 'hoa mười giờ', 'rau sam cảnh', 'hoa mai rùa'],
+      tagline: 'Nở rực rỡ dưới nắng sớm rồi khép lại khi chiều xuống: loài hoa nhỏ nhiều màu của bờ rào, ban công và chậu cảnh.',
+      metaDescription: 'Xem hoa mười giờ lớn lên từ hạt đến lúc nở rực dưới nắng qua time-lapse tương tác: các giai đoạn, thời gian ước tính, cách chăm và những điều thú vị.',
+      intro: [
+        'Hoa mười giờ (Portulaca grandiflora) là cây một năm thân mọng nước thuộc họ Rau sam (Portulacaceae), có nguồn gốc ở Nam Mỹ và được trồng khắp Việt Nam. Hoa nhiều màu, nở khi có nắng và khép lại vào chiều.',
+        'Cây lớn nhanh và dễ trồng. Các mốc thời gian dưới đây là ước tính thô cho cây trồng từ hạt; nguồn không nêu số ngày cho từng giai đoạn nên con số thực tế có thể khác tùy thời tiết.',
+      ],
+      stages: {
+        seed: { description: 'Hạt rất nhỏ, màu đen; chỉ cần rắc nhẹ lên mặt đất ẩm ngoài nắng.' },
+        'full-bloom': {
+          description: 'Những bông hoa mỏng như lụa nở bung dưới nắng, phủ kín thảm cây thấp sát đất.',
+        },
+        wilting: {
+          description: 'Mỗi bông chỉ nở một ngày rồi tàn, nhưng cây liên tục ra nụ mới và kết quả nhỏ chứa nhiều hạt.',
+        },
+      },
+      care: {
+        light: 'Nắng đầy đủ; thiếu nắng hoa sẽ không nở.',
+        water: 'Tưới ít, để đất khô giữa hai lần tưới.',
+        soil: 'Đất cát, thoát nước nhanh.',
+        temperature: 'Ưa nóng, không chịu lạnh.',
+        extra: 'Cây dễ nhân giống bằng cành giâm cắm xuống đất.',
+      },
+      facts: [
+        'Hoa mười giờ nở khi có nắng và khép lại vào chiều.',
+        'Cây có nguồn gốc từ Nam Mỹ và thân mọng nước, chịu hạn tốt.',
+        'Hoa có nhiều màu như hồng, đỏ, vàng, cam, trắng và tím.',
+        'Cây mọc thấp sát đất, thường dùng làm thảm hoa và trồng chậu.',
+      ],
+      keywords: [
+        'hoa mười giờ',
+        'quá trình phát triển của hoa mười giờ',
+        'time-lapse hoa mười giờ',
+        'cách trồng hoa mười giờ',
+        'vòng đời hoa mười giờ',
+      ],
+      altText: 'Minh họa một cây mười giờ thấp, thân mọng nước, nở nhiều bông hoa hồng thắm giữa những chiếc lá nhỏ, lớn lên từ một hạt trong đất.',
+      timeNote: 'Các mốc thời gian chỉ là ước tính thô; nguồn không nêu số ngày cho từng giai đoạn và tốc độ phụ thuộc nắng nóng.',
+      startNote: 'Mô phỏng bắt đầu từ một hạt mười giờ rắc lên đất; trong thực tế cây cũng được giâm cành.',
+    },
+    en: {
+      name: 'Moss rose',
+      aliases: ['Portulaca grandiflora', 'rose moss', 'sun rose', 'ten o\'clock flower', 'hoa mười giờ'],
+      tagline: 'Blazing in the morning sun and closing as afternoon falls: the small, many-coloured flower of fences, balconies and pots.',
+      metaDescription: 'Watch a moss rose (hoa mười giờ) grow from seed to a sunny bloom in an interactive time-lapse: growth stages, estimated timing, care tips and fun facts.',
+      intro: [
+        'Moss rose (Portulaca grandiflora) is a succulent annual in the purslane family (Portulacaceae), native to South America and grown all over Vietnam. Its flowers come in many colours, open in sunshine and close in the afternoon.',
+        'The plant grows fast and is easy to grow. The timings below are rough estimates for a plant grown from seed; the sources give no day counts for each stage, so real figures vary with the weather.',
+      ],
+      stages: {
+        seed: {
+          description: 'The seeds are very small and black; they are simply scattered on damp soil in the sun.',
+        },
+        'full-bloom': {
+          description: 'Silky flowers open wide in the sun and cover the low mat of plants close to the ground.',
+        },
+        wilting: {
+          description: 'Each flower lasts one day, but the plant keeps making new buds and small capsules full of seeds.',
+        },
+      },
+      care: {
+        light: 'Full sun; without it the flowers will not open.',
+        water: 'Water sparingly and let the soil dry out between waterings.',
+        soil: 'Sandy, fast-draining soil.',
+        temperature: 'Loves heat and dislikes cold.',
+        extra: 'It is easy to propagate from stem cuttings pushed into the soil.',
+      },
+      facts: [
+        'Moss rose flowers open in sunshine and close in the afternoon.',
+        'The plant comes from South America and has succulent stems that tolerate drought.',
+        'The flowers come in pink, red, yellow, orange, white and purple.',
+        'It grows low to the ground and is used for flower beds and pots.',
+      ],
+      keywords: [
+        'moss rose growth stages',
+        'Portulaca grandiflora life cycle',
+        'time-lapse hoa mười giờ',
+        'how to grow moss rose',
+      ],
+      altText: 'Illustration of a low, succulent moss rose plant with many bright pink flowers among small leaves, growing from a seed in the soil.',
+      timeNote: 'Timings are rough estimates; the sources give no day counts for each stage and speed depends on heat and sun.',
+      startNote: 'The simulation starts from a single moss rose seed scattered on soil; in practice it is also grown from cuttings.',
+    },
+  },
+};

@@ -14,7 +14,6 @@ export const bougainvillea: FlowerData = {
   startMaterial: 'seed-or-cutting',
   confidence: 'low',
   featured: false,
-  isNew: true,
   stages: [
     { id: 'seed', days: [3, 7] },
     { id: 'germination', days: [28, 42] },

@@ -160,13 +160,17 @@ export interface BlossomTreeOptions {
   autumn: number;
   /** Colour the buds are mixed towards. */
   bud: string;
+  /** Petals per blossom (default 5). */
+  petals?: number;
+  /** Bark colour (default dark brown). */
+  bark?: string;
 }
 
-function blossomDefs(c: Ctx, petal: string): string {
+function blossomDefs(c: Ctx, petal: string, n = 5): string {
   const p = c.pal;
   let petals = '';
-  for (let i = 0; i < 5; i++) {
-    petals += `<path transform="rotate(${i * 72})" d="${petal}" fill="${c.url('sakuraPetal')}" stroke="${p.petalDeep}" stroke-width=".5" stroke-opacity=".5"/>`;
+  for (let i = 0; i < n; i++) {
+    petals += `<path transform="rotate(${f((i * 360) / n)})" d="${petal}" fill="${c.url('sakuraPetal')}" stroke="${p.petalDeep}" stroke-width=".5" stroke-opacity=".5"/>`;
   }
   let st = '';
   for (let i = 0; i < 8; i++) {
@@ -183,7 +187,7 @@ export function blossomTree(o: BlossomTreeOptions): ArchetypeRenderer {
     return (
       radialGradient(c.id('sakuraPetal'), [[0, p.center], [0.28, p.petalDeep], [1, p.petal]], 0.5, 0.88, 0.95, 0.5, 0.95) +
       linearGradient(c.id('leafDry'), [[0, '#7a6a30'], [1, '#c2b46a']], 0, 0, 1, 0) +
-      blossomDefs(c, o.petal)
+      blossomDefs(c, o.petal, o.petals)
     );
   },
   plant(c) {
@@ -197,7 +201,7 @@ export function blossomTree(o: BlossomTreeOptions): ArchetypeRenderer {
     const tree = buildTree();
     const placed = place(c, tree);
     const trunkW = 3 + 21 * Math.pow(smooth(0, 1, s.stem), 0.85);
-    const bark = '#4d3b34';
+    const bark = o.bark ?? '#4d3b34';
     // Branches, thickest first.
     for (let level = 0; level <= 4; level++) {
       let d = '';

@@ -55,7 +55,7 @@ public/                        favicon.svg; og-image.png, og/, apple-touch-icon.
 scripts/                       generate-og.ts, render-clips.ts, add-flowers.ts, lib/ (text-path, gemini, flower-gen…), verify-build.mjs
 src/
   config/        site.ts (hằng số), analytics.ts (đọc env GoatCounter)
-  data/          dữ liệu 28 loài (flowers/*.ts), kiểu dữ liệu, taxonomy
+  data/          dữ liệu 38 loài (flowers/*.ts), kiểu dữ liệu, taxonomy
   content/       bài viết (articles/{vi,en}/*.md, content collection có schema)
   i18n/          từ điển vi / en
   lib/           logic thuần: url, seo, jsonld, sitemap, filter, search-index, routes,

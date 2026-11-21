@@ -36,6 +36,14 @@ import { bougainvillea } from './archetypes/bougainvillea';
 import { flameTree } from './archetypes/flame-tree';
 import { plumeria } from './archetypes/plumeria';
 import { hibiscus } from './archetypes/hibiscus';
+import { daQuy } from './archetypes/da-quy';
+import { waterLily } from './archetypes/water-lily';
+import { bangLang, ban, sua } from './archetypes/blossom-variants';
+import { mooseRose } from './archetypes/moss-rose';
+import { hydrangea } from './archetypes/hydrangea';
+import { azalea } from './archetypes/azalea';
+import { buckwheat } from './archetypes/buckwheat';
+import { jasmine } from './archetypes/jasmine';
 
 const RENDERERS: Partial<Record<FlowerVisual['archetype'], ArchetypeRenderer>> = {
   sunflower,
@@ -66,6 +74,16 @@ const RENDERERS: Partial<Record<FlowerVisual['archetype'], ArchetypeRenderer>> =
   'flame-tree': flameTree,
   plumeria,
   hibiscus,
+  'da-quy': daQuy,
+  'water-lily': waterLily,
+  'bang-lang': bangLang,
+  ban,
+  sua,
+  'moss-rose': mooseRose,
+  hydrangea,
+  azalea,
+  buckwheat,
+  jasmine,
 };
 
 export interface RenderSvgOptions extends RenderOptions {

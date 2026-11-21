@@ -1,0 +1,157 @@
+import type { FlowerData } from '../types';
+
+export const queensCrapeMyrtle: FlowerData = {
+  id: 'queens-crape-myrtle',
+  slugs: { vi: 'hoa-bang-lang', en: 'queens-crape-myrtle' },
+  scientificName: 'Lagerstroemia speciosa',
+  scientificAliases: [
+    'Lagerstroemia',
+    'giant crape myrtle',
+    'pride of India',
+    'banaba',
+    'bằng lăng nước',
+    'bằng lăng tím',
+  ],
+  family: 'Lythraceae',
+  group: 'shrub-tree',
+  colors: ['purple', 'pink'],
+  bloomSeasons: ['summer'],
+  daysToBloom: [894, 2168],
+  speedBand: 'slow',
+  startMaterial: 'seed-or-cutting',
+  confidence: 'low',
+  featured: false,
+  isNew: true,
+  stages: [
+    { id: 'seed', days: [7, 21] },
+    { id: 'germination', days: [14, 35] },
+    { id: 'seedling', days: [90, 180] },
+    { id: 'vegetative', days: [730, 1825] },
+    { id: 'bud-formation', days: [30, 60] },
+    { id: 'bud-development', days: [20, 40] },
+    { id: 'blooming', days: [3, 7] },
+    { id: 'full-bloom', days: [30, 60] },
+    { id: 'wilting', days: [60, 120] },
+  ],
+  visual: {
+    archetype: 'bang-lang',
+    palette: {
+      petal: '#b57edc',
+      petalDeep: '#7b3fa8',
+      petalTip: '#e3c6f5',
+      center: '#f2c230',
+      centerDeep: '#a87a10',
+      leaf: '#5f9a3e',
+      leafDeep: '#2f6a2a',
+      stem: '#5a4636',
+    },
+  },
+  related: ['cherry-blossom', 'peach-blossom', 'flame-tree'],
+  sources: [
+    {
+      title: 'Lagerstroemia speciosa',
+      publisher: 'Wikipedia',
+      url: 'https://en.wikipedia.org/wiki/Lagerstroemia_speciosa',
+      supports: 'Lagerstroemia speciosa is a tree of tropical Asia in the family Lythraceae, grown as an ornamental for its large clusters of pink to purple flowers in summer.',
+    },
+    {
+      title: 'Lagerstroemia speciosa',
+      publisher: 'Wikipedia (tiếng Việt)',
+      url: 'https://vi.wikipedia.org/wiki/Lagerstroemia_speciosa',
+      supports: 'Trang tiếng Việt về bằng lăng nước, dùng để đối chiếu tên gọi, màu hoa tím và mùa hoa.',
+    },
+    {
+      title: 'Lagerstroemia speciosa',
+      publisher: 'Useful Tropical Plants',
+      url: 'https://tropical.theferns.info/viewtropical.php?id=Lagerstroemia+speciosa',
+      supports: 'Mô tả cây gỗ nhiệt đới rụng lá theo mùa, nhân giống bằng hạt hoặc cành giâm.',
+    },
+  ],
+  text: {
+    vi: {
+      name: 'Hoa bằng lăng',
+      aliases: ['bằng lăng', 'bằng lăng nước', 'bằng lăng tím', 'hoa bằng lăng tím'],
+      tagline: 'Sắc tím dịu phủ kín tán cây mỗi độ hè về: loài hoa của hàng cây phố và những mùa hạ học trò.',
+      metaDescription: 'Xem hoa bằng lăng lớn lên từ hạt đến lúc nở tím cả tán cây qua time-lapse tương tác: các giai đoạn, thời gian ước tính, cách chăm và điều thú vị.',
+      intro: [
+        'Bằng lăng nước (Lagerstroemia speciosa) là cây gỗ nhiệt đới thuộc họ Tử vi (Lythraceae), mọc ở nhiều nơi tại châu Á. Hoa có sáu cánh nhăn, màu hồng tím và nở thành chùm lớn vào mùa hè, nên cây thường được trồng làm cây bóng mát ven phố.',
+        'Cây cần nhiều năm mới ra hoa đều. Các mốc thời gian dưới đây là ước tính thô cho cây trồng từ hạt hoặc cành giâm; nguồn không nêu số ngày cho từng giai đoạn nên con số thực tế có thể khác nhiều.',
+      ],
+      stages: {
+        seed: {
+          description: 'Quả khô nứt ra, để lộ những hạt nhỏ có cánh mỏng; hạt được gieo vào đất ẩm.',
+        },
+        'full-bloom': {
+          description: 'Những chùm hoa hồng tím phủ kín đầu cành, mỗi hoa có các cánh nhăn như giấy lụa.',
+        },
+        wilting: { description: 'Cánh hoa phai và rụng, trải tím dưới gốc; cây kết quả khô và dần thay lá.' },
+      },
+      care: {
+        light: 'Nắng đầy đủ.',
+        water: 'Tưới đều khi cây còn nhỏ; cây lớn chịu hạn khá tốt.',
+        soil: 'Đất sâu, thoát nước tốt, hơi ẩm.',
+        temperature: 'Ưa nóng ẩm; hợp khí hậu nhiệt đới.',
+        extra: 'Tỉa cành sau mùa hoa để tán gọn và ra hoa nhiều hơn.',
+      },
+      facts: [
+        'Hoa bằng lăng có sáu cánh nhăn, màu hồng đến tím.',
+        'Hoa nở thành chùm lớn vào mùa hè.',
+        'Cây thường được trồng làm cây bóng mát ven đường.',
+        'Cây rụng lá theo mùa và có thể nhân giống bằng hạt hoặc cành giâm.',
+      ],
+      keywords: [
+        'hoa bằng lăng',
+        'quá trình phát triển của hoa bằng lăng',
+        'time-lapse hoa bằng lăng',
+        'vòng đời cây bằng lăng',
+        'mùa hoa bằng lăng',
+      ],
+      altText: 'Minh họa cây bằng lăng với thân nâu và tán đầy những chùm hoa tím, lớn lên từ một hạt nhỏ trong đất.',
+      timeNote: 'Các mốc thời gian chỉ là ước tính thô cho cây trồng từ hạt; nguồn không nêu số ngày cho từng giai đoạn.',
+      startNote: 'Mô phỏng bắt đầu từ một hạt bằng lăng gieo vào đất; trong thực tế cây cũng được giâm cành.',
+    },
+    en: {
+      name: 'Queen\'s crape myrtle',
+      aliases: ['Lagerstroemia speciosa', 'giant crape myrtle', 'pride of India', 'banaba', 'hoa bằng lăng'],
+      tagline: 'Soft purple covering the whole crown each summer: the flower of street trees and of schoolday summers in Vietnam.',
+      metaDescription: 'Watch a queen\'s crape myrtle grow from seed to a crown of purple bloom in an interactive time-lapse: growth stages, estimated timing, care tips and fun facts.',
+      intro: [
+        'Queen\'s crape myrtle (Lagerstroemia speciosa) is a tropical tree in the family Lythraceae, found across Asia. Its flowers have six crinkled petals in pink-purple and open in large clusters in summer, so the tree is often planted for shade along streets.',
+        'The tree needs several years before it flowers well. The timings below are rough estimates for a tree grown from seed or a cutting; the sources give no day counts for each stage, so real figures may differ a lot.',
+      ],
+      stages: {
+        seed: {
+          description: 'The dry fruit splits to show small seeds with thin wings; the seeds are sown in damp soil.',
+        },
+        'full-bloom': {
+          description: 'Clusters of pink-purple flowers cover the branch tips, each with crinkled, tissue-paper petals.',
+        },
+        wilting: {
+          description: 'The petals fade and drop, carpeting the ground in purple; the tree sets dry fruit and slowly changes its leaves.',
+        },
+      },
+      care: {
+        light: 'Full sun.',
+        water: 'Water regularly while young; an older tree is fairly drought tolerant.',
+        soil: 'Deep, well-drained, slightly moist soil.',
+        temperature: 'Likes warm, humid conditions; suited to a tropical climate.',
+        extra: 'Prune after flowering to keep a tidy crown and more flowers.',
+      },
+      facts: [
+        'The flowers have six crinkled petals, from pink to purple.',
+        'They open in large clusters in summer.',
+        'The tree is often planted for shade along roads.',
+        'It is deciduous and can be grown from seed or cuttings.',
+      ],
+      keywords: [
+        'queen\'s crape myrtle growth stages',
+        'Lagerstroemia speciosa life cycle',
+        'time-lapse crape myrtle',
+        'pride of India tree growth',
+      ],
+      altText: 'Illustration of a crape myrtle tree with a brown trunk and a crown full of purple flower clusters, growing from a small seed in the soil.',
+      timeNote: 'Timings are rough estimates for a tree grown from seed; the sources give no day counts for each stage.',
+      startNote: 'The simulation starts from a single seed sown in soil; in practice the tree is also grown from cuttings.',
+    },
+  },
+};

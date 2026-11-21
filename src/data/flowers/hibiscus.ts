@@ -14,7 +14,6 @@ export const hibiscus: FlowerData = {
   startMaterial: 'seed-or-cutting',
   confidence: 'low',
   featured: false,
-  isNew: true,
   stages: [
     { id: 'seed', days: [1, 3] },
     { id: 'germination', days: [6, 25] },

@@ -14,7 +14,6 @@ export const plumeria: FlowerData = {
   startMaterial: 'seed-or-cutting',
   confidence: 'low',
   featured: false,
-  isNew: true,
   stages: [
     { id: 'seed', days: [2, 14] },
     { id: 'germination', days: [28, 56] },

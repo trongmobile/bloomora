@@ -1,0 +1,150 @@
+import type { FlowerData } from '../types';
+
+export const waterLily: FlowerData = {
+  id: 'water-lily',
+  slugs: { vi: 'hoa-sung', en: 'water-lily' },
+  scientificName: 'Nymphaea nouchali',
+  scientificAliases: ['Nymphaea', 'blue star lotus', 'star lotus', 'hoa súng', 'súng lam', 'shapla'],
+  family: 'Nymphaeaceae',
+  group: 'aquatic',
+  colors: ['blue', 'purple', 'white'],
+  bloomSeasons: ['summer', 'autumn'],
+  daysToBloom: [102, 217],
+  speedBand: 'medium',
+  startMaterial: 'seed-or-rhizome',
+  confidence: 'low',
+  featured: false,
+  isNew: true,
+  stages: [
+    { id: 'seed', days: [7, 14] },
+    { id: 'germination', days: [7, 21] },
+    { id: 'seedling', days: [21, 45] },
+    { id: 'vegetative', days: [45, 90] },
+    { id: 'bud-formation', days: [14, 30] },
+    { id: 'bud-development', days: [7, 14] },
+    { id: 'blooming', days: [1, 3] },
+    { id: 'full-bloom', days: [60, 150] },
+    { id: 'wilting', days: [30, 60] },
+  ],
+  visual: {
+    archetype: 'water-lily',
+    palette: {
+      petal: '#9fb4f0',
+      petalDeep: '#6a63c9',
+      petalTip: '#e4ecff',
+      center: '#f5c93a',
+      centerDeep: '#b8841a',
+      leaf: '#3f8a45',
+      leafDeep: '#1f5a2c',
+      stem: '#4a7a50',
+    },
+  },
+  related: ['lotus', 'lily', 'morning-glory'],
+  sources: [
+    {
+      title: 'Nymphaea nouchali',
+      publisher: 'Wikipedia',
+      url: 'https://en.wikipedia.org/wiki/Nymphaea_nouchali',
+      supports: 'Nymphaea nouchali is an aquatic plant of the family Nymphaeaceae native to South and Southeast Asia, with floating leaves and blue to purple star-shaped flowers; it is the national flower of Bangladesh.',
+    },
+    {
+      title: 'Nymphaea nouchali',
+      publisher: 'Wikipedia (tiếng Việt)',
+      url: 'https://vi.wikipedia.org/wiki/S%C3%BAng_(th%E1%BB%B1c_v%E1%BA%ADt)',
+      supports: 'Trang tiếng Việt về chi Súng, dùng để đối chiếu tên gọi và đặc điểm lá nổi, hoa nở trên mặt nước.',
+    },
+    {
+      title: 'Nymphaea nouchali',
+      publisher: 'Useful Tropical Plants',
+      url: 'https://tropical.theferns.info/viewtropical.php?id=Nymphaea+nouchali',
+      supports: 'Mô tả cây thủy sinh sống ở ao, hồ nông; nhân giống bằng hạt hoặc củ thân rễ.',
+    },
+  ],
+  text: {
+    vi: {
+      name: 'Hoa súng',
+      aliases: ['súng', 'súng lam', 'súng tím', 'hoa súng lam'],
+      tagline: 'Đóa hoa nổi trên mặt ao giữa những chiếc lá tròn: loài thủy sinh dịu dàng của đồng bằng và miền sông nước.',
+      metaDescription: 'Xem hoa súng lớn lên từ hạt hoặc củ đến lúc nở trên mặt nước qua time-lapse tương tác: các giai đoạn, thời gian ước tính, cách chăm và điều thú vị.',
+      intro: [
+        'Hoa súng (Nymphaea nouchali) là cây thủy sinh thuộc họ Súng (Nymphaeaceae), mọc ở ao hồ nông ở Nam và Đông Nam Á. Lá tròn nổi trên mặt nước, còn hoa hình sao màu lam, tím hoặc trắng nở sát mặt nước.',
+        'Súng khác sen ở chỗ lá và hoa nằm sát mặt nước, không vươn cao. Các mốc thời gian dưới đây là ước tính thô; nguồn không nêu số ngày cho từng giai đoạn nên con số thực tế có thể khác nhiều.',
+      ],
+      stages: {
+        seed: {
+          description: 'Hạt nhỏ nằm trong quả chìm dưới nước; khi trồng, hạt hoặc củ được đặt vào bùn ngập nước nông.',
+        },
+        'full-bloom': {
+          description: 'Hoa hình sao với nhiều cánh nhọn nở sát mặt nước, giữa những chiếc lá tròn nổi.',
+        },
+        wilting: { description: 'Hoa tàn khép lại rồi chìm xuống nước; cây tiếp tục ra lá và nụ mới.' },
+      },
+      care: {
+        light: 'Nắng nhiều, ít nhất vài giờ mỗi ngày.',
+        water: 'Giữ ngập nước nông, nước tĩnh hoặc chảy rất chậm.',
+        soil: 'Bùn ao hoặc đất sét giàu mùn đặt trong chậu chìm.',
+        temperature: 'Ưa nóng ẩm; hợp khí hậu nhiệt đới.',
+        extra: 'Cắt bỏ lá và hoa tàn để nước sạch và cây ra nụ đều.',
+      },
+      facts: [
+        'Súng là quốc hoa của Bangladesh, nơi nó được gọi là shapla.',
+        'Lá súng tròn, nổi hẳn trên mặt nước và có một khe cắt hình chữ V.',
+        'Súng có hoa và lá sát mặt nước, còn sen có lá và hoa vươn cao khỏi nước.',
+        'Cây mọc ở ao, hồ nông và có thể trồng từ hạt hoặc củ.',
+      ],
+      keywords: [
+        'hoa súng',
+        'quá trình phát triển của hoa súng',
+        'time-lapse hoa súng',
+        'vòng đời hoa súng',
+        'cách trồng hoa súng',
+      ],
+      altText: 'Minh họa một đóa súng lam hình sao nở trên mặt nước giữa những chiếc lá tròn nổi, lớn lên từ một hạt dưới bùn.',
+      timeNote: 'Các mốc thời gian chỉ là ước tính thô; nguồn không nêu số ngày cho từng giai đoạn và tốc độ phụ thuộc nhiệt độ nước.',
+      startNote: 'Mô phỏng bắt đầu từ một hạt súng dưới bùn; trong thực tế cây thường được trồng từ củ thân rễ.',
+    },
+    en: {
+      name: 'Water lily',
+      aliases: ['Nymphaea nouchali', 'blue star lotus', 'star lotus', 'hoa súng', 'shapla'],
+      tagline: 'A flower afloat on the pond among round leaves: the gentle water plant of the Vietnamese delta and river country.',
+      metaDescription: 'Watch a water lily grow from seed or tuber to a bloom on the water in an interactive time-lapse: growth stages, estimated timing, care tips and fun facts.',
+      intro: [
+        'Water lily (Nymphaea nouchali) is an aquatic plant in the family Nymphaeaceae, found in shallow ponds and lakes across South and Southeast Asia. Its round leaves float on the water and its star-shaped blue, purple or white flowers open right at the surface.',
+        'Unlike the lotus, a water lily keeps its leaves and flowers at the surface rather than lifting them high. The timings below are rough estimates; the sources give no day counts for each stage, so real figures may differ a lot.',
+      ],
+      stages: {
+        seed: {
+          description: 'The small seeds ripen in a fruit under water; when growing it, a seed or tuber is set in muddy soil under shallow water.',
+        },
+        'full-bloom': {
+          description: 'Star-shaped flowers with many pointed petals open at the surface among the floating round leaves.',
+        },
+        wilting: {
+          description: 'The spent flower closes and sinks under the water while the plant keeps making new leaves and buds.',
+        },
+      },
+      care: {
+        light: 'Plenty of sun, at least several hours a day.',
+        water: 'Keep it under shallow water that is still or barely moving.',
+        soil: 'Pond mud or humus-rich clay in a sunken pot.',
+        temperature: 'Loves warm, humid conditions; suited to a tropical climate.',
+        extra: 'Remove spent leaves and flowers to keep the water clean and the buds coming.',
+      },
+      facts: [
+        'The water lily is the national flower of Bangladesh, where it is called shapla.',
+        'Its round leaves float on the water and have a V-shaped slit.',
+        'A water lily keeps leaves and flowers at the surface, while a lotus lifts them above the water.',
+        'It grows in shallow ponds and lakes and can be grown from seed or tuber.',
+      ],
+      keywords: [
+        'water lily growth stages',
+        'Nymphaea nouchali life cycle',
+        'time-lapse water lily',
+        'blue star lotus growth',
+      ],
+      altText: 'Illustration of a blue star-shaped water lily blooming on the water among floating round leaves, growing from a seed in the mud.',
+      timeNote: 'Timings are rough estimates; the sources give no day counts for each stage and growth depends on water temperature.',
+      startNote: 'The simulation starts from a single water lily seed in the mud; in practice the plant is usually grown from a tuber.',
+    },
+  },
+};
