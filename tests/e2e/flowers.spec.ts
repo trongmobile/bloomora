@@ -44,8 +44,10 @@ test.describe('flower list: search and filters', () => {
 
   test('searches by English and scientific name', async ({ page }) => {
     const input = page.locator('#flower-search');
-    await input.fill('lotus');
+    // "lotus" alone also matches the water lily ("blue star lotus"), so use a name only the sacred lotus has.
+    await input.fill('sacred lotus');
     await expect(visibleCards(page)).toHaveCount(1);
+    await expect(visibleCards(page).first().locator('a').first()).toHaveAttribute('href', /hoa-sen/);
     await input.fill('Prunus serrulata');
     await expect(visibleCards(page)).toHaveCount(1);
     await expect(visibleCards(page).first().locator('a').first()).toHaveAttribute('href', /hoa-anh-dao/);
